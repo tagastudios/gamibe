@@ -7,6 +7,11 @@ import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
 import type { AppRouter } from "../server/router";
 import "../styles/globals.css";
+import { useEffect } from "react";
+import { trpc } from "../utils/trpc";
+import { Provider } from "jotai";
+import store, { useStore } from "../store/index";
+import { useRouter } from "next/router";
 
 import Header from "../components/layout/Header";
 
@@ -14,12 +19,30 @@ const MyApp: AppType = ({
 	Component,
 	pageProps: { session, ...pageProps },
 }) => {
+	const { data: currentSession, isLoading }: any = trpc.useQuery([
+		"auth.getSession",
+	]);
+	const [, setGlobalStore] = useStore("auth");
+	const router = useRouter();
+
+	useEffect((): any => {
+		if (isLoading) return;
+		console.log(currentSession);
+		if (!currentSession) {
+			router.push("/login");
+			return;
+		}
+		setGlobalStore({ user: currentSession.user });
+	}, [currentSession]);
+
 	return (
 		<SessionProvider session={session}>
-			<Header />
-			<main className="container mx-auto flex flex-col items-center justify-center p-4">
-				<Component {...pageProps} />
-			</main>
+			<Provider scope={store.globalScope}>
+				<Header />
+				<main className="container mx-auto flex flex-col items-center justify-center p-4">
+					<Component {...pageProps} />
+				</main>
+			</Provider>
 		</SessionProvider>
 	);
 };

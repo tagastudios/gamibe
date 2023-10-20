@@ -14,8 +14,8 @@ const Incomes = (props: Props) => {
 
 	const createIncomeMutation = trpc.useMutation("incomes.createIncome");
 
-	const test = async (uid: string) => {
-		const x = await createIncomeMutation.mutateAsync({
+	const addIncome = async (uid: string) => {
+		createIncomeMutation.mutateAsync({
 			title: "test",
 			description: "test",
 			amount: 0,
@@ -25,24 +25,19 @@ const Incomes = (props: Props) => {
 			paymentType: 1,
 			recurringType: 1,
 		});
-		await console.log(x);
 	};
 
 	if (isLoading) return <div>Loading session...</div>;
 
 	return (
 		<div>
-			<h1>Incomes for {session?.user?.id}</h1>
-			{session?.user?.id ? (
-				<button
-					onClick={() => test(session?.user?.id)}
-					className="bg-emerald-500 hover:bg-emerald-600 p-2"
-				>
-					New Income
-				</button>
-			) : (
-				<p>Hola</p>
-			)}
+			<h1>Incomes for {session?.user?.firstName}</h1>
+			<button
+				onClick={() => addIncome(session?.user?.id || "")}
+				className="bg-emerald-500 hover:bg-emerald-600 p-2"
+			>
+				New Income
+			</button>
 			<hr className="border-emerald-500" />
 			<table className="max-w-xl">
 				<thead>
@@ -59,7 +54,7 @@ const Incomes = (props: Props) => {
 						? ""
 						: incomes.map((income) => {
 								return (
-									<tr>
+									<tr key={income.id}>
 										<td>{income.createdAt.toDateString()}</td>
 										<td>{income.id}</td>
 										<td>{income.amount}</td>

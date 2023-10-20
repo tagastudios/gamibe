@@ -5,8 +5,6 @@ export const userRouter = createRouter()
 	.query("getAll", {
 		async resolve({ ctx }) {
 			try {
-				console.log(ctx);
-
 				return await ctx.prisma.user.findMany({
 					select: {
 						firstName: true,

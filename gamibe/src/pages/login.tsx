@@ -1,4 +1,5 @@
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useStore } from "../store/index";
 
 type Props = {
 	firstName: string;
@@ -6,6 +7,8 @@ type Props = {
 };
 
 const Login = (props: Props) => {
+	const [store] = useStore("auth");
+	console.log(store);
 	const { data: session, status } = useSession();
 
 	if (status === "loading") {
