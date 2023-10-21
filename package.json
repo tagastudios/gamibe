@@ -1,23 +1,26 @@
 {
-	"name": "taga",
-	"version": "1.0.0",
-	"description": "taga multipurpose repo",
-	"scripts": {
-		"gamibe-dev": "concurrently --kill-others \"npm --prefix ./gamibe run dev\" \"npm --prefix ./gamibe run prisma-studio\"",
-		"gamibe-prisma": "npm --prefix ./gamibe run prisma-generate && npm --prefix ./gamibe run prisma-push-db",
-		"gamibe-build": "npm --prefix ./gamibe run build && git add . && git commit -m \"build push\" && git push -u origin master"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/tagastudios/taga.git"
-	},
-	"keywords": [
-		"Taga"
-	],
-	"author": "Jose Tannous",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/tagastudios/taga/issues"
-	},
-	"homepage": "https://github.com/tagastudios/taga#readme"
+  "name": "taga",
+  "version": "1.0.0",
+  "description": "taga multipurpose repo",
+  "scripts": {
+    "gamibe-dev": "concurrently --kill-others \"npm --prefix ./gamibe run dev\"",
+    "gamibe-format": "npm --prefix ./gamibe run format && npm --prefix ./gamibe run lint",
+    "gamibe-build": "npm --prefix ./gamibe run build && git add . && git commit -m \"build push\" && git push -u origin master",
+    "gamibe-legacy-dev": "concurrently --kill-others \"npm --prefix ./gamibe-legacy run dev\" \"npm --prefix ./gamibe-legacy run prisma-studio\"",
+    "gamibe-legacy-prisma": "npm --prefix ./gamibe-legacy run prisma-generate && npm --prefix ./gamibe-legacy run prisma-push-db",
+    "gamibe-legacy-build": "npm --prefix ./gamibe-legacy run build && git add . && git commit -m \"build push\" && git push -u origin master"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tagastudios/taga.git"
+  },
+  "keywords": [
+    "Taga"
+  ],
+  "author": "Jose Tannous",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tagastudios/taga/issues"
+  },
+  "homepage": "https://github.com/tagastudios/taga#readme"
 }
