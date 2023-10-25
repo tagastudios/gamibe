@@ -1,84 +1,51 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import { useFirestore, useCollection, useDocument } from 'vuefire'
+import { collection, doc, query, where, orderBy, limit } from 'firebase/firestore'
+const db = useFirestore()
+const q = query(
+    collection(db, 'test'),
+    where('name', '>=', 'odar'),
+    where('name', '<=', 'odar~'),
+    orderBy('name'),
+    limit(10)
+)
+const test = useCollection(q)
+const settings = useDocument(doc(db, 'test', '7Nq3SHYGNUgDmRADQ02Z'))
 </script>
 
 <template>
-    <header>
+    <header class="flex items-center justify-center pt-10 px-20">
         <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
         <div class="wrapper">
             <HelloWorld msg="You did it!" />
 
-            <nav>
-                <RouterLink to="/">Home</RouterLink>
-                <RouterLink to="/about">About</RouterLink>
+            <nav class="flex gap-10 pt-5 text-lg text-emerald-400">
+                <RouterLink
+                    class="active:font-bold active:text-emerald-400 hover:text-emerald-600"
+                    to="/"
+                    >Home</RouterLink
+                >
+                <RouterLink class="active:font-bold hover:text-emerald-600" to="/about"
+                    >About</RouterLink
+                >
             </nav>
         </div>
     </header>
 
-    <RouterView />
+    <h1 class="justify-center items-center flex text-5xl mt-10 flex-col">
+        <ul>
+            <li v-for="(todo, id) in test" :key="id">
+                <span>Nombre: {{ todo.name }} {{ todo.last_name }}</span>
+            </li>
+        </ul>
+        <ul>
+            <li>{{ settings }}</li>
+        </ul>
+    </h1>
+
+    <RouterView class="flex justify-center flex-col px-20 pt-10 pb-20" />
 </template>
 
-<style scoped>
-header {
-    line-height: 1.5;
-    max-height: 100vh;
-}
-
-.logo {
-    display: block;
-    margin: 0 auto 2rem;
-}
-
-nav {
-    width: 100%;
-    font-size: 12px;
-    text-align: center;
-    margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-    color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-    background-color: transparent;
-}
-
-nav a {
-    display: inline-block;
-    padding: 0 1rem;
-    border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-    border: 0;
-}
-
-@media (min-width: 1024px) {
-    header {
-        display: flex;
-        place-items: center;
-        padding-right: calc(var(--section-gap) / 2);
-    }
-
-    .logo {
-        margin: 0 2rem 0 0;
-    }
-
-    header .wrapper {
-        display: flex;
-        place-items: flex-start;
-        flex-wrap: wrap;
-    }
-
-    nav {
-        text-align: left;
-        margin-left: -1rem;
-        font-size: 1rem;
-
-        padding: 1rem 0;
-        margin-top: 1rem;
-    }
-}
-</style>
+<style scoped></style>
