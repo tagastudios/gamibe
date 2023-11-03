@@ -1,0 +1,5 @@
+<script setup lang="ts"></script>
+
+<template>
+    <main><h1 class="font-black text-5xl m-auto">Profile</h1></main>
+</template>
