@@ -1,5 +1,15 @@
 <template>
-    <header class="item items-center justify-between">
+    <header v-if="isCreateRoute" class="items-center justify-between pb-14 pt-10">
+        <div
+            @click="router.back"
+            class="active:tbg-zinc-200 relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-zinc-100 transition-colors hover:bg-zinc-300"
+        >
+            <ChevronLeftIcon class="absolute left-[-1px] w-full text-slate-600" />
+        </div>
+        <p class="tracking-wide">{{ currentStep }} of {{ maxSteps }}</p>
+        <div></div>
+    </header>
+    <header v-else class="items-center justify-between">
         <div class="flex items-center">
             <img alt="Vue logo" class="rounded-full bg-blue-900" src="@/assets/person.svg" />
             <div class="ml-5">
@@ -8,7 +18,11 @@
             </div>
         </div>
         <div class="flex select-none items-center gap-5">
-            <PlusIcon class="w-6 transition-colors hover:text-blue-900 active:text-blue-700" />
+            <RouterLink to="/create">
+                <PlusIcon
+                    class="w-6 cursor-pointer transition-colors hover:text-blue-900 active:text-blue-700"
+                />
+            </RouterLink>
             <MagnifyingGlassIcon
                 class="w-6 transition-colors hover:text-blue-900 active:text-blue-700"
             />
@@ -21,9 +35,26 @@
 </template>
 
 <script setup lang="ts">
-import { PlusIcon, MagnifyingGlassIcon, BellIcon, BellAlertIcon } from '@heroicons/vue/24/solid'
-import { ref } from 'vue'
-const hasNotifications = ref(false)
-</script>
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import {
+    PlusIcon,
+    MagnifyingGlassIcon,
+    BellIcon,
+    BellAlertIcon,
+    ChevronLeftIcon
+} from '@heroicons/vue/24/solid'
+import { ref, computed } from 'vue'
 
-<style scoped></style>
+const hasNotifications = ref(false)
+
+const route = useRoute()
+const router = useRouter()
+
+const isCreateRoute = computed(() => route.matched.find((match) => match.name === 'Create'))
+
+const currentStep = computed(() => {
+    const currentPath = route.matched.find((match) => match.name === route.name)?.path ?? ''
+    return currentPath.split('/').length - 1
+})
+const maxSteps = 3
+</script>

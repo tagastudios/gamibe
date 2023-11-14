@@ -10,8 +10,8 @@ import { RouterView } from 'vue-router'
         class="fixed top-0 z-[9999] flex w-full justify-center px-6 pb-8 pt-5"
     />
 
-    <div class="flex w-full pb-20 pt-24">
-        <RouterView class="flex w-full flex-col justify-center p-6" />
+    <div class="flex h-full w-full flex-col">
+        <RouterView class="flex w-full flex-col justify-center p-6 pb-20 pt-28" />
     </div>
 
     <NavigationBar

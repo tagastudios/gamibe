@@ -10,6 +10,27 @@ const router = createRouter({
             component: Dashboard
         },
         {
+            path: '/create',
+            name: 'Create',
+            children: [
+                {
+                    path: '',
+                    name: 'CreateSet',
+                    component: () => import('@/views/create/CreateStep1.vue')
+                },
+                {
+                    path: '/create/:type',
+                    name: 'CreateEdit',
+                    component: () => import('@/views/create/CreateStep2.vue')
+                },
+                {
+                    path: '/create/:type/confirm',
+                    name: 'CreateConfirm',
+                    component: () => import('@/views/create/CreateStep3.vue')
+                }
+            ]
+        },
+        {
             path: '/charts',
             name: 'Charts',
             component: () => import('@/views/Charts.vue')

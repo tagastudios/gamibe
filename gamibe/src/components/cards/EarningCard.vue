@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex aspect-square w-48 flex-shrink-0 flex-col items-center justify-around rounded-3xl bg-orange-950"
+        class="flex aspect-square w-48 flex-shrink-0 flex-col items-center justify-around rounded-3xl bg-orange-950 cursor-default"
     >
         <p
             class="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 p-6 text-2xl font-semibold capitalize text-gray-900"

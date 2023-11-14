@@ -1,6 +1,6 @@
 <template>
     <nav v-if="isMobile" aria-label="mobile-menu"></nav>
-    <nav v-else aria-label="web-menu">
+    <nav v-else-if="!isCreateRoute" aria-label="web-menu">
         <ul class="flex w-full select-none list-none justify-center gap-6 text-xl">
             <RouterLink
                 v-slot="{ href, route, navigate, isActive, isExactActive }"
@@ -24,9 +24,14 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+import { computed } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 const tabPaths = ['/', '/charts', '/social', '/profile']
 const props = defineProps({
     isMobile: Boolean
 })
+
+const route = useRoute()
+
+const isCreateRoute = computed(() => route.matched.find((match) => match.name === 'Create'))
 </script>

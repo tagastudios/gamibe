@@ -10,9 +10,7 @@
             }`"
         >
             <div class="flex h-3/5 w-full flex-col justify-between lg:h-1/2">
-                <p
-                    class="w-11/12 overflow-hidden text-ellipsis whitespace-nowrap text-base text-slate-600"
-                >
+                <p class="w-11/12 truncate text-base text-slate-600">
                     {{ title }}
                 </p>
                 <p class="text-2xl font-semibold">{{ formattedAmountSaved }}</p>

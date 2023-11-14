@@ -52,15 +52,6 @@
                 :date="transaction.date"
             />
         </GridSystem>
-
-        <h1 class="mt-10 flex flex-col items-center justify-center text-xs">
-            <div v-for="(todo, id) in test" :key="id" class="bg-rose-900">
-                <span>Nombre: {{ todo.name }} {{ todo.last_name }}</span>
-            </div>
-            <ul>
-                <li>{{ settings }}</li>
-            </ul>
-        </h1>
     </main>
 </template>
 
@@ -70,42 +61,11 @@ import GridSystem from '@/components/UI/GridSystem.vue'
 import EarningCard from '@/components/cards/EarningCard.vue'
 import SavingCard from '@/components/cards/SavingCard.vue'
 import TransactionCard from '@/components/cards/TransactionCard.vue'
+import { useDatabase } from '@/composables/db'
 
-import { useFirestore, useCollection, useDocument } from 'vuefire'
-import { collection, doc, query, where, orderBy, limit } from 'firebase/firestore'
+const { useEarnings, useSavings, useTransactions } = useDatabase()
 
-import { earningsCollection, savingsCollection } from '@/configs/firebase'
-
-// Database
-const db = useFirestore()
-
-// Queries
-const earningQuery = query(earningsCollection, orderBy('createdAt', 'desc'), limit(9))
-const savingQuery = query(savingsCollection, orderBy('completion_percentage', 'desc'), limit(4))
-const testQuery = query(
-    collection(db, 'test'),
-    where('name', '>=', 'odar'),
-    where('name', '<=', 'odar~'),
-    orderBy('name'),
-    limit(10)
-)
-
-// Data
-const earnings = useCollection(earningQuery)
-const savings = useCollection(savingQuery)
-const test = useCollection(testQuery)
-const settings = useDocument(doc(db, 'test', '7Nq3SHYGNUgDmRADQ02Z'))
-
-const transactions = [
-    {
-        id: 1,
-        title: 'Adobe Illustrator',
-        category: 'Subscription Fee',
-        amount: -32,
-        date: new Date()
-    },
-    { id: 2, title: 'Dribble', category: 'Subscription Fee', amount: -15, date: new Date() },
-    { id: 3, title: 'Sony Camera', category: 'Shopping Fee', amount: -200, date: new Date() },
-    { id: 4, title: 'PayPal', category: 'Salary', amount: 32, date: new Date() }
-]
+const { data: earnings } = useEarnings()
+const { data: savings } = useSavings()
+const { data: transactions } = useTransactions()
 </script>

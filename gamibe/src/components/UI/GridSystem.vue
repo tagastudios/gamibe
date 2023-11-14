@@ -1,8 +1,8 @@
 <template>
     <div
         :class="`${
-            type === 'list' ? 'grid-cols-1' : 'grid-cols-2'
-        } grid gap-6 md:grid-cols-3 lg:grid-cols-4`"
+            type === 'list' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-2 md:grid-cols-3'
+        } grid gap-6  lg:grid-cols-4`"
     >
         <slot name="default"></slot>
     </div>
@@ -16,5 +16,3 @@ const props = defineProps({
     }
 })
 </script>
-
-<style scoped></style>
