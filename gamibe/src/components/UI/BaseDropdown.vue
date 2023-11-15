@@ -5,12 +5,24 @@
                 <button
                     @click="dropdownMenuIsOpen = !dropdownMenuIsOpen"
                     id="dropdown-button"
-                    class="inline-flex w-full justify-between rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100"
+                    :class="{
+                        'bg-indigo-100 outline-1': dropdownMenuIsOpen,
+                        'outline-0': !dropdownMenuIsOpen
+                    }"
+                    class="inline-flex w-full justify-between rounded-md border border-indigo-300 bg-transparent px-3 py-2.5 text-sm font-medium shadow-sm outline outline-indigo-300 transition-all active:outline-1 disabled:border-0 disabled:bg-zinc-500"
                 >
-                    <span v-if="selectedOption" class="mr-2"
+                    <span
+                        v-if="selectedOption"
+                        :class="`mr-2 ${dropdownMenuIsOpen ? 'text-slate-800' : 'text-zinc-100 '}`"
                         >{{ selectedOption.title }} - {{ selectedOption.description }}</span
                     >
-                    <span v-else class="mr-2">{{ placeholder }}</span>
+                    <span
+                        v-else
+                        :class="`mr-2 ${
+                            dropdownMenuIsOpen ? 'text-slate-800' : 'text-indigo-300 '
+                        }`"
+                        >{{ placeholder }}</span
+                    >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="-mr-1 ml-2 h-5 w-5"
@@ -29,13 +41,13 @@
                 <Transition :duration="550" name="fade-shrink" appear>
                     <div
                         v-if="dropdownMenuIsOpen"
-                        class="outer absolute right-0 mt-2 w-full space-y-1 rounded-md bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5"
+                        class="outer absolute right-0 mt-2 w-full space-y-1 rounded-md border border-indigo-300 bg-indigo-100 p-1 shadow-lg outline outline-1 outline-indigo-300 ring-1 ring-black ring-opacity-5"
                     >
                         <!-- Search input -->
                         <input
                             ref="inputRef"
                             id="search-input"
-                            class="inner block w-full rounded-md border border-gray-300 px-4 py-2 text-gray-800 focus:outline-none"
+                            class="inner block w-full rounded-md border border-indigo-300 bg-transparent px-4 py-2 text-slate-700 shadow-inner placeholder:text-slate-500 focus:outline-none"
                             type="text"
                             placeholder="Search.."
                             autocomplete="off"
@@ -44,14 +56,14 @@
                         <!-- Dropdown content goes here -->
                         <div
                             v-if="filteredOptions.length > 0"
-                            :class="`inner grid grid-cols-${columns} gap-4 rounded-md bg-white px-2 pb-4 pt-2 text-slate-600 shadow-lg`"
+                            :class="`inner grid grid-cols-${columns} gap-4 rounded-md  px-2 pb-4 pt-2 text-slate-600 shadow-lg`"
                         >
                             <a
                                 :class="`focus:shadow-outline flex ${
                                     columns && Number(columns) > 1 ? 'h-20' : 'h-16'
-                                } items-center rounded-lg bg-transparent p-2 hover:bg-gray-200 hover:text-gray-900 focus:bg-gray-200  focus:outline-none ${
+                                } items-center rounded-lg bg-transparent p-2 hover:bg-indigo-200 hover:text-gray-900 focus:outline-none  active:bg-indigo-300 ${
                                     selectedOption?.id == option.id
-                                        ? 'bg-blue-300 text-slate-950 hover:bg-blue-300 focus:bg-blue-300'
+                                        ? 'bg-indigo-300 text-slate-950 hover:bg-indigo-200 focus:bg-indigo-300'
                                         : ''
                                 }}`"
                                 href="#"
@@ -60,7 +72,7 @@
                                 @click="selectOption(option)"
                             >
                                 <div
-                                    :class="`aspect-square ${
+                                    :class="`aspect-square shadow shadow-indigo-500 drop-shadow-lg ${
                                         columns && Number(columns) > 1 ? 'h-3/4' : 'h-full'
                                     } rounded-lg bg-sky-500 ${
                                         option.image ? 'p-0' : 'p-3'
@@ -92,7 +104,7 @@
                                 </div>
                             </a>
                         </div>
-                        <div v-else class="py-[34px] text-center text-sm text-slate-800">
+                        <div v-else class="py-[34px] text-center text-sm text-slate-700">
                             Sorry, didn't found any option with that parameter!
                         </div>
                     </div>

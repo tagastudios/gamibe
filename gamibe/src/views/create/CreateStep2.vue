@@ -9,6 +9,11 @@
                 <BaseInput v-model="data.name" placeholder="Income name" type="text" />
                 <BaseInput v-model="data.date" placeholder="Date of the deposit" type="date" />
                 <BaseDropdown v-model="data.account" placeholder="Select an account" />
+                <p>
+                    Based on your input, you would have $2,000 left out of $3,000 in your Chase Bank
+                    - Account ending in 5543
+                </p>
+                <BaseAmountSelector v-model="data.amount" />
             </div>
         </div>
         <RouterLink :to="`/create/${createType}/confirm`" class="mx-auto w-full max-w-lg">
@@ -28,11 +33,13 @@ import { useRoute, RouterLink } from 'vue-router'
 
 import BaseInput from '@/components/UI/BaseInput.vue'
 import BaseDropdown from '@/components/UI/BaseDropdown.vue'
+import BaseAmountSelector from '@/components/UI/BaseAmountSelector.vue'
 
 const data = reactive({
     name: '',
     date: new Date(),
-    account: {}
+    account: {},
+    amount: 0
 })
 
 const route = useRoute()
