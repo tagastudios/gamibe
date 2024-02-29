@@ -11,7 +11,7 @@
     </header>
     <header v-else class="items-center justify-between">
         <div class="flex items-center">
-            <img alt="Vue logo" class="rounded-full bg-blue-900" src="@/assets/person.svg" />
+            <UserCircleIcon class="w-14 rounded-full bg-blue-900 shadow-inner" />
             <div class="ml-5">
                 <h3 class="text-2xl font-bold">Welcome John</h3>
                 <p class="text-lg">Your finances are looking good!</p>
@@ -41,7 +41,8 @@ import {
     MagnifyingGlassIcon,
     BellIcon,
     BellAlertIcon,
-    ChevronLeftIcon
+    ChevronLeftIcon,
+    UserCircleIcon
 } from '@heroicons/vue/24/solid'
 import { ref, computed } from 'vue'
 

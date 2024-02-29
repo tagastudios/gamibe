@@ -11,7 +11,7 @@
         >
             <div class="flex h-3/5 w-full flex-col justify-between lg:h-1/2">
                 <p class="w-11/12 truncate text-base text-slate-600">
-                    {{ title }}
+                    {{ name }}
                 </p>
                 <p class="text-2xl font-semibold">{{ formattedAmountSaved }}</p>
             </div>
@@ -33,7 +33,7 @@
             <img
                 v-if="imageSrc"
                 :src="imageSrc"
-                :alt="imageAlt || `Saving for ${title}`"
+                :alt="imageAlt || `Saving for ${name}`"
                 class="h-full max-h-full w-full min-w-full bg-zinc-100 object-cover object-center opacity-25"
             />
         </div>
@@ -44,13 +44,16 @@
 import { Bar } from 'vue-chartjs'
 import ChartjsPluginStacked100 from 'chartjs-plugin-stacked100'
 import { Chart as ChartJS, Tooltip, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import { useCurrency } from '@/composables/shared/useHelpers'
+
+const { formatCurrency } = useCurrency()
 
 ChartJS.register(ChartjsPluginStacked100, Tooltip, BarElement, CategoryScale, LinearScale)
 
 import { ChevronRightIcon } from '@heroicons/vue/24/solid'
 import { computed } from 'vue'
 const props = defineProps({
-    title: {
+    name: {
         type: String,
         required: true
     },
@@ -70,18 +73,9 @@ const props = defineProps({
     }
 })
 
-const formattedAmountSaved = computed(() => {
-    if (!props.amountSaved) return '$0'
-    else if (typeof props.amountSaved == 'number') {
-        const currency = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        }).format(props.amountSaved)
-        return currency
-    }
-})
+const formattedAmountSaved = computed(() =>
+    formatCurrency(props.amountSaved, { minimumFractionDigits: 0 })
+)
 
 const chartData = computed(() => {
     return {

@@ -36,6 +36,11 @@ const router = createRouter({
             component: () => import('@/views/Charts.vue')
         },
         {
+            path: '/calendar',
+            name: 'Calendar',
+            component: () => import('@/views/Calendar.vue')
+        },
+        {
             path: '/social',
             name: 'Social',
             component: () => import('@/views/Social.vue')

@@ -16,22 +16,20 @@
             >
                 <h3 class="w-full truncate text-xl font-semibold capitalize">
                     {{ name }}
+                    <span class="w-full text-base capitalize text-gray-500">({{ category }})</span>
                 </h3>
-                <p class="w-full text-base capitalize text-gray-500">{{ category }}</p>
+                <p class="w-full text-base capitalize text-gray-500">Due {{ formattedDate }}</p>
             </div>
         </div>
-        <p
-            :class="`w-2/12 min-w-fit  text-right text-xl font-semibold ${
-                amount > 0 ? 'text-emerald-500' : 'text-rose-500'
-            }`"
-        >
-            {{ formattedTransactionAmount }}
+        <p class="w-2/12 min-w-fit text-right text-xl font-semibold">
+            {{ formattedBillAmount }}
         </p>
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useTimeAgo } from '@vueuse/core'
 import {
     QuestionMarkCircleIcon,
     ComputerDesktopIcon,
@@ -101,5 +99,7 @@ const bgColor = computed(() => {
     }
 })
 
-const formattedTransactionAmount = computed(() => formatCurrency(props.amount))
+const formattedBillAmount = computed(() => formatCurrency(props.amount))
+
+const formattedDate = useTimeAgo(props.date)
 </script>

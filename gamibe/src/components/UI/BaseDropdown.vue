@@ -41,7 +41,7 @@
                 <Transition :duration="550" name="fade-shrink" appear>
                     <div
                         v-if="dropdownMenuIsOpen"
-                        class="outer absolute right-0 mt-2 w-full space-y-1 rounded-md border border-indigo-300 bg-indigo-100 p-1 shadow-lg outline outline-1 outline-indigo-300 ring-1 ring-black ring-opacity-5"
+                        class="outer absolute right-0 z-10 mt-2 w-full space-y-1 rounded-md border border-indigo-300 bg-indigo-100 p-1 shadow-lg outline outline-1 outline-indigo-300 ring-1 ring-black ring-opacity-5"
                     >
                         <!-- Search input -->
                         <input
@@ -115,7 +115,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watchEffect, onMounted } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { BanknotesIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/solid'
 
@@ -148,6 +148,10 @@ defineProps({
 })
 
 const selectedOption: any = ref(null)
+
+onMounted(() => {
+    if (modelValue.value.id) selectedOption.value = modelValue.value
+})
 
 const selectOption = (option: any) => {
     dropdownMenuIsOpen.value = false

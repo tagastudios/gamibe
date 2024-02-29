@@ -7,7 +7,7 @@
                 :to="tab"
                 :key="tab"
                 custom
-                v-for="tab in tabPaths"
+                v-for="tab in tempTabPaths"
             >
                 <li
                     :class="`p-5 ${
@@ -26,7 +26,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-const tabPaths = ['/', '/charts', '/social', '/profile']
+const tabPaths = ['/', '/charts', '/social', '/profile', '/calendar']
+const tempTabPaths = ['/', '/calendar', '/profile']
 const props = defineProps({
     isMobile: Boolean
 })

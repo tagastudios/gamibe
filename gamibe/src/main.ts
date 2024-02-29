@@ -5,6 +5,8 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { VueFire, VueFireAuth } from 'vuefire'
 import VueDragscroll from 'vue-dragscroll'
+import VCalendar from 'v-calendar'
+import 'v-calendar/style.css'
 
 // Custom
 import App from './App.vue'
@@ -24,5 +26,6 @@ app.use(VueFire, {
     ]
 })
 app.use(VueDragscroll)
+app.use(VCalendar, {})
 
 app.mount('#app')

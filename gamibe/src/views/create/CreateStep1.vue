@@ -43,34 +43,50 @@ import {
     QuestionMarkCircleIcon,
     BanknotesIcon,
     ShoppingBagIcon,
-    StarIcon
+    StarIcon,
+    CalendarDaysIcon
 } from '@heroicons/vue/24/solid'
 import { RouterLink } from 'vue-router'
 
 const creations = [
     {
-        id: 1,
-        title: 'Money Bloom',
-        description:
-            'Cultivate your wealth garden by adding your income. Every deposit is a seed for a prosperous future.',
-        icon: BanknotesIcon,
-        link: 'create/income'
-    },
-    {
-        id: 2,
-        title: 'Smart Spending',
-        description:
-            'Prune wisely by tracking your expenses. Financial success is about making informed choices, and this is where it begins.',
-        icon: ShoppingBagIcon,
-        link: 'create/expense'
-    },
-    {
-        id: 3,
-        title: 'Dream Pursuit',
-        description:
-            'Lay the foundation for your dreams. Set and track your financial goals, turning aspirations into achievable milestones.',
-        icon: StarIcon,
-        link: 'create/goal'
+        id: 0,
+        title: 'Bill Management',
+        description: 'Never miss a due date. Track and manage your bills with ease.',
+        icon: CalendarDaysIcon,
+        link: 'create/bill'
     }
+    // {
+    //     id: 1,
+    //     title: 'Money Bloom',
+    //     description:
+    //         'Cultivate your wealth garden by adding your income. Every deposit is a seed for a prosperous future.',
+    //     icon: BanknotesIcon,
+    //     link: 'create/income'
+    // },
+    // {
+    //     id: 2,
+    //     title: 'Smart Spending',
+    //     description:
+    //         'Prune wisely by tracking your expenses. Financial success is about making informed choices, and this is where it begins.',
+    //     icon: ShoppingBagIcon,
+    //     link: 'create/expense'
+    // },
+    // {
+    //     id: 3,
+    //     title: 'Dream Pursuit',
+    //     description:
+    //         'Lay the foundation for your dreams. Set and track your financial goals, turning aspirations into achievable milestones.',
+    //     icon: StarIcon,
+    //     link: 'create/goal'
+    // }
+    // {
+    //     id: 5,
+    //     title: 'Financial Wisdom',
+    //     description:
+    //         'Learn the art of financial management. Get insights and tips to help you make informed decisions.',
+    //     icon: QuestionMarkCircleIcon,
+    //     link: 'create/insight'
+    // }
 ]
 </script>
