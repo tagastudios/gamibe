@@ -8,8 +8,7 @@
         </div>
         <DraggableSlider class="px-6 pb-6">
             <EarningCard
-                :id="earning.id"
-                v-for="earning in earnings"
+                v-for="earning in earningData"
                 :key="earning.id"
                 :icon="earning.source?.charAt(0)"
                 :name="earning.source"
@@ -26,13 +25,13 @@
 
         <GridSystem class="px-6 pb-6">
             <SavingCard
-                v-for="saving in savings"
+                v-for="saving in savingData"
                 :key="saving.id"
                 :name="saving.name"
-                :amount-saved="saving.saved_amount"
-                :amount-goal="saving.goal_amount"
-                :image-src="saving.image_src"
-                :image-alt="saving.image_alt"
+                :amount-saved="saving.savedAmount"
+                :amount-goal="saving.goalAmount"
+                :image-src="saving.imageSrc"
+                :image-alt="saving.imageAlt"
             />
         </GridSystem>
 
@@ -45,12 +44,12 @@
 
         <GridSystem type="list" class="px-6 pb-6">
             <TransactionCard
-                v-for="transaction in transactions"
+                v-for="transaction in transactionData"
                 :key="transaction.id"
                 :name="transaction.name"
                 :category="transaction.category"
                 :amount="transaction.amount"
-                :date="transaction.date"
+                :date="new Date(transaction.datePosted.toDate())"
             />
         </GridSystem>
     </main>
@@ -66,7 +65,7 @@ import { useDatabase } from '@/composables/db'
 
 const { useEarnings, useSavings, useTransactions } = useDatabase()
 
-const { data: earnings } = useEarnings()
-const { data: savings } = useSavings()
-const { data: transactions } = useTransactions()
+const { earningData } = useEarnings()
+const { savingData } = useSavings()
+const { transactionData } = useTransactions()
 </script>

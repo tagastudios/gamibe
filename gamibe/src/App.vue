@@ -1,11 +1,43 @@
 <script setup lang="ts">
+import { watch } from 'vue'
+import { useRouter, useRoute, RouterView } from 'vue-router'
+import { useUser } from '@/composables/useUser'
+
 import NavigationBar from '@/components/layout/NavigationBar.vue'
 import HeaderWelcomeButtons from '@/components/layout/HeaderWelcomeButtons.vue'
-import { RouterView } from 'vue-router'
+
+const { user } = useUser()
+const router = useRouter()
+const route = useRoute()
+
+const isCurrentRouteAuthenticated = (_route: any) => {
+    const requiresAuth = 'requiresAuth'
+    return Object.keys(_route.meta).some((meta: string) => meta === requiresAuth)
+}
+
+watch(user, async (currentUser, previousUser) => {
+    // redirect to login if they logout and the current
+    // route is only for authenticated users
+    if (!currentUser && previousUser && isCurrentRouteAuthenticated(route)) {
+        return router.push({
+            path: '/login',
+            query: {
+                redirect: '/'
+            }
+        })
+    }
+    // redirect the user if they are logged in but were
+    // rejected because the user wasn't ready yet, logged in
+    // then got back to this page
+    if (currentUser && typeof route.query.redirect === 'string') {
+        return router.push(route.query.redirect)
+    }
+})
 </script>
 
 <template>
     <HeaderWelcomeButtons
+        v-if="user"
         id="header_welcome"
         class="fixed top-0 z-[9999] flex w-full justify-center px-6 pb-8 pt-5"
     />
@@ -15,6 +47,7 @@ import { RouterView } from 'vue-router'
     </div>
 
     <NavigationBar
+        v-if="user"
         :is-mobile="false"
         class="fixed bottom-0 z-[9999] flex w-full items-center justify-center bg-blue-900 px-6"
     />

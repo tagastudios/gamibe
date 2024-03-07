@@ -12,8 +12,8 @@
     <header v-else class="items-center justify-between">
         <div class="flex items-center">
             <UserCircleIcon class="w-14 rounded-full bg-blue-900 shadow-inner" />
-            <div class="ml-5">
-                <h3 class="text-2xl font-bold">Welcome John</h3>
+            <div v-if="user?.displayName" class="ml-5">
+                <h3 class="text-2xl font-bold">Welcome {{ user?.displayName }}</h3>
                 <p class="text-lg">Your finances are looking good!</p>
             </div>
         </div>
@@ -30,6 +30,10 @@
                 :is="hasNotifications ? BellAlertIcon : BellIcon"
                 class="w-6 transition-colors hover:text-blue-900 active:text-blue-700"
             />
+            <PowerIcon
+                @click="logout"
+                class="w-6 cursor-pointer transition-colors hover:text-blue-900 active:text-blue-700"
+            />
         </div>
     </header>
 </template>
@@ -42,14 +46,17 @@ import {
     BellIcon,
     BellAlertIcon,
     ChevronLeftIcon,
-    UserCircleIcon
+    UserCircleIcon,
+    PowerIcon
 } from '@heroicons/vue/24/solid'
 import { ref, computed } from 'vue'
+import { useUser } from '@/composables/useUser'
 
 const hasNotifications = ref(false)
 
 const route = useRoute()
 const router = useRouter()
+const { user, logout } = useUser()
 
 const isCreateRoute = computed(() => route.matched.find((match) => match.name === 'Create'))
 

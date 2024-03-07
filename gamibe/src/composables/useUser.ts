@@ -1,14 +1,84 @@
-import { computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useDatabase } from '@/composables/db'
 import { useWeek } from '@/composables/shared/useTime'
+import { useCurrentUser, useFirebaseAuth } from 'vuefire'
+import {
+    // auth
+    getRedirectResult,
+    signInWithRedirect,
+    signInWithPopup,
+    signOut,
+    // providers
+    GoogleAuthProvider
+} from 'firebase/auth'
+
+type User = {
+    displayName: string
+    email: string
+    uid: string
+    photoURL: string
+    [key: string]: any
+}
 
 export const useUser = () => {
     const { useProfile, useBills } = useDatabase()
 
-    const { getProfile, updateProfile } = useProfile()
-    const { getBills, addBill, updateBill } = useBills()
+    const { profileData, updateProfile } = useProfile()
+    const { billData, addBill, updateBill } = useBills()
 
     const { isDueToday, isDueThisWeek, isDueNextWeek, isUpcoming, isOverdue } = useWeek()
+
+    const auth = useFirebaseAuth()! // only exists on client side
+
+    ///////////////////////////////////
+    ///////////////////////////////////
+    // USER // USER // USER // USER ///
+    ///////////////////////////////////
+    ///////////////////////////////////
+
+    // Providers
+    const googleAuthProvider = new GoogleAuthProvider()
+
+    const user: User | any = useCurrentUser()
+    const loginError = ref(null)
+
+    const login = (type: string) => {
+        switch (type) {
+            case 'redirect':
+                signinRedirect()
+                break
+            case 'popup':
+                signinPopup()
+                break
+            default:
+                console.error('Invalid login type')
+        }
+    }
+
+    const signinRedirect = () => {
+        signInWithRedirect(auth, googleAuthProvider).catch((reason) => {
+            console.error('Failed signinRedirect', reason)
+            loginError.value = reason
+        })
+    }
+
+    const signinPopup = () => {
+        loginError.value = null
+        signInWithPopup(auth, googleAuthProvider).catch((reason) => {
+            console.error('Failed sign', reason)
+            loginError.value = reason
+        })
+    }
+
+    // only on client side
+    onMounted(() => {
+        getRedirectResult(auth).catch((reason) => {
+            console.error('Failed redirect result', reason)
+            loginError.value = reason
+        })
+    })
+
+    const logout = () => signOut(auth)
 
     ///////////////////////////////////
     ///////////////////////////////////
@@ -17,7 +87,7 @@ export const useUser = () => {
     ///////////////////////////////////
 
     const _bills = reactive({
-        data: getBills()
+        data: billData
     })
 
     const allBills = computed(() => {
@@ -97,7 +167,7 @@ export const useUser = () => {
     const showGeneralDashboard = computed(() => dashboardViewMode.value === 'general-dashboard')
 
     const _profile: any = reactive({
-        settings: getProfile()
+        settings: profileData
     })
 
     const settings = reactive({
@@ -110,6 +180,10 @@ export const useUser = () => {
     })
 
     return {
+        user,
+        loginError,
+        login,
+        logout,
         bills,
         addBill,
         updateBill,

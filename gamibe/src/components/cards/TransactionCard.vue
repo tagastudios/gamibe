@@ -44,8 +44,7 @@ const { formatCurrency } = useCurrency()
 
 const props = defineProps({
     name: {
-        type: String,
-        required: true
+        type: String
     },
     category: {
         type: String,

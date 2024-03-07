@@ -27,8 +27,7 @@ const props = defineProps({
         type: String
     },
     name: {
-        type: String,
-        required: true
+        type: String
     },
     amount: {
         type: Number,

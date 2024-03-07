@@ -54,8 +54,7 @@ import { ChevronRightIcon } from '@heroicons/vue/24/solid'
 import { computed } from 'vue'
 const props = defineProps({
     name: {
-        type: String,
-        required: true
+        type: String
     },
     amountSaved: {
         type: Number,
@@ -97,7 +96,7 @@ const chartData = computed(() => {
     }
 })
 
-const chartOptions = {
+const chartOptions: any = {
     responsive: true,
     indexAxis: 'y',
     scales: {
