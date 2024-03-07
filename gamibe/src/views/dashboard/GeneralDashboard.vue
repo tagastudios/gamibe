@@ -49,7 +49,7 @@
                 :name="transaction.name"
                 :category="transaction.category"
                 :amount="transaction.amount"
-                :date="new Date(transaction.datePosted.toDate())"
+                :date="new Date(transaction.datePosted?.toDate())"
             />
         </GridSystem>
     </main>

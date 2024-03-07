@@ -139,8 +139,6 @@ const useProfile = () => {
 
     const profileId = computed(() => profileData.value[0]?.id)
 
-    console.log('updateProfile', profileId.value)
-
     const updateProfile = (key: string, value: any) => {
         const profileRef = doc(profilesCollection, profileId.value)
         updateDoc(profileRef, {
