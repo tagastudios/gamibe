@@ -72,7 +72,7 @@ const useTransactions = () => {
               query(
                   transactionsCollection,
                   where('user', '==', user.value.uid),
-                  orderBy('date_posted', 'desc'),
+                  orderBy('datePosted', 'desc'),
                   limit(10)
               )
             : // this will be considered as no data source
