@@ -72,8 +72,10 @@ export const useWeek = () => {
         return date < start
     }
 
-    const getNextDateByFrequency = (date: Date | TimestampObj | any, frequency: string) => {
-        if (!date || !frequency) return null
+    const getNextDateByFrequency = (
+        date: Date | TimestampObj,
+        frequency: string
+    ): Date | TimestampObj => {
         if ('seconds' in date) date = new Date(date.toDate())
 
         switch (frequency) {

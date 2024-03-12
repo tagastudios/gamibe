@@ -133,9 +133,10 @@ export const useUser = () => {
     })
 
     const upcoming = computed(() => {
-        const data = allBills.value.data.filter((bill: any) =>
-            isUpcoming(bill.nextPayment ?? bill.startAt)
-        )
+        // 14 days from today and get first 10
+        const data = allBills.value.data
+            .filter((bill: any) => isUpcoming(bill.nextPayment ?? bill.startAt))
+            .slice(0, 10)
         const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
         return {
             data,

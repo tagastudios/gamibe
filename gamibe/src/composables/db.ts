@@ -128,9 +128,9 @@ const useBills = () => {
     }
     const payBill = (
         billId: string,
-        paymentDate: Date | TimestampObj | any,
+        paymentDate: Date | TimestampObj,
         data: any,
-        nextPaymentDate: Date | TimestampObj | any
+        nextPaymentDate: Date | TimestampObj
     ) => {
         updateBill('paidBills', paymentDate, billId)
         updateBill('nextPayment', nextPaymentDate, billId)

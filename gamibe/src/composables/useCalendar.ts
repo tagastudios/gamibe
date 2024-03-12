@@ -30,14 +30,14 @@ export const useCalendar = () => {
         const {
             id = null,
             name = '',
-            nickname = '',
-            website = '',
+            _nickname = '',
+            _website = '',
             startAt,
             frequency = '',
-            category,
+            _category,
             amount = 0,
-            paidBills = [],
-            nextPayment
+            _paidBills = [],
+            _nextPayment
         } = data
 
         const processedFrequency = getCalendarFrequency(startAt, frequency)
