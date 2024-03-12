@@ -1,4 +1,5 @@
 import { ref, onMounted, onUnmounted } from 'vue'
+import type { TimestampObj } from '@/types/DateTypes'
 
 export const useWeek = () => {
     const today = ref(new Date())
@@ -24,7 +25,9 @@ export const useWeek = () => {
         return date >= startDate && date <= endDate
     }
 
-    const isDueToday = (date: Date) => {
+    const isDueToday = (date: Date | TimestampObj) => {
+        if (!date) return false
+        if ('seconds' in date) date = new Date(date.toDate())
         const start = new Date(today.value)
         const end = new Date(today.value)
         start.setHours(0, 0, 0, 0)
@@ -32,14 +35,18 @@ export const useWeek = () => {
         return isDateWithinRange(date, start, end)
     }
 
-    const isDueThisWeek = (date: Date) => {
+    const isDueThisWeek = (date: Date | TimestampObj) => {
+        if (!date) return false
+        if ('seconds' in date) date = new Date(date.toDate())
         const start = new Date(today.value)
         const end = new Date(today.value)
         end.setDate(end.getDate() + (7 - end.getDay()))
         return isDateWithinRange(date, start, end)
     }
 
-    const isDueNextWeek = (date: Date) => {
+    const isDueNextWeek = (date: Date | TimestampObj) => {
+        if (!date) return false
+        if ('seconds' in date) date = new Date(date.toDate())
         const start = new Date(today.value)
         const end = new Date(today.value)
         start.setDate(start.getDate() + (7 - start.getDay()))
@@ -47,16 +54,48 @@ export const useWeek = () => {
         return isDateWithinRange(date, start, end)
     }
 
-    const isUpcoming = (date: Date) => {
+    const isUpcoming = (date: Date | TimestampObj) => {
+        if (!date) return false
+        if ('seconds' in date) date = new Date(date.toDate())
         const start = new Date(today.value)
+        const end = new Date(today.value)
         start.setDate(start.getDate() + (14 - start.getDay()))
-        return date > start
+        end.setMonth(end.getMonth() + 1)
+        return isDateWithinRange(date, start, end)
     }
 
-    const isOverdue = (date: Date) => {
+    const isOverdue = (date: Date | TimestampObj) => {
+        if (!date) return false
+        if ('seconds' in date) date = new Date(date.toDate())
         const start = new Date(today.value)
         start.setHours(0, 0, 0, 0)
         return date < start
+    }
+
+    const getNextDateByFrequency = (date: Date | TimestampObj | any, frequency: string) => {
+        if (!date || !frequency) return null
+        if ('seconds' in date) date = new Date(date.toDate())
+
+        switch (frequency) {
+            case 'weekly':
+                return new Date(date.setDate(date.getDate() + 7))
+            case 'bi-weekly':
+                return new Date(date.setDate(date.getDate() + 14))
+            case 'monthly':
+                return new Date(date.setMonth(date.getMonth() + 1))
+            case 'bi-monthly':
+                return new Date(date.setMonth(date.getMonth() + 2))
+            case 'quarterly':
+                return new Date(date.setMonth(date.getMonth() + 3))
+            case 'bi-quarterly':
+                return new Date(date.setMonth(date.getMonth() + 6))
+            case 'yearly':
+                return new Date(date.setFullYear(date.getFullYear() + 1))
+            case 'bi-yearly':
+                return new Date(date.setFullYear(date.getFullYear() + 2))
+            default:
+                return date
+        }
     }
 
     return {
@@ -64,7 +103,8 @@ export const useWeek = () => {
         isDueThisWeek,
         isDueNextWeek,
         isUpcoming,
-        isOverdue
+        isOverdue,
+        getNextDateByFrequency
     }
 }
 

@@ -14,7 +14,7 @@
                     :name="bill.name"
                     :category="bill.category"
                     :amount="bill.amount"
-                    :date="bill.startAt.toDate()"
+                    :date="bill.nextPayment ? bill.nextPayment.toDate() : bill.startAt.toDate()"
                 />
             </GridSystem>
         </div>
@@ -34,7 +34,7 @@
                     :name="bill.name"
                     :category="bill.category"
                     :amount="bill.amount"
-                    :date="bill.startAt.toDate()"
+                    :date="bill.nextPayment ? bill.nextPayment.toDate() : bill.startAt.toDate()"
                 />
             </GridSystem>
         </div>
@@ -54,7 +54,7 @@
                     :name="bill.name"
                     :category="bill.category"
                     :amount="bill.amount"
-                    :date="bill.startAt.toDate()"
+                    :date="bill.nextPayment ? bill.nextPayment.toDate() : bill.startAt.toDate()"
                 />
             </GridSystem>
         </div>
@@ -74,7 +74,7 @@
                     :name="bill.name"
                     :category="bill.category"
                     :amount="bill.amount"
-                    :date="bill.startAt.toDate()"
+                    :date="bill.nextPayment ? bill.nextPayment.toDate() : bill.startAt.toDate()"
                 />
             </GridSystem>
         </div>

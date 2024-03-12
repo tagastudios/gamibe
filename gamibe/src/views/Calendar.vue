@@ -19,22 +19,30 @@
                         <li
                             v-for="{ key, customData } in attributes"
                             :key="key"
-                            class="block text-gray-700 dark:text-gray-300"
+                            class="block px-3 text-gray-700 dark:text-gray-300"
                         >
-                            Bill: {{ customData.name }} | Amount: ${{ customData.amount }}
-                            <div class="py-2">
+                            <div class="">
+                                Bill: {{ customData.name }} | Amount: ${{ customData.amount }}
+                            </div>
+                            <div
+                                v-if="isBillPaid(day.date, customData.paidBills)"
+                                class="mt-2 w-full py-1 text-center font-bold text-green-600"
+                            >
+                                Yoy already paid this bill!
+                            </div>
+                            <div v-else class="py-2">
                                 <div
                                     class="text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
                                 >
                                     Do you want to mark this bill as Paid?
                                 </div>
+                                <button
+                                    class="w-full rounded-md bg-green-600 py-1 font-bold text-white hover:bg-green-700"
+                                    @click="markAsPaid(key, day.date, customData)"
+                                >
+                                    Mark as Paid!
+                                </button>
                             </div>
-                            <button
-                                class="w-full rounded-md bg-green-600 px-3 py-1 font-bold text-white hover:bg-green-700"
-                                @click="markAsPaid(key, day.date)"
-                            >
-                                Mark as Paid!
-                            </button>
                         </li>
                     </ul>
                 </template>
@@ -58,11 +66,13 @@ import { onMounted, ref, computed } from 'vue'
 import { useUser } from '@/composables/useUser'
 import { useCalendar } from '@/composables/useCalendar'
 import { Timestamp } from 'firebase/firestore'
+import { useWeek } from '@/composables/shared/useTime'
 
 const calendar: any = ref(null)
 
-const { bills, updateBill } = useUser()
+const { bills, payBill } = useUser()
 const { getCalendarAttrs } = useCalendar()
+const { getNextDateByFrequency } = useWeek()
 
 onMounted(() => {
     moveToday()
@@ -73,13 +83,31 @@ const moveToday = () => {
 }
 
 const calendarData: any = computed(() => {
-    return bills.allBills.data.map((bill: any) =>
-        getCalendarAttrs(bill, { mode: 'page', customPopover: true })
-    )
+    return [
+        ...bills.allBills.data.map((bill: any) =>
+            getCalendarAttrs(bill, { mode: 'page', customPopover: true })
+        ),
+        {
+            highlight: {
+                color: 'indigo',
+                fillMode: 'outline'
+            },
+            dates: [new Date()]
+        }
+    ]
 })
 
-const markAsPaid = (id: string, date: Date) => {
-    updateBill('paidAt', Timestamp.fromDate(date), id)
+const isBillPaid = (date: Date, paidBills: Date[]) => {
+    return paidBills.some((paid: any) => paid.toDate().toDateString() === date.toDateString())
+}
+
+const markAsPaid = (id: string, date: Date, customData: any) => {
+    payBill(
+        id,
+        Timestamp.fromDate(date),
+        customData,
+        getNextDateByFrequency(date, customData.frequency)
+    )
 }
 </script>
 

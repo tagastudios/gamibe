@@ -13,10 +13,10 @@ import {
 } from 'firebase/auth'
 
 type User = {
-    displayName: string
-    email: string
-    uid: string
-    photoURL: string
+    displayName?: string
+    email?: string
+    uid?: string
+    photoURL?: string
     [key: string]: any
 }
 
@@ -24,7 +24,7 @@ export const useUser = () => {
     const { useProfile, useBills } = useDatabase()
 
     const { profileData, updateProfile } = useProfile()
-    const { billData, addBill, updateBill } = useBills()
+    const { billData, addBill, updateBill, payBill } = useBills()
 
     const { isDueToday, isDueThisWeek, isDueNextWeek, isUpcoming, isOverdue } = useWeek()
 
@@ -39,7 +39,7 @@ export const useUser = () => {
     // Providers
     const googleAuthProvider = new GoogleAuthProvider()
 
-    const user: User | any = useCurrentUser()
+    const user: User | null = useCurrentUser()
     const loginError = ref(null)
 
     const login = (type: string) => {
@@ -100,7 +100,9 @@ export const useUser = () => {
     })
 
     const today = computed(() => {
-        const data = allBills.value.data.filter((bill: any) => isDueToday(bill.startAt.toDate()))
+        const data = allBills.value.data.filter((bill: any) =>
+            isDueToday(bill.nextPayment ?? bill.startAt)
+        )
         const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
         return {
             data,
@@ -109,7 +111,9 @@ export const useUser = () => {
     })
 
     const thisWeek = computed(() => {
-        const data = allBills.value.data.filter((bill: any) => isDueThisWeek(bill.startAt.toDate()))
+        const data = allBills.value.data.filter((bill: any) =>
+            isDueThisWeek(bill.nextPayment ?? bill.startAt)
+        )
         const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
         return {
             data,
@@ -118,7 +122,9 @@ export const useUser = () => {
     })
 
     const nextWeek = computed(() => {
-        const data = allBills.value.data.filter((bill: any) => isDueNextWeek(bill.startAt.toDate()))
+        const data = allBills.value.data.filter((bill: any) =>
+            isDueNextWeek(bill.nextPayment ?? bill.startAt)
+        )
         const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
         return {
             data,
@@ -127,7 +133,9 @@ export const useUser = () => {
     })
 
     const upcoming = computed(() => {
-        const data = allBills.value.data.filter((bill: any) => isUpcoming(bill.startAt.toDate()))
+        const data = allBills.value.data.filter((bill: any) =>
+            isUpcoming(bill.nextPayment ?? bill.startAt)
+        )
         const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
         return {
             data,
@@ -136,7 +144,9 @@ export const useUser = () => {
     })
 
     const overdue = computed(() => {
-        const data = allBills.value.data.filter((bill: any) => isOverdue(bill.startAt.toDate()))
+        const data = allBills.value.data.filter((bill: any) =>
+            isOverdue(bill.nextPayment ?? bill.startAt)
+        )
         const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
         return {
             data,
@@ -187,6 +197,7 @@ export const useUser = () => {
         bills,
         addBill,
         updateBill,
+        payBill,
         profile
     }
 }

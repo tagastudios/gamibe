@@ -26,7 +26,7 @@ export const useCalendar = () => {
     }
 
     const getCalendarAttrs = (data: any, options: any) => {
-        const { mode = '', customPopover = false } = options
+        const { mode = '', customPopover = false, highlightToday = false } = options
         const {
             id = null,
             name = '',
@@ -36,31 +36,37 @@ export const useCalendar = () => {
             frequency = '',
             category,
             amount = 0,
-            paidAt
+            paidBills = [],
+            nextPayment
         } = data
 
         const processedFrequency = getCalendarFrequency(startAt, frequency)
+        const calendarExtraObj: any = {}
 
         if (mode === 'create') {
-            return [
-                {
-                    key: id ?? Math.random(),
-                    highlight: processedFrequency ? true : false,
-                    dates: processedFrequency,
-                    customData: data
+            const calendarCreateObj: any = {
+                key: id ?? Math.random(),
+                highlight: processedFrequency ? true : false,
+                dates: processedFrequency,
+                customData: data
+            }
+            if (highlightToday) {
+                calendarCreateObj.highlight = {
+                    color: 'indigo',
+                    fillMode: 'light'
                 }
-            ]
+                calendarCreateObj.dates = [new Date()]
+            }
+            return [calendarCreateObj, calendarExtraObj]
         }
 
         const defaultCalendar = {
             key: id ?? Math.random(),
             dot: getDotColorByDate(startAt.toDate()),
             dates: processedFrequency,
-            popover: customPopover
-                ? customPopover
-                : {
-                      label: 'Bill: ' + name + ' | Amount: $' + amount
-                  },
+            popover: customPopover || {
+                label: 'Bill: ' + name + ' | Amount: $' + amount
+            },
             customData: data
         }
 
