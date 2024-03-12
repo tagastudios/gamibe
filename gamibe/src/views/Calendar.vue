@@ -98,7 +98,7 @@ const calendarData: any = computed(() => {
 })
 
 const isBillPaid = (date: Date, paidBills: Date[]) => {
-    return paidBills.some((paid: any) => paid.toDate().toDateString() === date.toDateString())
+    return paidBills?.some((paid: any) => paid.toDate().toDateString() === date.toDateString())
 }
 
 const markAsPaid = (id: string, date: Date, customData: any) => {

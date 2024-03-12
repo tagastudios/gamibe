@@ -10,7 +10,6 @@ export const useBillStore = defineStore('bill', () => {
     const frequency = ref({ id: '' })
     const category = ref({ id: '' })
     const amount = ref(0)
-    const paidAt = ref(null)
 
     const bill = reactive({
         name,
@@ -19,8 +18,7 @@ export const useBillStore = defineStore('bill', () => {
         startAt,
         frequency,
         category,
-        amount,
-        paidAt
+        amount
     })
 
     const resetBill = () => {
@@ -35,7 +33,6 @@ export const useBillStore = defineStore('bill', () => {
             id: ''
         }
         bill.amount = 0
-        bill.paidAt = null
     }
 
     const billFrequencyId = computed(() => frequency.value?.id)
@@ -51,8 +48,7 @@ export const useBillStore = defineStore('bill', () => {
         startAt: billStartAt,
         frequency: billFrequencyId,
         category: billCategoryId,
-        amount,
-        paidAt
+        amount
     })
 
     return { bill, billForDb, resetBill }

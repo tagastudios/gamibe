@@ -1,33 +1,32 @@
 <template>
     <main class="px-0">
-        <div class="flex items-center justify-between px-6 pb-6">
+        <div v-if="haveEarnings" class="flex items-center justify-between px-6 pb-6">
             <h2 class="text-3xl font-semibold">Earnings</h2>
             <p class="cursor-pointer text-base font-bold text-blue-500 hover:text-blue-600">
                 See All
             </p>
         </div>
-        <DraggableSlider class="px-6 pb-6">
+        <DraggableSlider v-if="haveEarnings" class="px-6 pb-6">
             <EarningCard
                 v-for="earning in earningData"
                 :key="earning.id"
-                :icon="earning.source?.charAt(0)"
-                :name="earning.source"
+                :icon="earning.title?.charAt(0)"
+                :name="earning.title"
                 :amount="earning.amount"
             />
         </DraggableSlider>
 
-        <div class="flex items-center justify-between px-6 pb-6">
+        <div v-if="haveSavings" class="flex items-center justify-between px-6 pb-6">
             <h2 class="text-3xl font-semibold">Savings</h2>
             <p class="cursor-pointer text-base font-bold text-blue-500 hover:text-blue-600">
                 See All
             </p>
         </div>
-
-        <GridSystem class="px-6 pb-6">
+        <GridSystem v-if="haveSavings" class="px-6 pb-6">
             <SavingCard
                 v-for="saving in savingData"
                 :key="saving.id"
-                :name="saving.name"
+                :name="saving.title"
                 :amount-saved="saving.savedAmount"
                 :amount-goal="saving.goalAmount"
                 :image-src="saving.imageSrc"
@@ -35,14 +34,13 @@
             />
         </GridSystem>
 
-        <div class="flex items-center justify-between px-6 pb-6">
+        <div v-if="haveTransactions" class="flex items-center justify-between px-6 pb-6">
             <h2 class="text-3xl font-semibold">Transactions</h2>
             <p class="cursor-pointer text-base font-bold text-blue-500 hover:text-blue-600">
                 See All
             </p>
         </div>
-
-        <GridSystem type="list" class="px-6 pb-6">
+        <GridSystem v-if="haveTransactions" type="list" class="px-6 pb-6">
             <TransactionCard
                 v-for="transaction in transactionData"
                 :key="transaction.id"
@@ -56,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import DraggableSlider from '@/components/UI/DraggableSlider.vue'
 import GridSystem from '@/components/UI/GridSystem.vue'
 import EarningCard from '@/components/cards/EarningCard.vue'
@@ -68,4 +67,8 @@ const { useEarnings, useSavings, useTransactions } = useDatabase()
 const { earningData } = useEarnings()
 const { savingData } = useSavings()
 const { transactionData } = useTransactions()
+
+const haveEarnings = computed(() => earningData.value.length > 0)
+const haveSavings = computed(() => savingData.value.length > 0)
+const haveTransactions = computed(() => transactionData.value.length > 0)
 </script>

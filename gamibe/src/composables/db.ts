@@ -26,17 +26,19 @@ import type { TimestampObj } from '@/types/DateTypes'
 const useEarnings = () => {
     const user = useCurrentUser()
 
-    const earningData = useCollection(() =>
-        user.value
-            ? // Firebase will error if a null value is passed to `collection()`
-              query(
-                  earningsCollection,
-                  where('user', '==', user.value.uid),
-                  orderBy('createdAt', 'desc'),
-                  limit(9)
-              )
-            : // this will be considered as no data source
-              null
+    const earningData = useCollection(
+        () =>
+            user.value
+                ? // Firebase will error if a null value is passed to `collection()`
+                  query(
+                      earningsCollection,
+                      where('user', '==', user.value.uid),
+                      orderBy('createdAt', 'desc'),
+                      limit(9)
+                  )
+                : // this will be considered as no data source
+                  null,
+        { ssrKey: 'gamibe' }
     )
 
     return {
@@ -47,17 +49,19 @@ const useEarnings = () => {
 const useSavings = () => {
     const user = useCurrentUser()
 
-    const savingData = useCollection(() =>
-        user.value
-            ? // Firebase will error if a null value is passed to `collection()`
-              query(
-                  savingsCollection,
-                  where('user', '==', user.value.uid),
-                  orderBy('completionPercentage', 'desc'),
-                  limit(4)
-              )
-            : // this will be considered as no data source
-              null
+    const savingData = useCollection(
+        () =>
+            user.value
+                ? // Firebase will error if a null value is passed to `collection()`
+                  query(
+                      savingsCollection,
+                      where('user', '==', user.value.uid),
+                      orderBy('completionPercentage', 'desc'),
+                      limit(4)
+                  )
+                : // this will be considered as no data source
+                  null,
+        { ssrKey: 'gamibe' }
     )
 
     return {
@@ -68,17 +72,19 @@ const useSavings = () => {
 const useTransactions = () => {
     const user = useCurrentUser()
 
-    const transactionData = useCollection(() =>
-        user.value
-            ? // Firebase will error if a null value is passed to `collection()`
-              query(
-                  transactionsCollection,
-                  where('user', '==', user.value.uid),
-                  orderBy('datePosted', 'desc'),
-                  limit(10)
-              )
-            : // this will be considered as no data source
-              null
+    const transactionData = useCollection(
+        () =>
+            user.value
+                ? // Firebase will error if a null value is passed to `collection()`
+                  query(
+                      transactionsCollection,
+                      where('user', '==', user.value.uid),
+                      orderBy('datePosted', 'desc'),
+                      limit(10)
+                  )
+                : // this will be considered as no data source
+                  null,
+        { ssrKey: 'gamibe' }
     )
 
     const addTransaction = async (data: any) => {
@@ -98,12 +104,18 @@ const useTransactions = () => {
 const useBills = () => {
     const user = useCurrentUser()
 
-    const billData = useCollection(() =>
-        user.value
-            ? // Firebase will error if a null value is passed to `collection()`
-              query(billsCollection, where('user', '==', user.value.uid), orderBy('startAt', 'asc'))
-            : // this will be considered as no data source
-              null
+    const billData = useCollection(
+        () =>
+            user.value
+                ? // Firebase will error if a null value is passed to `collection()`
+                  query(
+                      billsCollection,
+                      where('user', '==', user.value.uid),
+                      orderBy('startAt', 'asc')
+                  )
+                : // this will be considered as no data source
+                  null,
+        { ssrKey: 'gamibe' }
     )
 
     const addBill = async (bill: any) => {
@@ -154,12 +166,14 @@ const useBills = () => {
 const useProfile = () => {
     const user = useCurrentUser()
 
-    const profileData = useCollection(() =>
-        user.value
-            ? // Firebase will error if a null value is passed to `collection()`
-              query(profilesCollection, where('user', '==', user.value.uid))
-            : // this will be considered as no data source
-              null
+    const profileData = useCollection(
+        () =>
+            user.value
+                ? // Firebase will error if a null value is passed to `collection()`
+                  query(profilesCollection, where('user', '==', user.value.uid))
+                : // this will be considered as no data source
+                  null,
+        { ssrKey: 'gamibe' }
     )
 
     const profileId = computed(() => profileData.value[0]?.id)
