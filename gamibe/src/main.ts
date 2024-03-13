@@ -4,7 +4,6 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { VueFire, VueFireAuth } from 'vuefire'
-import VueDragscroll from 'vue-dragscroll'
 import VCalendar from 'v-calendar'
 import 'v-calendar/style.css'
 
@@ -21,7 +20,6 @@ app.use(VueFire, {
     firebaseApp,
     modules: [VueFireAuth()]
 })
-app.use(VueDragscroll)
 app.use(VCalendar, {})
 
 app.mount('#app')
