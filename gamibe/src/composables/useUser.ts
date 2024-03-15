@@ -171,7 +171,7 @@ export const useUser = () => {
     ///////////////////////////////////
 
     const dashboardViewMode = computed({
-        get: () => _profile.settings?.[0]?.settingsDashboardMode ?? 'general-dashboard',
+        get: () => _profile.settings?.settingsDashboardMode ?? 'general-dashboard',
         set: (value) => updateProfile('settingsDashboardMode', value)
     })
 

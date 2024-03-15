@@ -1,4 +1,4 @@
-import { useCollection, useCurrentUser } from 'vuefire'
+import { useCollection, useCurrentUser, useDocument } from 'vuefire'
 import {
     query,
     where,
@@ -17,7 +17,7 @@ import {
     savingsCollection,
     transactionsCollection,
     billsCollection,
-    profilesCollection
+    usersCollection
 } from '@/configs/firebase'
 
 import { computed } from 'vue'
@@ -166,20 +166,18 @@ const useBills = () => {
 const useProfile = () => {
     const user = useCurrentUser()
 
-    const profileData = useCollection(
-        () =>
-            user.value
-                ? // Firebase will error if a null value is passed to `collection()`
-                  query(profilesCollection, where('user', '==', user.value.uid))
-                : // this will be considered as no data source
-                  null,
-        { ssrKey: 'gamibe' }
+    const profileData = useDocument(() =>
+        user.value
+            ? // Firebase will error if a null value is passed to `doc()`
+              doc(usersCollection, user.value.uid)
+            : // this will be considered as no data source
+              null
     )
 
-    const profileId = computed(() => profileData.value[0]?.id)
+    const profileId = computed(() => user.value?.uid)
 
     const updateProfile = (key: string, value: any) => {
-        const profileRef = doc(profilesCollection, profileId.value)
+        const profileRef = doc(usersCollection, profileId.value)
         updateDoc(profileRef, {
             [key]: value
         })
