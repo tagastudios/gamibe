@@ -11,6 +11,7 @@ import 'v-calendar/style.css'
 import App from './App.vue'
 import router from './router'
 import { firebaseApp } from './configs/firebase'
+import Notifications from '@/plugins/notifications'
 
 // App Setup
 const app = createApp(App)
@@ -21,5 +22,6 @@ app.use(VueFire, {
     modules: [VueFireAuth()]
 })
 app.use(VCalendar, {})
+app.use(Notifications)
 
 app.mount('#app')
