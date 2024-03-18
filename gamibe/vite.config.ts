@@ -18,9 +18,9 @@ export default defineConfig({
             manifest: {
                 name: 'Gamibe',
                 short_name: 'Gamibe',
-                description: 'A simple budgeting app',
-                theme_color: '#ffffff',
-                background_color: '#ffffff',
+                description: 'Gamify your personal finances!',
+                theme_color: '#1d4ed8',
+                background_color: '#181818',
                 display: 'standalone',
                 start_url: '/',
                 icons: [
