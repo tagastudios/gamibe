@@ -19,7 +19,7 @@ export default defineConfig({
                 name: 'Gamibe',
                 short_name: 'Gamibe',
                 description: 'Gamify your personal finances!',
-                theme_color: '#1d4ed8',
+                theme_color: '#181818',
                 background_color: '#181818',
                 display: 'standalone',
                 start_url: '/',
