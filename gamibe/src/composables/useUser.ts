@@ -200,14 +200,17 @@ export const useUser = () => {
     })
 
     const showGeneralDashboard = computed(() => dashboardViewMode.value === 'general-dashboard')
-
+    const showBillsAndEarnings = computed(
+        () => dashboardViewMode.value === 'bills-and-earnings-dashboard'
+    )
     const _profile: any = reactive({
         settings: profileData
     })
 
     const settings = reactive({
         dashboardViewMode,
-        showGeneralDashboard
+        showGeneralDashboard,
+        showBillsAndEarnings
     })
 
     const profile = reactive({
