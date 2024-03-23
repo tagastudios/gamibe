@@ -5,15 +5,35 @@
             <p class="mb-8 mt-4 text-base">
                 {{ layoutMapper[createType]?.description }}
             </p>
-            <div v-if="isIncome" class="mx-auto flex w-full max-w-lg flex-col gap-8">
-                <BaseInput v-model="income.name" placeholder="Income name" type="text" />
-                <BaseInput v-model="income.startAt" placeholder="Date of the deposit" type="date" />
-                <BaseDropdown v-model="income.account" placeholder="Select an account" />
-                <p>
-                    Based on your input, you would have $2,000 left out of $3,000 in your Chase Bank
-                    - Account ending in 5543
-                </p>
-                <BaseAmountSelector v-model="income.amount" />
+            <div v-if="isEarning" class="mx-auto flex w-full max-w-lg flex-col gap-8">
+                <BaseInput v-model="earning.name" placeholder="Income name" type="text" />
+                <BaseInput
+                    v-model="earning.nickname"
+                    placeholder="Nickname (optional)"
+                    type="text"
+                />
+                <BaseInput v-model="earning.website" placeholder="Website (optional)" type="text" />
+                <BaseDropdown
+                    v-model="earning.category"
+                    v-model:options="categoryOptions"
+                    placeholder="Select a category"
+                />
+                <BaseInput
+                    v-model="earning.startAt"
+                    placeholder="Date of the deposit"
+                    type="date"
+                />
+                <BaseDropdown
+                    v-model="earning.frequency"
+                    v-model:options="frequencyOptions"
+                    placeholder="Select a frequency"
+                />
+                <!-- <BaseDropdown v-model="earning.account" placeholder="Select an account" /> -->
+                <BaseAmountSelector
+                    v-model="earning.amount"
+                    placeholder="Amount in $"
+                    type="number"
+                />
             </div>
             <div v-if="isBill" class="mx-auto flex w-full max-w-lg flex-col gap-8">
                 <BaseInput v-model="bill.name" placeholder="Bill name" type="text" />
@@ -51,17 +71,17 @@ import BaseInput from '@/components/UI/BaseInput.vue'
 import BaseDropdown from '@/components/UI/BaseDropdown.vue'
 import BaseAmountSelector from '@/components/UI/BaseAmountSelector.vue'
 
-import { useBillStore, useIncomeStore } from '@/stores/store'
+import { useBillStore, useEarningStore } from '@/stores/store'
 import { useFrequency } from '@/composables/shared/useTime'
 
 const { bill } = useBillStore()
-const { income } = useIncomeStore()
+const { earning } = useEarningStore()
 const { options: frequencyOptions } = useFrequency()
 
 const route = useRoute()
 
 const createType: any = computed(() => route.params.type)
-const isIncome = computed(() => createType.value === 'income')
+const isEarning = computed(() => createType.value === 'earning')
 const isBill = computed(() => createType.value === 'bill')
 
 const categoryOptions = computed(() => {
@@ -80,8 +100,8 @@ const layoutMapper: any = {
         title: 'Bill Management',
         description: `Never miss a due date. Track and manage your bills with ease.`
     },
-    income: {
-        title: 'Money Bloom (Income)',
+    earning: {
+        title: 'Money Bloom (Earning)',
         description: `Sow the seeds of financial growth with every deposit. Whether it's your monthly salary, freelance earnings, or investment returns, each contribution cultivates your money garden. Tap here to add income and witness your financial landscape flourish.`
     },
     expense: {

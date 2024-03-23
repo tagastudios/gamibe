@@ -41,8 +41,24 @@ const useEarnings = () => {
         { ssrKey: 'gamibe' }
     )
 
+    const addEarning = async (earning: any) => {
+        const date = new Date(earning.startAt)
+        const day = date.getUTCDate()
+        const month = date.getUTCMonth()
+        const year = date.getUTCFullYear()
+
+        await addDoc(earningsCollection, {
+            ...earning,
+            createdAt: serverTimestamp(),
+            startAt: Timestamp.fromDate(new Date(year, month, day)),
+            nextPayment: Timestamp.fromDate(new Date(year, month, day)),
+            user: user.value?.uid
+        })
+    }
+
     return {
-        earningData
+        earningData,
+        addEarning
     }
 }
 
@@ -163,6 +179,7 @@ const useBills = () => {
         payBill
     }
 }
+
 const useProfile = () => {
     const user = useCurrentUser()
 

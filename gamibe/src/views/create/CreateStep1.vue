@@ -55,15 +55,14 @@ const creations = [
         description: 'Never miss a due date. Track and manage your bills with ease.',
         icon: CalendarDaysIcon,
         link: 'create/bill'
+    },
+    {
+        id: 1,
+        title: 'Earning Power',
+        description: `Know when you'll have some power to your favor, track incomes and money flow`,
+        icon: BanknotesIcon,
+        link: 'create/earning'
     }
-    // {
-    //     id: 1,
-    //     title: 'Money Bloom',
-    //     description:
-    //         'Cultivate your wealth garden by adding your income. Every deposit is a seed for a prosperous future.',
-    //     icon: BanknotesIcon,
-    //     link: 'create/income'
-    // },
     // {
     //     id: 2,
     //     title: 'Smart Spending',

@@ -54,20 +54,54 @@ export const useBillStore = defineStore('bill', () => {
     return { bill, billForDb, resetBill }
 })
 
-export const useIncomeStore = defineStore('income', () => {
-    const income = reactive({
-        name: '',
-        startAt: new Date(),
-        account: {},
-        amount: 0
+export const useEarningStore = defineStore('earning', () => {
+    const name = ref('')
+    const nickname = ref('')
+    const website = ref('')
+    const startAt = ref(new Date())
+    const frequency = ref({ id: '' })
+    const category = ref({ id: '' })
+    const account = ref({ id: '' })
+    const amount = ref(0)
+
+    const earning = reactive({
+        name,
+        nickname,
+        website,
+        startAt,
+        frequency,
+        category,
+        account,
+        amount
     })
 
-    const resetIncome = () => {
-        income.name = ''
-        income.startAt = new Date()
-        income.account = {}
-        income.amount = 0
+    const resetEarning = () => {
+        earning.name = ''
+        earning.nickname = ''
+        earning.website = ''
+        earning.startAt = new Date()
+        earning.frequency = { id: '' }
+        earning.category = { id: '' }
+        earning.account = { id: '' }
+        earning.amount = 0
     }
 
-    return { income, resetIncome }
+    const earningFrequencyId = computed(() => frequency.value?.id)
+    const earningCategoryId = computed(() => category.value?.id)
+    const earningStartAt = computed(
+        () => startAt.value && useDateFormat(startAt.value, 'YYYY-MM-DD').value
+    )
+    const earningAccount = computed(() => account.value?.id)
+    const earningForDb = reactive({
+        name,
+        nickname,
+        website,
+        startAt: earningStartAt,
+        frequency: earningFrequencyId,
+        category: earningCategoryId,
+        account: earningAccount,
+        amount
+    })
+
+    return { earning, earningForDb, resetEarning }
 })

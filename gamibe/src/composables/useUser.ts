@@ -21,10 +21,11 @@ type User = {
 }
 
 export const useUser = () => {
-    const { useProfile, useBills } = useDatabase()
+    const { useProfile, useBills, useEarnings } = useDatabase()
 
     const { profileData, updateProfile } = useProfile()
     const { billData, addBill, updateBill, payBill } = useBills()
+    const { earningData, addEarning } = useEarnings()
 
     const { isDueToday, isDueThisWeek, isDueNextWeek, isUpcoming, isOverdue } = useWeek()
 
@@ -166,6 +167,29 @@ export const useUser = () => {
 
     ///////////////////////////////////
     ///////////////////////////////////
+    // EARNING // EARNING // EARNING //
+    ///////////////////////////////////
+    ///////////////////////////////////
+
+    const _earnings = reactive({
+        data: earningData
+    })
+
+    const allEarnings = computed(() => {
+        const data = _earnings.data
+        const total = data.reduce((acc: number, earning: any) => acc + earning.amount, 0)
+        return {
+            data,
+            total
+        }
+    })
+
+    const earnings = reactive({
+        allEarnings
+    })
+
+    ///////////////////////////////////
+    ///////////////////////////////////
     // PROFILE // PROFILE // PROFILE //
     ///////////////////////////////////
     ///////////////////////////////////
@@ -199,6 +223,8 @@ export const useUser = () => {
         addBill,
         updateBill,
         payBill,
+        earnings,
+        addEarning,
         profile
     }
 }
