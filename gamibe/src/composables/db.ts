@@ -22,6 +22,7 @@ import {
 
 import { computed } from 'vue'
 import type { TimestampObj } from '@/types/DateTypes'
+import { useLocalDatabase } from '@/mock/localDb'
 
 const useEarnings = () => {
     const user = useCurrentUser()
@@ -207,6 +208,11 @@ const useProfile = () => {
 }
 
 export const useDatabase = () => {
+    // FOR LOCAL DB PURPOSES ONLY
+    // MISSING SOLVING THE date.toDate() ERROR in useTime when local
+    // tiemstamp from firebase different thann regular obj with millis and seconnds
+    // uncomment this line to use local database
+    // return useLocalDatabase()
     return {
         useEarnings,
         useSavings,

@@ -1,0 +1,54 @@
+{
+    "billDataRaw": [
+        {
+            "nextPayment": {
+                "seconds": 1710734400,
+                "nanoseconds": 0
+            },
+            "website": "",
+            "frequency": "once",
+            "category": "streaming",
+            "name": "Test",
+            "createdAt": {
+                "seconds": 1710739567,
+                "nanoseconds": 656000000
+            },
+            "amount": 10,
+            "nickname": "",
+            "startAt": {
+                "seconds": 1710734400,
+                "nanoseconds": 0
+            },
+            "user": "jajaja"
+        },
+        {
+            "user": "jajaja",
+            "createdAt": {
+                "seconds": 1710392131,
+                "nanoseconds": 439000000
+            },
+            "nextPayment": {
+                "seconds": 1711771200,
+                "nanoseconds": 0
+            },
+            "startAt": {
+                "seconds": 1711771200,
+                "nanoseconds": 0
+            },
+            "name": "Rent",
+            "nickname": "MAA",
+            "website": "",
+            "amount": 2250,
+            "frequency": "monthly",
+            "category": "streaming"
+        }
+    ],
+    "profileDataRaw": {
+        "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocJ11C7lcdGZyfUIWLwCBXGnXIdN7PZjiB6NJXwAZM4l4hA=s96-c",
+        "email": "jose.tannous@gmail.com",
+        "displayName": "Jose Tannous",
+        "settingsDashboardMode": "bills-dashboard",
+        "id": "jajaja"
+    },
+    "earningDataRaw": []
+}
