@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import data from '@/mock/data'
+import data from './data.json'
 
 const billDataRaw = data.billDataRaw
 const profileDataRaw = data.profileDataRaw
