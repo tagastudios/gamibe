@@ -192,7 +192,10 @@ const options = defineModel('options', {
 
 const filteredOptions: any = computed(() => {
     return options.value.filter((option: any) => {
-        return option.title.toLowerCase().includes(searchInput.value.toLowerCase())
+        return (
+            option.title.toLowerCase().includes(searchInput.value.toLowerCase()) ||
+            option.description.toLowerCase().includes(searchInput.value.toLowerCase())
+        )
     })
 })
 </script>
