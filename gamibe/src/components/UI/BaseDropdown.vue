@@ -271,6 +271,7 @@ const inputRef: any = ref(null)
 const dropdownMenuIsOpen = ref(false)
 const clickAddNew = ref(false)
 const timerAlt: any = ref(null)
+const showRemoveConfirmation = ref(false)
 
 watchEffect(() => {
     if (dropdownMenuIsOpen.value) {
@@ -278,6 +279,7 @@ watchEffect(() => {
         clickAddNew.value = false
     } else {
         searchInput.value = ''
+        showRemoveConfirmation.value = false
         clearTimeout(timerAlt.value)
     }
 })
@@ -315,7 +317,6 @@ const filteredOptions: any = computed(() => {
 
 const showDropdownList = computed(() => !clickAddNew.value && filteredOptions.value?.length > 0)
 const showAddNew = computed(() => props.controlAdd && clickAddNew.value)
-const showRemoveConfirmation = ref(false)
 
 const newOptionTitleRef: any = ref(null)
 const newOption = ref({
