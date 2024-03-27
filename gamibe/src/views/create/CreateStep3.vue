@@ -83,7 +83,7 @@ const formattedDate = computed(() =>
 )
 
 const calendarData: any = computed(() =>
-    getCalendarAttrs(confirmationData.value, { mode: 'create' })
+    getCalendarAttrs(confirmationData.value, { mode: 'create', type: createType.value })
 )
 
 const addToDb = () => {

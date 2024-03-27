@@ -85,7 +85,7 @@ const moveToday = () => {
 const calendarData: any = computed(() => {
     return [
         ...bills.allBills.data.map((bill: any) =>
-            getCalendarAttrs(bill, { mode: 'page', customPopover: true })
+            getCalendarAttrs(bill, { mode: 'page', customPopover: true, type: 'bill' })
         ),
         {
             highlight: {
