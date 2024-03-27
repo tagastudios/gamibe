@@ -23,7 +23,7 @@ type User = {
 export const useUser = () => {
     const { useProfile, useBills, useEarnings } = useDatabase()
 
-    const { profileData, updateProfile } = useProfile()
+    const { profileData, updateProfile, updateProfileArray, removeProfileArray } = useProfile()
     const { billData, addBill, updateBill, payBill } = useBills()
     const { earningData, addEarning } = useEarnings()
 
@@ -203,6 +203,28 @@ export const useUser = () => {
     const showBillsAndEarnings = computed(
         () => dashboardViewMode.value === 'bills-and-earnings-dashboard'
     )
+
+    const billCategories = computed({
+        get: () => _profile.settings?.billCategories ?? [],
+        set: (value) => updateProfileArray('billCategories', value)
+    })
+    const billFrequencies = computed({
+        get: () => _profile.settings?.billFrequencies ?? [],
+        set: (value) => updateProfileArray('billFrequencies', value)
+    })
+    const earningCategories = computed({
+        get: () => _profile.settings?.earningCategories ?? [],
+        set: (value) => updateProfileArray('earningCategories', value)
+    })
+    const earningFrequencies = computed({
+        get: () => _profile.settings?.earningFrequencies ?? [],
+        set: (value) => updateProfileArray('earningFrequencies', value)
+    })
+
+    const removeArrayItem = (key: string, value: any) => {
+        removeProfileArray(key, value)
+    }
+
     const _profile: any = reactive({
         settings: profileData
     })
@@ -212,9 +234,17 @@ export const useUser = () => {
         showGeneralDashboard,
         showBillsAndEarnings
     })
+    const customLists = reactive({
+        billCategories,
+        billFrequencies,
+        earningCategories,
+        earningFrequencies,
+        removeArrayItem
+    })
 
     const profile = reactive({
-        settings
+        settings,
+        customLists
     })
 
     return {

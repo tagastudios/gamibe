@@ -9,7 +9,8 @@ import {
     updateDoc,
     Timestamp,
     serverTimestamp,
-    arrayUnion
+    arrayUnion,
+    arrayRemove
 } from 'firebase/firestore'
 
 import {
@@ -152,7 +153,7 @@ const useBills = () => {
     const updateBill = (key: string, value: any, billId: string) => {
         const billRef = doc(billsCollection, billId)
         updateDoc(billRef, {
-            [key]: key === 'paidBills' ? arrayUnion(value) : value // if key is paidBills, then use add value to curr=nt db array
+            [key]: key === 'paidBills' ? arrayUnion(value) : value // if key is paidBills, then use add value to current db array
         })
     }
     const payBill = (
@@ -201,9 +202,25 @@ const useProfile = () => {
         })
     }
 
+    const updateProfileArray = (key: string, value: any) => {
+        const profileRef = doc(usersCollection, profileId.value)
+        updateDoc(profileRef, {
+            [key]: arrayUnion(value)
+        })
+    }
+
+    const removeProfileArray = (key: string, value: any) => {
+        const profileRef = doc(usersCollection, profileId.value)
+        updateDoc(profileRef, {
+            [key]: arrayRemove(value)
+        })
+    }
+
     return {
         profileData,
-        updateProfile
+        updateProfile,
+        updateProfileArray,
+        removeProfileArray
     }
 }
 
