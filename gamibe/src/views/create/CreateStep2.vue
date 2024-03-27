@@ -31,8 +31,6 @@
                     v-model="earning.frequency"
                     v-model:options="frequencyOptions[createType]"
                     placeholder="Select a frequency"
-                    control-add
-                    control-remove
                     @control-add="addNewOption('earning', 'frequency', $event)"
                     @control-remove="removeOption('earning', 'frequency', $event)"
                 />
@@ -61,8 +59,6 @@
                     v-model="bill.frequency"
                     v-model:options="frequencyOptions[createType]"
                     placeholder="Select a frequency"
-                    control-add
-                    control-remove
                     @control-add="addNewOption('bill', 'frequency', $event)"
                     @control-remove="removeOption('bill', 'frequency', $event)"
                 />
