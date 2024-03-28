@@ -11,11 +11,16 @@ export const useCalendar = () => {
     const { getCalendarFrequency } = useFrequency()
 
     const getDotColorByType = (type: string) => {
-        if (type === 'bill') return 'red'
-        if (type === 'earning') return 'green'
-        if (type === 'saving') return 'purple'
-        if (type === 'transaction') return 'gray'
-        return true
+        let backgroundColor = 'black'
+        if (type === 'bill') backgroundColor = '#FF6347' // Tomato > warning
+        if (type === 'earning') backgroundColor = '#00FF00' // Lime > growth and prosperity
+        if (type === 'saving') backgroundColor = '#1E90FF ' // Dodger Blue > optimism and relaiability
+        if (type === 'transaction') backgroundColor = '#FFD700' // Gold > signifies value
+        return {
+            style: {
+                backgroundColor
+            }
+        }
     }
 
     const getCalendarAttrs = (data: any, options: any) => {
