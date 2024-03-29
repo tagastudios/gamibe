@@ -1,7 +1,7 @@
 <template>
     <GeneralDashboard v-if="profile.settings.showGeneralDashboard" />
     <BillsAndEarnings v-else-if="profile.settings.showBillsAndEarnings" />
-    <BillsDashboard v-else />
+    <BillsDashboard v-else-if="profile.settings.showBillsOnly" />
 </template>
 
 <script setup lang="ts">

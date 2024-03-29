@@ -3,7 +3,7 @@
         <div v-if="todayAndOverdueBills.data.length">
             <div class="flex items-center justify-between px-6 pb-6">
                 <h2 class="text-3xl font-semibold">Today</h2>
-                <p class="text-base font-bold text-blue-500">
+                <p class="text-base font-bold text-red-500">
                     {{ formatCurrency(todayAndOverdueBills.total) }}
                 </p>
             </div>
@@ -22,7 +22,7 @@
         <div v-if="bills.thisWeek.data.length">
             <div class="flex items-center justify-between px-6 pb-6">
                 <h2 class="text-3xl font-semibold">This Week</h2>
-                <p class="text-base font-bold text-blue-500">
+                <p class="text-base font-bold text-red-500">
                     {{ formatCurrency(bills.thisWeek.total) }}
                 </p>
             </div>
@@ -42,7 +42,7 @@
         <div v-if="bills.nextWeek.data.length">
             <div class="flex items-center justify-between px-6 pb-6">
                 <h2 class="text-3xl font-semibold">Next Week</h2>
-                <p class="text-base font-bold text-blue-500">
+                <p class="text-base font-bold text-red-500">
                     {{ formatCurrency(bills.nextWeek.total) }}
                 </p>
             </div>
@@ -62,7 +62,7 @@
         <div v-if="bills.upcoming.data.length">
             <div class="flex items-center justify-between px-6 pb-6">
                 <h2 class="text-3xl font-semibold">10 Upcoming</h2>
-                <p class="text-base font-bold text-blue-500">
+                <p class="text-base font-bold text-red-500">
                     {{ formatCurrency(bills.upcoming.total) }}
                 </p>
             </div>

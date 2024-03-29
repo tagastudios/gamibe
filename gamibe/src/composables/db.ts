@@ -54,7 +54,8 @@ const useEarnings = () => {
             createdAt: serverTimestamp(),
             startAt: Timestamp.fromDate(new Date(year, month, day)),
             nextPayment: Timestamp.fromDate(new Date(year, month, day)),
-            user: user.value?.uid
+            user: user.value?.uid,
+            type: 'earning'
         })
     }
 
@@ -109,7 +110,8 @@ const useTransactions = () => {
         await addDoc(transactionsCollection, {
             ...data,
             createdAt: serverTimestamp(),
-            user: user.value?.uid
+            user: user.value?.uid,
+            type: 'transaction'
         })
     }
 
@@ -147,7 +149,8 @@ const useBills = () => {
             createdAt: serverTimestamp(),
             startAt: Timestamp.fromDate(new Date(year, month, day)),
             nextPayment: Timestamp.fromDate(new Date(year, month, day)),
-            user: user.value?.uid
+            user: user.value?.uid,
+            type: 'bill'
         })
     }
     const updateBill = (key: string, value: any, billId: string) => {
@@ -169,7 +172,7 @@ const useBills = () => {
             ...data,
             typePaymentDate: paymentDate,
             typeCreatedAt: data.createdAt,
-            type: 'bill',
+            typeSource: 'bill',
             typeId: billId
         })
     }

@@ -10,8 +10,8 @@
             <EarningCard
                 v-for="earning in earningData"
                 :key="earning.id"
-                :icon="earning.title?.charAt(0)"
-                :name="earning.title"
+                :icon="earning.name?.charAt(0)"
+                :name="earning.name"
                 :amount="earning.amount"
             />
         </DraggableSlider>
@@ -26,11 +26,28 @@
             <SavingCard
                 v-for="saving in savingData"
                 :key="saving.id"
-                :name="saving.title"
+                :name="saving.name"
                 :amount-saved="saving.savedAmount"
                 :amount-goal="saving.goalAmount"
                 :image-src="saving.imageSrc"
                 :image-alt="saving.imageAlt"
+            />
+        </GridSystem>
+
+        <div v-if="haveBills" class="flex items-center justify-between px-6 pb-6">
+            <h2 class="text-3xl font-semibold">Bills</h2>
+            <p class="cursor-pointer text-base font-bold text-blue-500 hover:text-blue-600">
+                See All
+            </p>
+        </div>
+        <GridSystem v-if="haveBills" type="list" class="px-6 pb-6">
+            <BillCard
+                v-for="bill in billData"
+                :key="bill.id"
+                :name="bill.name"
+                :category="bill.category"
+                :amount="bill.amount"
+                :date="new Date(bill.nextPayment?.toDate())"
             />
         </GridSystem>
 
@@ -60,15 +77,18 @@ import GridSystem from '@/components/UI/GridSystem.vue'
 import EarningCard from '@/components/cards/EarningCard.vue'
 import SavingCard from '@/components/cards/SavingCard.vue'
 import TransactionCard from '@/components/cards/TransactionCard.vue'
+import BillCard from '@/components/cards/BillCard.vue'
 import { useDatabase } from '@/composables/db'
 
-const { useEarnings, useSavings, useTransactions } = useDatabase()
+const { useEarnings, useSavings, useTransactions, useBills } = useDatabase()
 
 const { earningData } = useEarnings()
 const { savingData } = useSavings()
 const { transactionData } = useTransactions()
+const { billData } = useBills()
 
 const haveEarnings = computed(() => earningData.value.length > 0)
 const haveSavings = computed(() => savingData.value.length > 0)
 const haveTransactions = computed(() => transactionData.value.length > 0)
+const haveBills = computed(() => billData.value.length > 0)
 </script>

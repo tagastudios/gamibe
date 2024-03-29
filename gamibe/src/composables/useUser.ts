@@ -100,7 +100,7 @@ export const useUser = () => {
         }
     })
 
-    const today = computed(() => {
+    const todayBills = computed(() => {
         const data = allBills.value.data.filter((bill: any) =>
             isDueToday(bill.nextPayment ?? bill.startAt)
         )
@@ -111,7 +111,7 @@ export const useUser = () => {
         }
     })
 
-    const thisWeek = computed(() => {
+    const thisWeekBills = computed(() => {
         const data = allBills.value.data.filter((bill: any) =>
             isDueThisWeek(bill.nextPayment ?? bill.startAt)
         )
@@ -122,7 +122,7 @@ export const useUser = () => {
         }
     })
 
-    const nextWeek = computed(() => {
+    const nextWeekBills = computed(() => {
         const data = allBills.value.data.filter((bill: any) =>
             isDueNextWeek(bill.nextPayment ?? bill.startAt)
         )
@@ -133,7 +133,7 @@ export const useUser = () => {
         }
     })
 
-    const upcoming = computed(() => {
+    const upcomingBills = computed(() => {
         // 14 days from today and get first 10
         const data = allBills.value.data
             .filter((bill: any) => isUpcoming(bill.nextPayment ?? bill.startAt))
@@ -145,7 +145,7 @@ export const useUser = () => {
         }
     })
 
-    const overdue = computed(() => {
+    const overdueBills = computed(() => {
         const data = allBills.value.data.filter((bill: any) =>
             isOverdue(bill.nextPayment ?? bill.startAt)
         )
@@ -158,11 +158,11 @@ export const useUser = () => {
 
     const bills = reactive({
         allBills,
-        today,
-        thisWeek,
-        nextWeek,
-        upcoming,
-        overdue
+        today: todayBills,
+        thisWeek: thisWeekBills,
+        nextWeek: nextWeekBills,
+        upcoming: upcomingBills,
+        overdue: overdueBills
     })
 
     ///////////////////////////////////
@@ -184,8 +184,69 @@ export const useUser = () => {
         }
     })
 
+    const todayEarnings = computed(() => {
+        const data = allEarnings.value.data.filter((bill: any) =>
+            isDueToday(bill.nextPayment ?? bill.startAt)
+        )
+        const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
+        return {
+            data,
+            total
+        }
+    })
+
+    const thisWeekEarnings = computed(() => {
+        const data = allEarnings.value.data.filter((bill: any) =>
+            isDueThisWeek(bill.nextPayment ?? bill.startAt)
+        )
+        const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
+        return {
+            data,
+            total
+        }
+    })
+
+    const nextWeekEarnings = computed(() => {
+        const data = allEarnings.value.data.filter((bill: any) =>
+            isDueNextWeek(bill.nextPayment ?? bill.startAt)
+        )
+        const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
+        return {
+            data,
+            total
+        }
+    })
+
+    const upcomingEarnings = computed(() => {
+        // 14 days from today and get first 10
+        const data = allEarnings.value.data
+            .filter((bill: any) => isUpcoming(bill.nextPayment ?? bill.startAt))
+            .slice(0, 10)
+        const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
+        return {
+            data,
+            total
+        }
+    })
+
+    const overdueEarnings = computed(() => {
+        const data = allEarnings.value.data.filter((bill: any) =>
+            isOverdue(bill.nextPayment ?? bill.startAt)
+        )
+        const total = data.reduce((acc: number, bill: any) => acc + bill.amount, 0)
+        return {
+            data,
+            total
+        }
+    })
+
     const earnings = reactive({
-        allEarnings
+        allEarnings,
+        today: todayEarnings,
+        thisWeek: thisWeekEarnings,
+        nextWeek: nextWeekEarnings,
+        upcoming: upcomingEarnings,
+        overdue: overdueEarnings
     })
 
     ///////////////////////////////////
@@ -203,6 +264,7 @@ export const useUser = () => {
     const showBillsAndEarnings = computed(
         () => dashboardViewMode.value === 'bills-and-earnings-dashboard'
     )
+    const showBillsOnly = computed(() => dashboardViewMode.value === 'bills-dashboard')
 
     const billCategories = computed({
         get: () => _profile.settings?.billCategories ?? [],
@@ -232,7 +294,8 @@ export const useUser = () => {
     const settings = reactive({
         dashboardViewMode,
         showGeneralDashboard,
-        showBillsAndEarnings
+        showBillsAndEarnings,
+        showBillsOnly
     })
     const customLists = reactive({
         billCategories,

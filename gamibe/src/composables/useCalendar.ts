@@ -11,7 +11,7 @@ export const useCalendar = () => {
     const { getCalendarFrequency } = useFrequency()
 
     const getDotColorByType = (type: string) => {
-        let backgroundColor = 'black'
+        let backgroundColor = 'gray'
         if (type === 'bill') backgroundColor = '#FF6347' // Tomato > warning
         if (type === 'earning') backgroundColor = '#00FF00' // Lime > growth and prosperity
         if (type === 'saving') backgroundColor = '#1E90FF ' // Dodger Blue > optimism and relaiability
