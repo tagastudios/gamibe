@@ -1,11 +1,13 @@
 <template>
     <GeneralDashboard v-if="profile.settings.showGeneralDashboard" />
-    <BillsDashboard v-else />
+    <BillsAndEarnings v-else-if="profile.settings.showBillsAndEarnings" />
+    <BillsDashboard v-else-if="profile.settings.showBillsOnly" />
 </template>
 
 <script setup lang="ts">
 import GeneralDashboard from '@/views/dashboard/GeneralDashboard.vue'
 import BillsDashboard from '@/views/dashboard/BillsDashboard.vue'
+import BillsAndEarnings from '@/views/dashboard/BillsAndEarnings.vue'
 import { useUser } from '@/composables/useUser'
 
 const { profile } = useUser()

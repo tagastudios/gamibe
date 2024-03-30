@@ -10,7 +10,8 @@ const options = [
         label: 'See all info (Earnings, Savings, Transactions)',
         altLabel: ''
     },
-    { id: 'bills-dashboard', label: 'See only recent bills and due payments soon', altLabel: '' }
+    { id: 'bills-dashboard', label: 'See only recent bills and due payments soon', altLabel: '' },
+    { id: 'bills-and-earnings-dashboard', label: 'See All Bills and Earnings' }
 ]
 </script>
 

@@ -9,7 +9,8 @@ import {
     updateDoc,
     Timestamp,
     serverTimestamp,
-    arrayUnion
+    arrayUnion,
+    arrayRemove
 } from 'firebase/firestore'
 
 import {
@@ -22,6 +23,7 @@ import {
 
 import { computed } from 'vue'
 import type { TimestampObj } from '@/types/DateTypes'
+import { useLocalDatabase } from '@/mock/localDb'
 
 const useEarnings = () => {
     const user = useCurrentUser()
@@ -41,8 +43,25 @@ const useEarnings = () => {
         { ssrKey: 'gamibe' }
     )
 
+    const addEarning = async (earning: any) => {
+        const date = new Date(earning.startAt)
+        const day = date.getUTCDate()
+        const month = date.getUTCMonth()
+        const year = date.getUTCFullYear()
+
+        await addDoc(earningsCollection, {
+            ...earning,
+            createdAt: serverTimestamp(),
+            startAt: Timestamp.fromDate(new Date(year, month, day)),
+            nextPayment: Timestamp.fromDate(new Date(year, month, day)),
+            user: user.value?.uid,
+            type: 'earning'
+        })
+    }
+
     return {
-        earningData
+        earningData,
+        addEarning
     }
 }
 
@@ -91,7 +110,8 @@ const useTransactions = () => {
         await addDoc(transactionsCollection, {
             ...data,
             createdAt: serverTimestamp(),
-            user: user.value?.uid
+            user: user.value?.uid,
+            type: 'transaction'
         })
     }
 
@@ -129,13 +149,14 @@ const useBills = () => {
             createdAt: serverTimestamp(),
             startAt: Timestamp.fromDate(new Date(year, month, day)),
             nextPayment: Timestamp.fromDate(new Date(year, month, day)),
-            user: user.value?.uid
+            user: user.value?.uid,
+            type: 'bill'
         })
     }
     const updateBill = (key: string, value: any, billId: string) => {
         const billRef = doc(billsCollection, billId)
         updateDoc(billRef, {
-            [key]: key === 'paidBills' ? arrayUnion(value) : value // if key is paidBills, then use add value to curr=nt db array
+            [key]: key === 'paidBills' ? arrayUnion(value) : value // if key is paidBills, then use add value to current db array
         })
     }
     const payBill = (
@@ -151,7 +172,7 @@ const useBills = () => {
             ...data,
             typePaymentDate: paymentDate,
             typeCreatedAt: data.createdAt,
-            type: 'bill',
+            typeSource: 'bill',
             typeId: billId
         })
     }
@@ -163,6 +184,7 @@ const useBills = () => {
         payBill
     }
 }
+
 const useProfile = () => {
     const user = useCurrentUser()
 
@@ -183,13 +205,34 @@ const useProfile = () => {
         })
     }
 
+    const updateProfileArray = (key: string, value: any) => {
+        const profileRef = doc(usersCollection, profileId.value)
+        updateDoc(profileRef, {
+            [key]: arrayUnion(value)
+        })
+    }
+
+    const removeProfileArray = (key: string, value: any) => {
+        const profileRef = doc(usersCollection, profileId.value)
+        updateDoc(profileRef, {
+            [key]: arrayRemove(value)
+        })
+    }
+
     return {
         profileData,
-        updateProfile
+        updateProfile,
+        updateProfileArray,
+        removeProfileArray
     }
 }
 
 export const useDatabase = () => {
+    // FOR LOCAL DB PURPOSES ONLY
+    // MISSING SOLVING THE date.toDate() ERROR in useTime when local
+    // tiemstamp from firebase different thann regular obj with millis and seconnds
+    // uncomment this line to use local database
+    // return useLocalDatabase()
     return {
         useEarnings,
         useSavings,

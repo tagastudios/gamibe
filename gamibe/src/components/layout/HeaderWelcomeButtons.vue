@@ -13,8 +13,10 @@
         <div class="flex items-center">
             <UserCircleIcon class="w-14 rounded-full bg-blue-900 shadow-inner" />
             <div v-if="user?.displayName" class="ml-5">
-                <h3 class="text-2xl font-bold">Welcome {{ user?.displayName }}</h3>
-                <p class="text-lg">Your finances are looking good!</p>
+                <h3 class="font-bold sm:text-lg md:text-xl lg:text-2xl">
+                    Welcome {{ user?.displayName }}
+                </h3>
+                <!-- <p class="text-lg">Your finances are looking good!</p> -->
             </div>
         </div>
         <div class="flex select-none items-center gap-5">
@@ -23,13 +25,13 @@
                     class="w-6 cursor-pointer transition-colors hover:text-blue-900 active:text-blue-700"
                 />
             </RouterLink>
-            <MagnifyingGlassIcon
+            <!-- <MagnifyingGlassIcon
                 class="w-6 transition-colors hover:text-blue-900 active:text-blue-700"
             />
             <component
                 :is="hasNotifications ? BellAlertIcon : BellIcon"
                 class="w-6 transition-colors hover:text-blue-900 active:text-blue-700"
-            />
+            /> -->
             <PowerIcon
                 @click="logout"
                 class="w-6 cursor-pointer transition-colors hover:text-blue-900 active:text-blue-700"

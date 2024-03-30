@@ -70,7 +70,7 @@ import { useWeek } from '@/composables/shared/useTime'
 
 const calendar: any = ref(null)
 
-const { bills, payBill } = useUser()
+const { bills, payBill, earnings, profile } = useUser()
 const { getCalendarAttrs } = useCalendar()
 const { getNextDateByFrequency } = useWeek()
 
@@ -83,9 +83,15 @@ const moveToday = () => {
 }
 
 const calendarData: any = computed(() => {
+    let allData: any = []
+    if (profile.settings.showBillsOnly) allData = bills.allBills.data
+    else if (profile.settings.showBillsAndEarnings)
+        allData = [...bills.allBills.data, ...earnings.allEarnings.data]
+    else if (profile.settings.showGeneralDashboard)
+        allData = [...bills.allBills.data, ...earnings.allEarnings.data] // Add more data here
     return [
-        ...bills.allBills.data.map((bill: any) =>
-            getCalendarAttrs(bill, { mode: 'page', customPopover: true })
+        ...allData.map((data: any) =>
+            getCalendarAttrs(data, { mode: 'page', customPopover: true, type: data.type })
         ),
         {
             highlight: {

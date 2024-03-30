@@ -9,24 +9,22 @@ type CalendarAttrs = {
 
 export const useCalendar = () => {
     const { getCalendarFrequency } = useFrequency()
-    const { isDueToday, isDueThisWeek, isDueNextWeek, isUpcoming, isOverdue } = useWeek()
 
-    const getDotColorByDate = (date: Date) => {
-        if (isDueToday(date)) {
-            return 'red'
-        } else if (isDueThisWeek(date)) {
-            return 'orange'
-        } else if (isDueNextWeek(date)) {
-            return 'yellow'
-        } else if (isUpcoming(date)) {
-            return 'green'
-        } else if (isOverdue(date)) {
-            return 'red'
+    const getDotColorByType = (type: string) => {
+        let backgroundColor = 'gray'
+        if (type === 'bill') backgroundColor = '#FF6347' // Tomato > warning
+        if (type === 'earning') backgroundColor = '#00FF00' // Lime > growth and prosperity
+        if (type === 'saving') backgroundColor = '#1E90FF ' // Dodger Blue > optimism and relaiability
+        if (type === 'transaction') backgroundColor = '#FFD700' // Gold > signifies value
+        return {
+            style: {
+                backgroundColor
+            }
         }
     }
 
     const getCalendarAttrs = (data: any, options: any) => {
-        const { mode = '', customPopover = false, highlightToday = false } = options
+        const { mode = '', customPopover = false, highlightToday = false, type = '' } = options
         const {
             id = null,
             name = '',
@@ -62,7 +60,7 @@ export const useCalendar = () => {
 
         const defaultCalendar = {
             key: id ?? Math.random(),
-            dot: getDotColorByDate(startAt.toDate()),
+            dot: getDotColorByType(type),
             dates: processedFrequency,
             popover: customPopover || {
                 label: 'Bill: ' + name + ' | Amount: $' + amount

@@ -21,5 +21,5 @@ export const earningsCollection = collection(db, 'earnings')
 export const savingsCollection = collection(db, 'savings')
 export const transactionsCollection = collection(db, 'transactions')
 export const billsCollection = collection(db, 'bills')
-export const summariesCollection = collection(db, 'summaries')
 export const usersCollection = collection(db, 'users')
+// export const summariesCollection = collection(db, 'summaries') // PENDING IMPLEMENTATION

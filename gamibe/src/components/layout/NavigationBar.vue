@@ -1,7 +1,9 @@
 <template>
     <nav v-if="isMobile" aria-label="mobile-menu"></nav>
     <nav v-else-if="!isCreateRoute" aria-label="web-menu">
-        <ul class="flex w-full select-none list-none justify-center gap-6 text-xl">
+        <ul
+            class="flex w-full select-none list-none justify-center gap-6 text-base md:text-lg lg:text-xl"
+        >
             <RouterLink
                 v-slot="{ href, route, navigate, isActive, isExactActive }"
                 :to="tab"
