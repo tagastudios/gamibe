@@ -59,9 +59,35 @@ const useEarnings = () => {
         })
     }
 
+    const updateEarning = (key: string, value: any, earningId: string) => {
+        const earningRef = doc(earningsCollection, earningId)
+        updateDoc(earningRef, {
+            [key]: key === 'paidDates' ? arrayUnion(value) : value // if key is paidDates, then use add value to current db array
+        })
+    }
+    const payEarning = (
+        earningId: string,
+        paymentDate: Date | TimestampObj,
+        data: any,
+        nextPaymentDate: Date | TimestampObj
+    ) => {
+        updateEarning('paidDates', paymentDate, earningId)
+        updateEarning('modifiedAt', Timestamp.fromDate(new Date()), earningId)
+        updateEarning('nextPayment', nextPaymentDate, earningId)
+
+        useTransactions().addTransaction({
+            ...data,
+            typePaymentDate: paymentDate,
+            typeCreatedAt: data.createdAt,
+            typeSource: 'earning',
+            typeId: earningId
+        })
+    }
+
     return {
         earningData,
-        addEarning
+        addEarning,
+        payEarning
     }
 }
 
@@ -156,7 +182,7 @@ const useBills = () => {
     const updateBill = (key: string, value: any, billId: string) => {
         const billRef = doc(billsCollection, billId)
         updateDoc(billRef, {
-            [key]: key === 'paidBills' ? arrayUnion(value) : value // if key is paidBills, then use add value to current db array
+            [key]: key === 'paidDates' ? arrayUnion(value) : value // if key is paidDates, then use add value to current db array
         })
     }
     const payBill = (
@@ -165,7 +191,8 @@ const useBills = () => {
         data: any,
         nextPaymentDate: Date | TimestampObj
     ) => {
-        updateBill('paidBills', paymentDate, billId)
+        updateBill('paidDates', paymentDate, billId)
+        updateBill('modifiedAt', Timestamp.fromDate(new Date()), billId)
         updateBill('nextPayment', nextPaymentDate, billId)
 
         useTransactions().addTransaction({

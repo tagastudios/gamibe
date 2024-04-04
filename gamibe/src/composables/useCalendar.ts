@@ -34,7 +34,7 @@ export const useCalendar = () => {
             frequency = '',
             _category,
             amount = 0,
-            _paidBills = [],
+            _paidDates = [],
             _nextPayment
         } = data
 

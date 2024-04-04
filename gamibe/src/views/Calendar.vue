@@ -18,30 +18,58 @@
                     <ul class="px-4 py-2">
                         <li
                             v-for="{ key, customData } in attributes"
-                            :key="key"
+                            :key="key + customData.modifiedAt"
                             class="block px-3 text-gray-700 dark:text-gray-300"
                         >
-                            <div class="">
-                                Bill: {{ customData.name }} | Amount: ${{ customData.amount }}
-                            </div>
-                            <div
-                                v-if="isBillPaid(day.date, customData.paidBills)"
-                                class="mt-2 w-full py-1 text-center font-bold text-green-600"
-                            >
-                                Yoy already paid this bill!
-                            </div>
-                            <div v-else class="py-2">
-                                <div
-                                    class="text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
-                                >
-                                    Do you want to mark this bill as Paid?
+                            <div v-if="customData.type === 'bill'">
+                                <div class="">
+                                    Bill: {{ customData.name }} | Amount: ${{ customData.amount }}
                                 </div>
-                                <button
-                                    class="w-full rounded-md bg-green-600 py-1 font-bold text-white hover:bg-green-700"
-                                    @click="markAsPaid(key, day.date, customData)"
+                                <div
+                                    v-if="isEntryPaid(day.date, customData.paidDates)"
+                                    class="mt-2 w-full py-1 text-center font-bold text-green-600"
                                 >
-                                    Mark as Paid!
-                                </button>
+                                    You already paid this bill!
+                                </div>
+                                <div v-else class="py-2">
+                                    <div
+                                        class="text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
+                                    >
+                                        Do you want to mark this bill as Paid?
+                                    </div>
+                                    <button
+                                        class="w-full rounded-md bg-green-600 py-1 font-bold text-white hover:bg-green-700"
+                                        @click="markAsPaid(key, day.date, customData)"
+                                    >
+                                        Mark as Paid!
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-else-if="customData.type === 'earning'">
+                                <div class="">
+                                    Earning: {{ customData.name }} | Amount: ${{
+                                        customData.amount
+                                    }}
+                                </div>
+                                <div
+                                    v-if="isEntryPaid(day.date, customData.paidDates)"
+                                    class="mt-2 w-full py-1 text-center font-bold text-green-600"
+                                >
+                                    You received this earning already!
+                                </div>
+                                <div v-else class="py-2">
+                                    <div
+                                        class="text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
+                                    >
+                                        Did you already got this earning??
+                                    </div>
+                                    <button
+                                        class="w-full rounded-md bg-green-600 py-1 font-bold text-white hover:bg-green-700"
+                                        @click="markAsPaid(key, day.date, customData)"
+                                    >
+                                        Earning Cashed!
+                                    </button>
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -70,7 +98,7 @@ import { useWeek } from '@/composables/shared/useTime'
 
 const calendar: any = ref(null)
 
-const { bills, payBill, earnings, profile } = useUser()
+const { bills, payBill, earnings, payEarning, profile } = useUser()
 const { getCalendarAttrs } = useCalendar()
 const { getNextDateByFrequency } = useWeek()
 
@@ -82,38 +110,57 @@ const moveToday = () => {
     calendar.value.move(new Date())
 }
 
-const calendarData: any = computed(() => {
-    let allData: any = []
-    if (profile.settings.showBillsOnly) allData = bills.allBills.data
-    else if (profile.settings.showBillsAndEarnings)
-        allData = [...bills.allBills.data, ...earnings.allEarnings.data]
-    else if (profile.settings.showGeneralDashboard)
-        allData = [...bills.allBills.data, ...earnings.allEarnings.data] // Add more data here
-    return [
-        ...allData.map((data: any) =>
+const calendarData = computed(() => {
+    const data = new Map()
+    const calendarData: any = []
+
+    if (profile.settings.showBillsOnly)
+        bills.allBills.data.forEach((bill: any) => data.set(bill.id, bill))
+    else if (profile.settings.showBillsAndEarnings) {
+        bills.allBills.data.forEach((bill: any) => data.set(bill.id, bill))
+        earnings.allEarnings.data.forEach((earning: any) => data.set(earning.id, earning))
+    } else if (profile.settings.showGeneralDashboard) {
+        bills.allBills.data.forEach((bill: any) => data.set(bill.id, bill))
+        earnings.allEarnings.data.forEach((earning: any) => data.set(earning.id, earning))
+        // Add more data here
+    }
+
+    ;[...data].map(([id, data]) =>
+        calendarData.push(
             getCalendarAttrs(data, { mode: 'page', customPopover: true, type: data.type })
-        ),
-        {
-            highlight: {
-                color: 'indigo',
-                fillMode: 'outline'
-            },
-            dates: [new Date()]
-        }
-    ]
+        )
+    )
+
+    calendarData.push({
+        highlight: {
+            color: 'indigo',
+            fillMode: 'outline'
+        },
+        dates: [new Date()]
+    })
+
+    return calendarData
 })
 
-const isBillPaid = (date: Date, paidBills: Date[]) => {
-    return paidBills?.some((paid: any) => paid.toDate().toDateString() === date.toDateString())
+const isEntryPaid = (date: Date, paidDates: Date[]) => {
+    return paidDates?.some((paid: any) => paid.toDate().toDateString() === date.toDateString())
 }
 
 const markAsPaid = (id: string, date: Date, customData: any) => {
-    payBill(
-        id,
-        Timestamp.fromDate(date),
-        customData,
-        getNextDateByFrequency(date, customData.frequency)
-    )
+    if (customData.type === 'bill')
+        payBill(
+            id,
+            Timestamp.fromDate(date),
+            customData,
+            getNextDateByFrequency(date, customData.frequency)
+        )
+    else if (customData.type === 'earning')
+        payEarning(
+            id,
+            Timestamp.fromDate(date),
+            customData,
+            getNextDateByFrequency(date, customData.frequency)
+        )
 }
 </script>
 
