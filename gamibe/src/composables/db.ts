@@ -35,7 +35,7 @@ const useEarnings = () => {
                   query(
                       earningsCollection,
                       where('user', '==', user.value.uid),
-                      orderBy('createdAt', 'desc'),
+                      orderBy('nextPayment', 'desc'),
                       limit(9)
                   )
                 : // this will be considered as no data source
@@ -157,7 +157,7 @@ const useBills = () => {
                   query(
                       billsCollection,
                       where('user', '==', user.value.uid),
-                      orderBy('startAt', 'asc')
+                      orderBy('nextPayment', 'asc')
                   )
                 : // this will be considered as no data source
                   null,
