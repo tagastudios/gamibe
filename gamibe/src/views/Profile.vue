@@ -20,17 +20,39 @@ const options = [
 const notificacionLabel = ref('')
 const notificationLoading = ref(false)
 
-const notificationOptions: UseWebNotificationOptions = {
-    title: 'Hello, world from VueUse!',
+const baseOptions: UseWebNotificationOptions = {
+    title: 'Original Test',
+    body: '',
     dir: 'auto',
     lang: 'en',
-    renotify: true,
     tag: 'test',
-    requireInteraction: true
+    icon: '',
+    renotify: true,
+    requireInteraction: true,
+    silent: false,
+    vibrate: [200, 100, 200],
+    requestPermissions: true
 }
 
-const { isSupported, permissionGranted, ensurePermissions, show } =
-    useWebNotification(notificationOptions)
+const {
+    isSupported,
+    notification,
+    ensurePermissions,
+    permissionGranted,
+    show,
+    close,
+    onClick,
+    onShow,
+    onError,
+    onClose
+} = useWebNotification(baseOptions)
+
+const not1 = {
+    ...baseOptions,
+    title: 'Hello World!',
+    body: 'This is the first notification',
+    icon: 'https://cdn.vuetifyjs.com/images/logos/vuetify-logo-light-512.png'
+}
 
 const handleNotification = (hasWorker: boolean) => {
     if (hasWorker) {
@@ -44,12 +66,12 @@ const handleNotification = (hasWorker: boolean) => {
         notificacionLabel.value = ''
     } else {
         notificationLoading.value = true
-        notificationOptions.title = 'Immediate Notification'
         show()
         setTimeout(() => {
-            notificationOptions.title = notificacionLabel.value
-            notificationOptions.tag = Math.random().toString()
-            show()
+            not1.title = notificacionLabel.value
+            not1.tag = Math.random().toString()
+            const notificationAPI = useWebNotification(not1)
+            notificationAPI.show()
             notificacionLabel.value = ''
             notificationLoading.value = false
         }, 1000 * 5)
