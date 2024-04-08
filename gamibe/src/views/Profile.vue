@@ -82,7 +82,7 @@ const isUAT = import.meta.env.VITE_APP_ENV === 'uat'
             <p>Are Notifications Permission Granted: {{ permissionGranted }}</p>
             <button
                 v-if="!permissionGranted && isSupported"
-                @click="ensurePermissions"
+                @click="ensurePermissions()"
                 class="mt-2 w-full rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700 active:bg-blue-800"
             >
                 Ensure Permissions
