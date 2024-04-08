@@ -78,7 +78,8 @@ const handleNotification = (hasWorker: boolean) => {
     }
 }
 
-const isUAT = import.meta.env.VITE_APP_ENV === 'uat'
+const isUAT = true
+// const isUAT = import.meta.env.VITE_APP_ENV === 'uat'
 </script>
 
 <template>
