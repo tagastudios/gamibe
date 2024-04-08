@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import RadioBtnGroup from '@/components/UI/RadioBtnGroup.vue'
 import { useUser } from '@/composables/useUser'
 
@@ -13,6 +14,28 @@ const options = [
     { id: 'bills-dashboard', label: 'See only recent bills and due payments soon', altLabel: '' },
     { id: 'bills-and-earnings-dashboard', label: 'See All Bills and Earnings' }
 ]
+
+const notificacionLabel = ref('')
+
+const handleNotification = (hasWorker: boolean) => {
+    if (hasWorker) {
+        console.log('Creating notification with worker...')
+        const worker = new Worker(new URL('@/workers/notification.worker.ts', import.meta.url))
+        worker.postMessage({ label: notificacionLabel.value })
+        worker.onmessage = (e) => {
+            console.log('Worker response:', e.data)
+            notificacionLabel.value = ''
+        }
+    } else {
+        console.log('Creating notification without worker...')
+        setTimeout(() => {
+            alert(notificacionLabel.value)
+            notificacionLabel.value = ''
+        }, 1000)
+    }
+}
+
+const isUAT = import.meta.env.VITE_APP_ENV === 'uat'
 </script>
 
 <template>
@@ -28,6 +51,31 @@ const options = [
                 group="dashboard-view-mode"
                 :options="options"
             />
+        </fieldset>
+        <fieldset v-if="isUAT" class="mt-4 rounded-lg border-2 p-4">
+            <legend>
+                <h2 class="px-4 text-lg">Test</h2>
+            </legend>
+            <h3>Create a Notification:</h3>
+            <input
+                type="text"
+                name="notificacionLabel"
+                id="notificacionLabel"
+                class="mt-2 w-full rounded-lg border-2 p-2 text-black"
+                v-model="notificacionLabel"
+            />
+            <button
+                @click="handleNotification(false)"
+                class="mt-2 w-full rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700 active:bg-blue-800"
+            >
+                Without Worker > 1min > Hello World!
+            </button>
+            <button
+                @click="handleNotification(true)"
+                class="mt-2 w-full rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700 active:bg-blue-800"
+            >
+                Worker > 1min > Hello World!
+            </button>
         </fieldset>
     </main>
 </template>
