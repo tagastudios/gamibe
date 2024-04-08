@@ -18,16 +18,19 @@ const options = [
 ]
 
 const notificacionLabel = ref('')
+const notificationLoading = ref(false)
 
 const notificationOptions: UseWebNotificationOptions = {
     title: 'Hello, world from VueUse!',
     dir: 'auto',
     lang: 'en',
     renotify: true,
-    tag: 'test'
+    tag: 'test',
+    requireInteraction: true
 }
 
-const { isSupported, show } = useWebNotification(notificationOptions)
+const { isSupported, permissionGranted, ensurePermissions, show } =
+    useWebNotification(notificationOptions)
 
 const handleNotification = (hasWorker: boolean) => {
     if (hasWorker) {
@@ -40,9 +43,15 @@ const handleNotification = (hasWorker: boolean) => {
         // }
         notificacionLabel.value = ''
     } else {
-        notificationOptions.title = notificacionLabel.value
+        notificationLoading.value = true
+        notificationOptions.title = 'Immediate Notification'
         show()
-        notificacionLabel.value = ''
+        setTimeout(() => {
+            notificationOptions.title = notificacionLabel.value
+            show()
+            notificacionLabel.value = ''
+            notificationLoading.value = false
+        }, 1000 * 60)
     }
 }
 
@@ -68,8 +77,17 @@ const isUAT = import.meta.env.VITE_APP_ENV === 'uat'
                 <h2 class="px-4 text-lg">Test</h2>
             </legend>
             <h3>Create a Notification:</h3>
-            <p>Are notiffications supported: {{ isSupported }}</p>
+            <p>Are Notifications Supported: {{ isSupported }}</p>
+            <p>Are Notifications Permission Granted: {{ permissionGranted }}</p>
+            <button
+                v-if="!permissionGranted && isSupported"
+                @click="ensurePermissions"
+                class="mt-2 w-full rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700 active:bg-blue-800"
+            >
+                Ensure Permissions
+            </button>
             <input
+                :disabled="notificationLoading"
                 type="text"
                 name="notificacionLabel"
                 id="notificacionLabel"
