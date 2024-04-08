@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useWebNotification } from '@vueuse/core'
+import type { UseWebNotificationOptions } from '@vueuse/core'
 import RadioBtnGroup from '@/components/UI/RadioBtnGroup.vue'
 import { useUser } from '@/composables/useUser'
 
@@ -16,6 +18,41 @@ const options = [
 ]
 
 const notificacionLabel = ref('')
+const notificationLoading = ref(false)
+
+const baseOptions: UseWebNotificationOptions = {
+    title: 'Original Test',
+    body: '',
+    dir: 'auto',
+    lang: 'en',
+    tag: 'test',
+    icon: '',
+    renotify: true,
+    requireInteraction: true,
+    silent: false,
+    vibrate: [200, 100, 200],
+    requestPermissions: true
+}
+
+const {
+    isSupported,
+    notification,
+    ensurePermissions,
+    permissionGranted,
+    show,
+    close,
+    onClick,
+    onShow,
+    onError,
+    onClose
+} = useWebNotification(baseOptions)
+
+const not1 = {
+    ...baseOptions,
+    title: 'Hello World!',
+    body: 'This is the first notification',
+    icon: 'https://cdn.vuetifyjs.com/images/logos/vuetify-logo-light-512.png'
+}
 
 const handleNotification = (hasWorker: boolean) => {
     if (hasWorker) {
@@ -28,11 +65,16 @@ const handleNotification = (hasWorker: boolean) => {
         // }
         notificacionLabel.value = ''
     } else {
-        console.log('Creating notification without worker...')
+        notificationLoading.value = true
+        show()
         setTimeout(() => {
-            alert(notificacionLabel.value)
+            not1.title = notificacionLabel.value
+            not1.tag = Math.random().toString()
+            const notificationAPI = useWebNotification(not1)
+            notificationAPI.show()
             notificacionLabel.value = ''
-        }, 1000)
+            notificationLoading.value = false
+        }, 1000 * 5)
     }
 }
 
@@ -58,7 +100,17 @@ const isUAT = import.meta.env.VITE_APP_ENV === 'uat'
                 <h2 class="px-4 text-lg">Test</h2>
             </legend>
             <h3>Create a Notification:</h3>
+            <p>Are Notifications Supported: {{ isSupported }}</p>
+            <p>Are Notifications Permission Granted: {{ permissionGranted }}</p>
+            <button
+                v-if="!permissionGranted && isSupported"
+                @click="ensurePermissions()"
+                class="mt-2 w-full rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700 active:bg-blue-800"
+            >
+                Ensure Permissions
+            </button>
             <input
+                :disabled="notificationLoading"
                 type="text"
                 name="notificacionLabel"
                 id="notificacionLabel"
