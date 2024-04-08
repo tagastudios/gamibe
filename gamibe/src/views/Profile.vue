@@ -26,6 +26,7 @@ const handleNotification = (hasWorker: boolean) => {
         //     console.log('Worker response:', e.data)
         //     notificacionLabel.value = ''
         // }
+        notificacionLabel.value = ''
     } else {
         console.log('Creating notification without worker...')
         setTimeout(() => {
