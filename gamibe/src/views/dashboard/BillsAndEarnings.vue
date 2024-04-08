@@ -155,8 +155,10 @@ const allData = computed(() => {
     }
 })
 
+const sortedList = (a: any, b: any) => a.nextPayment.toDate() - b.nextPayment.toDate()
+
 const todayAndOverdue = computed(() => {
-    const data = allData.value.overdue.data
+    const data = allData.value.overdue.data.sort(sortedList)
     const total = {
         add: allData.value.today.total.add + allData.value.overdue.total.add,
         sub: allData.value.today.total.sub + allData.value.overdue.total.sub
@@ -165,19 +167,19 @@ const todayAndOverdue = computed(() => {
 })
 
 const thisWeek = computed(() => {
-    const data = allData.value.thisWeek.data
+    const data = allData.value.thisWeek.data.sort(sortedList)
     const total = allData.value.thisWeek.total
     return { data, total }
 })
 
 const nextWeek = computed(() => {
-    const data = allData.value.nextWeek.data
+    const data = allData.value.nextWeek.data.sort(sortedList)
     const total = allData.value.nextWeek.total
     return { data, total }
 })
 
 const upcoming = computed(() => {
-    const data = allData.value.upcoming.data
+    const data = allData.value.upcoming.data.sort(sortedList)
     const total = allData.value.upcoming.total
     return { data, total }
 })

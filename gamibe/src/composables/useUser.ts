@@ -25,7 +25,7 @@ export const useUser = () => {
 
     const { profileData, updateProfile, updateProfileArray, removeProfileArray } = useProfile()
     const { billData, addBill, updateBill, payBill } = useBills()
-    const { earningData, addEarning } = useEarnings()
+    const { earningData, addEarning, payEarning } = useEarnings()
 
     const { isDueToday, isDueThisWeek, isDueNextWeek, isUpcoming, isOverdue } = useWeek()
 
@@ -321,6 +321,7 @@ export const useUser = () => {
         payBill,
         earnings,
         addEarning,
+        payEarning,
         profile
     }
 }
