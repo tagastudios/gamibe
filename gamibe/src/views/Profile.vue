@@ -48,10 +48,11 @@ const handleNotification = (hasWorker: boolean) => {
         show()
         setTimeout(() => {
             notificationOptions.title = notificacionLabel.value
+            notificationOptions.tag = Math.random().toString()
             show()
             notificacionLabel.value = ''
             notificationLoading.value = false
-        }, 1000 * 60)
+        }, 1000 * 5)
     }
 }
 
