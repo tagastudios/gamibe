@@ -19,13 +19,13 @@ const notificacionLabel = ref('')
 
 const handleNotification = (hasWorker: boolean) => {
     if (hasWorker) {
-        console.log('Creating notification with worker...')
-        const worker = new Worker(new URL('@/workers/notification.worker.ts', import.meta.url))
-        worker.postMessage({ label: notificacionLabel.value })
-        worker.onmessage = (e) => {
-            console.log('Worker response:', e.data)
-            notificacionLabel.value = ''
-        }
+        // console.log('Creating notification with worker...')
+        // const worker = new Worker(new URL('@/workers/notification.worker.ts', import.meta.url))
+        // worker.postMessage({ label: notificacionLabel.value })
+        // worker.onmessage = (e) => {
+        //     console.log('Worker response:', e.data)
+        //     notificacionLabel.value = ''
+        // }
     } else {
         console.log('Creating notification without worker...')
         setTimeout(() => {
