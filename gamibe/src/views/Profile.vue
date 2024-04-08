@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useWebNotification } from '@vueuse/core'
+import type { UseWebNotificationOptions } from '@vueuse/core'
 import RadioBtnGroup from '@/components/UI/RadioBtnGroup.vue'
 import { useUser } from '@/composables/useUser'
 
@@ -17,6 +19,16 @@ const options = [
 
 const notificacionLabel = ref('')
 
+const notificationOptions: UseWebNotificationOptions = {
+    title: 'Hello, world from VueUse!',
+    dir: 'auto',
+    lang: 'en',
+    renotify: true,
+    tag: 'test'
+}
+
+const { isSupported, show } = useWebNotification(notificationOptions)
+
 const handleNotification = (hasWorker: boolean) => {
     if (hasWorker) {
         // console.log('Creating notification with worker...')
@@ -28,11 +40,9 @@ const handleNotification = (hasWorker: boolean) => {
         // }
         notificacionLabel.value = ''
     } else {
-        console.log('Creating notification without worker...')
-        setTimeout(() => {
-            alert(notificacionLabel.value)
-            notificacionLabel.value = ''
-        }, 1000)
+        notificationOptions.title = notificacionLabel.value
+        show()
+        notificacionLabel.value = ''
     }
 }
 
@@ -58,6 +68,7 @@ const isUAT = import.meta.env.VITE_APP_ENV === 'uat'
                 <h2 class="px-4 text-lg">Test</h2>
             </legend>
             <h3>Create a Notification:</h3>
+            <p>Are notiffications supported: {{ isSupported }}</p>
             <input
                 type="text"
                 name="notificacionLabel"
