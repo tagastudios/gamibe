@@ -1,7 +1,7 @@
 <template>
     <main class="px-0">
         <div v-if="haveEarnings" class="flex items-center justify-between px-6 pb-6">
-            <h2 class="text-3xl font-semibold">Earnings</h2>
+            <h2 class="text-2xl font-semibold">Earnings</h2>
             <p class="cursor-pointer text-base font-bold text-blue-500 hover:text-blue-600">
                 See All
             </p>
@@ -17,7 +17,7 @@
         </DraggableSlider>
 
         <div v-if="haveSavings" class="flex items-center justify-between px-6 pb-6">
-            <h2 class="text-3xl font-semibold">Savings</h2>
+            <h2 class="text-2xl font-semibold">Savings</h2>
             <p class="cursor-pointer text-base font-bold text-blue-500 hover:text-blue-600">
                 See All
             </p>
@@ -35,7 +35,7 @@
         </GridSystem>
 
         <div v-if="haveBills" class="flex items-center justify-between px-6 pb-6">
-            <h2 class="text-3xl font-semibold">Bills</h2>
+            <h2 class="text-2xl font-semibold">Bills</h2>
             <p class="cursor-pointer text-base font-bold text-blue-500 hover:text-blue-600">
                 See All
             </p>
@@ -52,7 +52,7 @@
         </GridSystem>
 
         <div v-if="haveTransactions" class="flex items-center justify-between px-6 pb-6">
-            <h2 class="text-3xl font-semibold">Transactions</h2>
+            <h2 class="text-2xl font-semibold">Transactions</h2>
             <p class="cursor-pointer text-base font-bold text-blue-500 hover:text-blue-600">
                 See All
             </p>

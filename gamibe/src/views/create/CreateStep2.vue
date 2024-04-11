@@ -1,5 +1,5 @@
 <template>
-    <main class="flex h-full flex-col justify-between">
+    <main class="m-0 mx-auto flex h-full max-w-lg flex-col items-center justify-between">
         <div class="mb-8">
             <h2 class="text-3xl font-bold text-blue-700">{{ layoutMapper[createType]?.title }}</h2>
             <p class="mb-8 mt-4 text-base">
@@ -67,7 +67,7 @@
         </div>
         <RouterLink :to="`/create/${createType}/confirm`" class="mx-auto w-full max-w-lg">
             <button
-                class="mb-12 h-16 w-full rounded-3xl bg-blue-700 text-xl text-white outline-blue-600 hover:bg-blue-800 hover:text-slate-200 active:outline lg:rounded-full"
+                class="h-16 w-full rounded-3xl bg-blue-700 text-xl text-white outline-blue-600 hover:bg-blue-800 hover:text-slate-200 active:outline lg:rounded-full"
             >
                 Continue
             </button>

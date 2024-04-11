@@ -1,8 +1,8 @@
 <template>
     <main class="px-0">
         <div v-if="todayAndOverdue.data.length">
-            <div class="flex items-center justify-between px-6 pb-6">
-                <h2 class="text-3xl font-semibold">Today</h2>
+            <div class="flex items-center justify-between px-6 pb-2">
+                <h2 class="text-2xl font-semibold">Today</h2>
                 <p class="text-base">
                     <span class="font-bold text-blue-500" v-if="todayAndOverdue.total.add">{{
                         formatCurrency(todayAndOverdue.total.add)
@@ -13,7 +13,7 @@
                     }}</span>
                 </p>
             </div>
-            <GridSystem type="list" class="px-6 pb-6">
+            <GridSystem type="list" class="px-6 pb-10">
                 <BillCard
                     v-for="item in todayAndOverdue.data"
                     :key="item.id"
@@ -26,8 +26,8 @@
         </div>
 
         <div v-if="thisWeek.data.length">
-            <div class="flex items-center justify-between px-6 pb-6">
-                <h2 class="text-3xl font-semibold">This Week</h2>
+            <div class="flex items-center justify-between px-6 pb-2">
+                <h2 class="text-2xl font-semibold">This Week</h2>
                 <p class="text-base">
                     <span class="font-bold text-blue-500" v-if="thisWeek.total.add">{{
                         formatCurrency(thisWeek.total.add)
@@ -39,7 +39,7 @@
                 </p>
             </div>
 
-            <GridSystem type="list" class="px-6 pb-6">
+            <GridSystem type="list" class="px-6 pb-10">
                 <BillCard
                     v-for="item in thisWeek.data"
                     :key="item.id"
@@ -52,8 +52,8 @@
         </div>
 
         <div v-if="nextWeek.data.length">
-            <div class="flex items-center justify-between px-6 pb-6">
-                <h2 class="text-3xl font-semibold">Next Week</h2>
+            <div class="flex items-center justify-between px-6 pb-2">
+                <h2 class="text-2xl font-semibold">Next Week</h2>
                 <p class="text-base">
                     <span class="font-bold text-blue-500" v-if="nextWeek.total.add">{{
                         formatCurrency(nextWeek.total.add)
@@ -65,7 +65,7 @@
                 </p>
             </div>
 
-            <GridSystem type="list" class="px-6 pb-6">
+            <GridSystem type="list" class="px-6 pb-10">
                 <BillCard
                     v-for="item in nextWeek.data"
                     :key="item.id"
@@ -78,8 +78,8 @@
         </div>
 
         <div v-if="upcoming.data.length">
-            <div class="flex items-center justify-between px-6 pb-6">
-                <h2 class="text-3xl font-semibold">10 Upcoming</h2>
+            <div class="flex items-center justify-between px-6 pb-2">
+                <h2 class="text-2xl font-semibold">10 Upcoming</h2>
                 <p class="text-base">
                     <span class="font-bold text-blue-500" v-if="upcoming.total.add">{{
                         formatCurrency(upcoming.total.add)
@@ -91,7 +91,7 @@
                 </p>
             </div>
 
-            <GridSystem type="list" class="px-6 pb-6">
+            <GridSystem type="list" class="px-6 pb-10">
                 <BillCard
                     v-for="item in upcoming.data"
                     :key="item.id"
@@ -122,35 +122,35 @@ const allData = computed(() => {
                 add: earnings.today.total,
                 sub: bills.today.total
             },
-            data: [...bills.today.data, ...earnings.today.data]
+            data: [...bills.today.data, ...earnings.today.data].sort(sortedList)
         },
         overdue: {
             total: {
                 add: earnings.overdue.total,
                 sub: bills.overdue.total
             },
-            data: [...bills.overdue.data, ...earnings.overdue.data]
+            data: [...bills.overdue.data, ...earnings.overdue.data].sort(sortedList)
         },
         thisWeek: {
             total: {
                 add: earnings.thisWeek.total,
                 sub: bills.thisWeek.total
             },
-            data: [...bills.thisWeek.data, ...earnings.thisWeek.data]
+            data: [...bills.thisWeek.data, ...earnings.thisWeek.data].sort(sortedList)
         },
         nextWeek: {
             total: {
                 add: earnings.nextWeek.total,
                 sub: bills.nextWeek.total
             },
-            data: [...bills.nextWeek.data, ...earnings.nextWeek.data]
+            data: [...bills.nextWeek.data, ...earnings.nextWeek.data].sort(sortedList)
         },
         upcoming: {
             total: {
                 add: earnings.upcoming.total,
                 sub: bills.upcoming.total
             },
-            data: [...bills.upcoming.data, ...earnings.upcoming.data]
+            data: [...bills.upcoming.data, ...earnings.upcoming.data].sort(sortedList)
         }
     }
 })
@@ -158,7 +158,7 @@ const allData = computed(() => {
 const sortedList = (a: any, b: any) => a.nextPayment.toDate() - b.nextPayment.toDate()
 
 const todayAndOverdue = computed(() => {
-    const data = allData.value.overdue.data.sort(sortedList)
+    const data = [...allData.value.overdue.data, ...allData.value.today.data].sort(sortedList)
     const total = {
         add: allData.value.today.total.add + allData.value.overdue.total.add,
         sub: allData.value.today.total.sub + allData.value.overdue.total.sub
@@ -167,19 +167,19 @@ const todayAndOverdue = computed(() => {
 })
 
 const thisWeek = computed(() => {
-    const data = allData.value.thisWeek.data.sort(sortedList)
+    const data = allData.value.thisWeek.data
     const total = allData.value.thisWeek.total
     return { data, total }
 })
 
 const nextWeek = computed(() => {
-    const data = allData.value.nextWeek.data.sort(sortedList)
+    const data = allData.value.nextWeek.data
     const total = allData.value.nextWeek.total
     return { data, total }
 })
 
 const upcoming = computed(() => {
-    const data = allData.value.upcoming.data.sort(sortedList)
+    const data = allData.value.upcoming.data
     const total = allData.value.upcoming.total
     return { data, total }
 })

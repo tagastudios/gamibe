@@ -1,6 +1,6 @@
 <template>
-    <main class="flex h-full flex-col justify-between">
-        <div class="mb-8">
+    <main class="m-0 mx-auto flex h-full max-w-lg flex-col items-center justify-between gap-28">
+        <div class="mb-8 max-h-[430px]">
             <h2 class="text-3xl font-bold text-blue-700">Confirmation</h2>
             <p class="mb-8 mt-4 text-base">
                 Please make sure all your information is correct before it's saved!
@@ -46,7 +46,7 @@
                 </template>
             </VCalendar>
         </div>
-        <div v-if="isValidEntry" class="mx-auto w-full max-w-lg">
+        <div v-if="isValidEntry" class="z-10 w-full">
             <h3
                 class="mb-2 text-center text-2xl font-black text-blue-700 underline decoration-slate-400 decoration-wavy"
             >
@@ -69,7 +69,7 @@
                 </RouterLink>
             </div>
         </div>
-        <div v-else class="mx-auto w-full max-w-lg">
+        <div v-else class="z-10 w-full">
             <h3
                 class="mb-2 text-center text-2xl font-black text-blue-900 underline decoration-slate-600 decoration-wavy"
             >
@@ -142,7 +142,6 @@ const addToDb = () => {
 <style>
 .main-calendar {
     width: 100%;
-    /* height: 100%; */
-    max-width: 600px;
+    height: auto;
 }
 </style>

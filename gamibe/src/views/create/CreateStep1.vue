@@ -1,5 +1,5 @@
 <template>
-    <main>
+    <main class="m-0 mx-auto max-w-lg">
         <h2 class="text-3xl font-bold text-blue-700">Initiate Your Financial Move..</h2>
         <p class="mb-8 mt-4 text-base">
             Welcome to the heart of financial growth! Choose the type of transaction you'd like to

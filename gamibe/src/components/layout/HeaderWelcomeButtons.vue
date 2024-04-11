@@ -1,5 +1,5 @@
 <template>
-    <header v-if="isCreateRoute" class="items-center justify-between pb-14 pt-10">
+    <header v-if="isCreateRoute" class="items-center justify-between">
         <div
             @click="router.push(previousPath)"
             class="active:tbg-zinc-200 relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-zinc-100 transition-colors hover:bg-zinc-300"
