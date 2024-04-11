@@ -38,6 +38,8 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
+import { RouterLink } from 'vue-router'
 import {
     ChevronRightIcon,
     QuestionMarkCircleIcon,
@@ -46,7 +48,15 @@ import {
     StarIcon,
     CalendarDaysIcon
 } from '@heroicons/vue/24/solid'
-import { RouterLink } from 'vue-router'
+import { useBillStore, useEarningStore } from '@/stores/store'
+
+const { resetBill } = useBillStore()
+const { resetEarning } = useEarningStore()
+
+onMounted(() => {
+    resetBill()
+    resetEarning()
+})
 
 const creations = [
     {

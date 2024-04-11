@@ -1,4 +1,4 @@
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, type ComputedRef } from 'vue'
 import { defineStore } from 'pinia'
 import { useDateFormat } from '@vueuse/core'
 
@@ -51,7 +51,11 @@ export const useBillStore = defineStore('bill', () => {
         amount
     })
 
-    return { bill, billForDb, resetBill }
+    const isValidBill: ComputedRef = computed(() => {
+        return bill.name && bill.startAt && bill.frequency.id && bill.category.id && bill.amount > 0
+    })
+
+    return { bill, billForDb, resetBill, isValidBill }
 })
 
 export const useEarningStore = defineStore('earning', () => {
@@ -103,5 +107,15 @@ export const useEarningStore = defineStore('earning', () => {
         amount
     })
 
-    return { earning, earningForDb, resetEarning }
+    const isValidEarning: ComputedRef = computed(() => {
+        return (
+            earning.name &&
+            earning.startAt &&
+            earning.frequency.id &&
+            earning.category.id &&
+            earning.amount > 0
+        )
+    })
+
+    return { earning, earningForDb, resetEarning, isValidEarning }
 })
