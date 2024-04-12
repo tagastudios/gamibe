@@ -86,6 +86,38 @@
                 </template>
             </VCalendar>
         </div>
+        <div class="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 px-0">
+            <p
+                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
+            >
+                Expense
+                <span class="block aspect-square w-2 rounded-full bg-red-500"></span>
+            </p>
+            <p
+                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
+            >
+                Income
+                <span class="block aspect-square w-2 rounded-full bg-green-500"></span>
+            </p>
+            <p
+                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
+            >
+                Saving
+                <span class="block aspect-square w-2 rounded-full bg-blue-500"></span>
+            </p>
+            <p
+                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
+            >
+                Transaction
+                <span class="block aspect-square w-2 rounded-full bg-yellow-500"></span>
+            </p>
+            <p
+                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
+            >
+                Today
+                <span class="block aspect-square w-4 rounded-full border border-blue-400"></span>
+            </p>
+        </div>
     </main>
 </template>
 
