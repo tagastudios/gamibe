@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { watch, computed } from 'vue'
 import { useRouter, useRoute, RouterView } from 'vue-router'
 import { useUser } from '@/composables/useUser'
 
@@ -14,6 +14,8 @@ const isCurrentRouteAuthenticated = (_route: any) => {
     const requiresAuth = 'requiresAuth'
     return Object.keys(_route.meta).some((meta: string) => meta === requiresAuth)
 }
+
+const isCreateRoute = computed(() => route.matched.find((match) => match.name === 'Create'))
 
 watch(user, async (currentUser, previousUser) => {
     // redirect to login if they logout and the current
@@ -39,17 +41,20 @@ watch(user, async (currentUser, previousUser) => {
     <HeaderWelcomeButtons
         v-if="user"
         id="header_welcome"
-        class="fixed top-0 z-[9999] flex w-full justify-center px-6 pb-8 pt-5"
+        class="fixed top-0 z-[9999] flex w-full select-none justify-center px-6 pb-8 pt-5 text-sm md:text-base lg:text-lg xl:text-xl"
     />
 
     <div class="flex h-full w-full flex-col">
-        <RouterView class="flex w-full flex-col justify-center p-6 pb-20 pt-28" />
+        <RouterView
+            class="flex w-full select-none flex-col justify-center p-6 pb-8 text-sm md:text-base lg:text-lg xl:text-xl"
+            :class="isCreateRoute ? 'pt-16' : 'pt-[90px]'"
+        />
     </div>
 
     <NavigationBar
         v-if="user"
         :is-mobile="false"
-        class="fixed bottom-0 z-[9999] flex w-full items-center justify-center bg-blue-900 px-6"
+        class="fixed bottom-0 z-[9999] flex w-full select-none items-center justify-center bg-blue-900 px-6 text-sm md:text-base lg:text-lg xl:text-xl"
     />
 </template>
 

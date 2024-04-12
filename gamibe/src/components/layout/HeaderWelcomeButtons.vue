@@ -1,7 +1,7 @@
 <template>
-    <header v-if="isCreateRoute" class="items-center justify-between pb-14 pt-10">
+    <header v-if="isCreateRoute" class="items-center justify-between">
         <div
-            @click="router.back"
+            @click="router.push(previousPath)"
             class="active:tbg-zinc-200 relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-zinc-100 transition-colors hover:bg-zinc-300"
         >
             <ChevronLeftIcon class="absolute left-[-1px] w-full text-slate-600" />
@@ -67,4 +67,13 @@ const currentStep = computed(() => {
     return currentPath.split('/').length - 1
 })
 const maxSteps = 3
+
+console.log(route)
+
+const previousPath = computed(() => {
+    const currentPath = route.path ?? ''
+    const pathArr = currentPath.split('/')
+    if (currentStep.value === 1) return '/'
+    else return pathArr.slice(0, currentStep.value).join('/')
+})
 </script>

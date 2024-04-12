@@ -14,14 +14,18 @@
             <div
                 class="flex w-11/12 flex-col justify-center pl-2 sm:w-11/12 md:w-11/12 lg:w-10/12 xl:w-9/12"
             >
-                <h3 class="w-full truncate text-xl font-semibold capitalize">
+                <h3 class="w-full truncate text-lg font-semibold capitalize md:text-xl">
                     {{ name }}
-                    <span class="w-full text-base capitalize text-gray-500">({{ category }})</span>
+                    <span class="w-full text-sm capitalize text-gray-500 md:text-base"
+                        >({{ category }})</span
+                    >
                 </h3>
-                <p class="w-full text-base capitalize text-gray-500">Due {{ formattedDate }}</p>
+                <p class="w-full text-sm capitalize text-gray-500 md:text-base">
+                    Due {{ formattedDate }}
+                </p>
             </div>
         </div>
-        <p class="w-2/12 min-w-fit text-right text-xl font-semibold">
+        <p class="w-2/12 min-w-fit text-right text-base font-semibold md:text-lg lg:text-xl">
             {{ formattedBillAmount }}
         </p>
     </div>
