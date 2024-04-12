@@ -84,7 +84,7 @@ const isUAT = true
 
 <template>
     <main>
-        <h1 class="m-auto text-5xl font-black">Profile</h1>
+        <h1 class="sr-only m-auto text-5xl font-black">Profile</h1>
         <fieldset class="rounded-lg border-2 p-4">
             <legend>
                 <h2 class="px-4 text-lg">Settings</h2>

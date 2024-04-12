@@ -97,12 +97,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-html,
-body,
-#app {
-    overflow-x: hidden;
-}
-
 @media screen and (max-width: 767px) {
     input,
     select,

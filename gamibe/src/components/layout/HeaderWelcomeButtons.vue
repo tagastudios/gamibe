@@ -19,23 +19,23 @@
                 <!-- <p class="text-lg">Your finances are looking good!</p> -->
             </div>
         </div>
-        <div class="flex select-none items-center gap-5">
+        <div class="flex select-none items-center gap-3">
             <RouterLink to="/create">
                 <PlusIcon
-                    class="w-6 cursor-pointer transition-colors hover:text-blue-900 active:text-blue-700"
+                    class="w-8 cursor-pointer rounded-full p-1.5 shadow shadow-blue-600 drop-shadow-[0px_0px_6px_cyan] transition-colors hover:text-blue-500 active:text-blue-700"
                 />
             </RouterLink>
             <!-- <MagnifyingGlassIcon
-                class="w-6 transition-colors hover:text-blue-900 active:text-blue-700"
-            />
-            <component
-                :is="hasNotifications ? BellAlertIcon : BellIcon"
-                class="w-6 transition-colors hover:text-blue-900 active:text-blue-700"
+                class="w-8 cursor-pointer rounded-full p-1.5 shadow shadow-blue-600 drop-shadow-[0px_0px_6px_cyan] transition-colors hover:text-blue-500 active:text-blue-700"
             /> -->
-            <PowerIcon
+            <!-- <component
+                :is="hasNotifications ? BellAlertIcon : BellIcon"
+                class="w-8 cursor-pointer rounded-full p-1.5 shadow shadow-blue-600 drop-shadow-[0px_0px_6px_cyan] transition-colors hover:text-blue-500 active:text-blue-700"
+            /> -->
+            <!-- <PowerIcon
                 @click="logout"
                 class="w-6 cursor-pointer transition-colors hover:text-blue-900 active:text-blue-700"
-            />
+            /> -->
         </div>
     </header>
 </template>

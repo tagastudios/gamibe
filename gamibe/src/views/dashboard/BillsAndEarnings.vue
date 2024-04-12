@@ -1,9 +1,10 @@
 <template>
     <main class="px-0">
+        <h1 class="sr-only m-auto text-5xl font-black">Dashboard</h1>
         <div v-if="todayAndOverdue.data.length">
             <div class="flex items-center justify-between px-6 pb-2">
-                <h2 class="text-2xl font-semibold">Today</h2>
-                <p class="text-base">
+                <h2 class="truncate text-2xl font-semibold">Today</h2>
+                <p class="min-w-max text-base">
                     <span class="font-bold text-blue-500" v-if="todayAndOverdue.total.add">{{
                         formatCurrency(todayAndOverdue.total.add)
                     }}</span>
@@ -27,8 +28,8 @@
 
         <div v-if="thisWeek.data.length">
             <div class="flex items-center justify-between px-6 pb-2">
-                <h2 class="text-2xl font-semibold">This Week</h2>
-                <p class="text-base">
+                <h2 class="truncate text-2xl font-semibold">This Week</h2>
+                <p class="min-w-max text-base">
                     <span class="font-bold text-blue-500" v-if="thisWeek.total.add">{{
                         formatCurrency(thisWeek.total.add)
                     }}</span>
@@ -53,8 +54,8 @@
 
         <div v-if="nextWeek.data.length">
             <div class="flex items-center justify-between px-6 pb-2">
-                <h2 class="text-2xl font-semibold">Next Week</h2>
-                <p class="text-base">
+                <h2 class="truncate text-2xl font-semibold">Next Week</h2>
+                <p class="min-w-max text-base">
                     <span class="font-bold text-blue-500" v-if="nextWeek.total.add">{{
                         formatCurrency(nextWeek.total.add)
                     }}</span>
@@ -79,8 +80,8 @@
 
         <div v-if="upcoming.data.length">
             <div class="flex items-center justify-between px-6 pb-2">
-                <h2 class="text-2xl font-semibold">10 Upcoming</h2>
-                <p class="text-base">
+                <h2 class="truncate text-2xl font-semibold">Upcoming</h2>
+                <p class="min-w-max text-base">
                     <span class="font-bold text-blue-500" v-if="upcoming.total.add">{{
                         formatCurrency(upcoming.total.add)
                     }}</span>
