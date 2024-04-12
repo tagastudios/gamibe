@@ -1,31 +1,24 @@
 <template>
     <div
-        class="flex cursor-default select-none items-center justify-between rounded-lg bg-zinc-100 p-4 text-slate-600 shadow-md"
+        class="flex w-full cursor-default select-none items-center justify-between gap-2 rounded-lg bg-zinc-100 p-2 text-slate-600 shadow-md"
     >
-        <div class="flex h-full w-10/12 items-center">
-            <component
-                :is="categoryMapper[category] ?? QuestionMarkCircleIcon"
-                :class="` aspect-square w-1/12 rounded-full p-1 sm:w-1/12 sm:p-1 md:w-1/12 md:p-1 lg:w-2/12 xl:w-3/12 xl:p-1 2xl:p-4`"
-                :style="{
-                    backgroundColor: bgColor,
-                    color: textColor
-                }"
-            />
-            <div
-                class="flex w-11/12 flex-col justify-center pl-2 sm:w-11/12 md:w-11/12 lg:w-10/12 xl:w-9/12"
-            >
-                <h3 class="w-full truncate text-lg font-semibold capitalize md:text-xl">
-                    {{ name }}
-                    <span class="w-full text-sm capitalize text-gray-500 md:text-base"
-                        >({{ category }})</span
-                    >
-                </h3>
-                <p class="w-full text-sm capitalize text-gray-500 md:text-base">
-                    Due {{ formattedDate }}
-                </p>
-            </div>
+        <component
+            :is="categoryMapper[category] ?? QuestionMarkCircleIcon"
+            :class="`aspect-square min-w-[14%] rounded-full p-0`"
+            :style="{
+                backgroundColor: bgColor,
+                color: textColor
+            }"
+        />
+        <div class="flex w-full flex-col justify-center truncate pb-1">
+            <h3 class="truncate text-lg font-semibold capitalize md:text-xl">
+                {{ name }}
+            </h3>
+            <p class="truncate text-sm capitalize text-gray-500 md:text-base">
+                Due {{ formattedDate }}
+            </p>
         </div>
-        <p class="w-2/12 min-w-fit text-right text-base font-semibold md:text-lg lg:text-xl">
+        <p class="min-w-max text-right text-base font-semibold md:text-lg lg:text-xl">
             {{ formattedBillAmount }}
         </p>
     </div>

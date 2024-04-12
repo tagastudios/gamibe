@@ -1,6 +1,6 @@
 <template>
     <main>
-        <h1 class="m-auto text-5xl font-black">Register</h1>
+        <h1 class="sr-only m-auto text-5xl font-black">Register</h1>
     </main>
 </template>
 

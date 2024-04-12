@@ -44,9 +44,9 @@ watch(user, async (currentUser, previousUser) => {
         class="fixed top-0 z-[9999] flex w-full select-none justify-center px-6 pb-8 pt-5 text-sm md:text-base lg:text-lg xl:text-xl"
     />
 
-    <div class="flex h-full w-full flex-col">
+    <div class="flex w-full flex-col">
         <RouterView
-            class="flex w-full select-none flex-col justify-center p-6 pb-8 text-sm md:text-base lg:text-lg xl:text-xl"
+            class="flex h-full w-full select-none flex-col justify-center p-6 pb-12 text-sm md:text-base lg:text-lg xl:text-xl"
             :class="isCreateRoute ? 'pt-16' : 'pt-[90px]'"
         />
     </div>
@@ -70,6 +70,7 @@ body,
 #app {
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 
 #app {
@@ -77,6 +78,7 @@ body,
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    overflow-y: auto;
 }
 
 #header_welcome {

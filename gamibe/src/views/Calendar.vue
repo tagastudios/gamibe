@@ -1,6 +1,6 @@
 <template>
     <main>
-        <h1 class="m-auto text-5xl font-black">Calendar</h1>
+        <h1 class="sr-only m-auto text-5xl font-black">Calendar</h1>
         <div class="flex w-full justify-center px-0 py-4">
             <VCalendar
                 ref="calendar"

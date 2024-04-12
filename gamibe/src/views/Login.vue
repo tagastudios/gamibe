@@ -1,6 +1,6 @@
 <template>
     <main>
-        <h1 class="m-auto text-5xl font-black">Login</h1>
+        <h1 class="sr-only m-auto text-5xl font-black">Login</h1>
         <div v-if="loginError">{{ loginError }}</div>
         <button @click="login('redirect')">SignIn with Google (Redirect)</button>
         <button @click="login('popup')">SignIn with Google (Popup)</button>
