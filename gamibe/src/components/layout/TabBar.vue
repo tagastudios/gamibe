@@ -2,7 +2,7 @@
     <nav v-if="!isCreateRoute" class="amazing-tabs bg-blue-900">
         <div class="filters-container">
             <div class="filters-wrapper">
-                <ul class="filter-tabs bg-blue-600">
+                <ul class="filter-tabs">
                     <li class="">
                         <button class="filter-button filter-active" data-translate-value="0">
                             New
@@ -56,7 +56,7 @@
     </nav>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed, onMounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import {
