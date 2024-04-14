@@ -5,6 +5,7 @@ import { useUser } from '@/composables/useUser'
 
 import NavigationBar from '@/components/layout/NavigationBar.vue'
 import HeaderWelcomeButtons from '@/components/layout/HeaderWelcomeButtons.vue'
+import TabBar from '@/components/layout/TabBar.vue'
 
 const { user } = useUser()
 const router = useRouter()
@@ -51,11 +52,12 @@ watch(user, async (currentUser, previousUser) => {
         />
     </div>
 
-    <NavigationBar
+    <!-- <NavigationBar
         v-if="user"
         :is-mobile="false"
         class="fixed bottom-0 z-[9999] flex w-full select-none items-center justify-center bg-blue-900 px-6 text-sm md:text-base lg:text-lg xl:text-xl"
-    />
+    /> -->
+    <TabBar v-if="user" class="fixed bottom-0 z-[9999] select-none" />
 </template>
 
 <style>
