@@ -1,5 +1,5 @@
 <template>
-    <nav v-if="!isCreateRoute" class="w-full rounded-t-2xl bg-blue-900 pt-3">
+    <nav v-if="!isCreateRoute" ref="menuRef" class="w-full rounded-t-2xl bg-blue-900 pt-3">
         <div
             class="overflow-hidden px-4 transition-all duration-500"
             :class="showFilters ? 'mb-4  mt-2 max-h-12' : 'mb-0  max-h-0'"
@@ -17,11 +17,19 @@
                     >
                         <button
                             class="flex h-4 w-full flex-grow items-center justify-center rounded bg-transparent px-2 text-center text-sm font-light transition-all duration-500"
-                            :class="
-                                filter.isActive
-                                    ? 'font-[600] text-black'
-                                    : 'font-[300] text-gray-300'
-                            "
+                            :class="`
+                                ${
+                                    filter.isActive
+                                        ? 'font-[600] text-black'
+                                        : 'font-[300] text-gray-300'
+                                } 
+                                ${
+                                    filter.disabled
+                                        ? 'cursor-not-allowed text-opacity-50'
+                                        : 'cursor-pointer'
+                                }
+                            `"
+                            :disabled="filter.disabled"
                             @click="selectFilter(filter)"
                         >
                             {{ filter.name }}
@@ -38,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="px-5 pb-3">
+        <div class="px-5 pb-5 pt-2">
             <div class="relative">
                 <ul ref="tabsRef" class="flex list-none items-center justify-between">
                     <RouterLink
@@ -91,65 +99,62 @@ import {
     ChartPieIcon,
     UserGroupIcon
 } from '@heroicons/vue/24/solid'
+import { onClickOutside } from '@vueuse/core'
 
 // Router
 const route = useRoute()
 const isCreateRoute = computed(() => route.matched.find((match) => match.name === 'Create'))
+
+// Click Outside
+const menuRef = ref(null)
+onClickOutside(menuRef, () => {
+    showFilters.value = false
+})
 
 // Tabs
 const tabs = [
     {
         path: '/',
         icon: RectangleGroupIcon,
-        color: 'red',
         name: 'Home',
         showFilters: true
     },
     {
         path: '/calendar',
         icon: CalendarDaysIcon,
-        color: 'orange',
         name: 'Calendar',
         showFilters: true
     },
-    {
-        path: '/charts',
-        icon: ChartPieIcon,
-        color: 'blue',
-        name: 'Charts'
-    },
-    {
-        path: '/social',
-        icon: UserGroupIcon,
-        color: 'green',
-        name: 'Social'
-    },
+    // {
+    //     path: '/charts',
+    //     icon: ChartPieIcon,
+    //     name: 'Charts'
+    // },
+    // {
+    //     path: '/social',
+    //     icon: UserGroupIcon,
+    //     name: 'Social'
+    // },
     {
         path: '/profile',
         icon: Cog6ToothIcon,
-        color: 'purple',
         name: 'Profile'
     }
 ]
 
 const selectedTabIndex = ref(0)
+
 const tabsRef: any = ref(null)
+const activeTabEl: any = computed(() => {
+    return tabsRef.value?.children[selectedTabIndex.value]
+})
+
 const circleSliderRef: any = ref(null)
-
 const circleSliderPosition = computed(() => {
-    let tabsWidth = 0
-    if (tabsRef.value) tabsWidth = tabsRef.value.offsetWidth
-
-    return `left: ${(tabsWidth / tabs.length) * selectedTabIndex.value}px;
-        transform: translateX(${selectedTabIndex.value * tabs.length}%)
+    const left = activeTabEl.value?.offsetLeft
+    return `
+        left: calc(${left}px);
     `
-    // return `transform: translateX(
-    //     calc(
-    //         ${(tabsWidth.value / tabs.length) * selectedTabIndex.value}px
-    //         +
-    //         ${selectedTabIndex.value * 0.45}rem
-    //     )
-    // )`
 })
 
 const navigateAndAnimate = (navigate: Function, targetIndex: number) => {
@@ -168,31 +173,40 @@ const navigateAndAnimate = (navigate: Function, targetIndex: number) => {
     }
 }
 
-// Filter
+// Filters
 const filters = [
     {
-        id: 1,
-        name: 'New',
-        isActive: true
+        id: 'all',
+        name: 'All',
+        isActive: true,
+        disabled: false
     },
     {
-        id: 2,
-        name: 'Popular',
-        isActive: false
+        id: 'income',
+        name: 'Income',
+        isActive: false,
+        disabled: false
     },
     {
-        id: 3,
-        name: 'Following',
-        isActive: false
+        id: 'expense',
+        name: 'Expense',
+        isActive: false,
+        disabled: false
+    },
+    {
+        id: 'saving',
+        name: 'Saving',
+        isActive: false,
+        disabled: true
     }
 ]
 
 const showFilters = ref(false)
-const selectedFilter = ref(0)
+const selectedFilterIndex = ref(0)
 
 const filterTabPosition = computed(() => {
     return {
-        transform: 'translateX(' + selectedFilter.value + '00%)',
+        transform: 'translateX(' + selectedFilterIndex.value + '00%)',
         width: 100 / filters.length + '%'
     }
 })
@@ -201,7 +215,7 @@ const selectFilter = (filter: any) => {
     filters.forEach((f) => {
         f.isActive = f.id === filter.id
     })
-    selectedFilter.value = filter.id - 1
+    selectedFilterIndex.value = filters.findIndex((f: any) => f.id === filter.id)
 }
 </script>
 
