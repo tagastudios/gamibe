@@ -1,28 +1,46 @@
 <template>
-    <nav v-if="!isCreateRoute" class="amazing-tabs bg-blue-900">
-        <div class="filters-container">
-            <div class="filters-wrapper">
-                <ul class="filter-tabs">
-                    <li class="">
-                        <button class="filter-button filter-active" data-translate-value="0">
-                            New
+    <nav v-if="!isCreateRoute" class="w-full rounded-t-2xl bg-blue-900 pt-3">
+        <div
+            class="overflow-hidden px-4 transition-all duration-500"
+            :class="showFilters ? 'mb-4  mt-2 max-h-12' : 'mb-0  max-h-0'"
+        >
+            <div
+                class="relative transition-opacity duration-500"
+                :class="showFilters ? 'opacity-100' : 'opacity-0'"
+            >
+                <ul class="flex overflow-hidden rounded-xl bg-blue-700 py-4">
+                    <li
+                        v-for="(filter, index) in filters"
+                        :key="filter.id || index"
+                        class="relative z-10 flex flex-grow bg-transparent"
+                        :style="{ flexBasis: 100 / filters.length + '%' }"
+                    >
+                        <button
+                            class="flex h-4 w-full flex-grow items-center justify-center rounded bg-transparent px-2 text-center text-sm font-light transition-all duration-500"
+                            :class="
+                                filter.isActive
+                                    ? 'font-[600] text-black'
+                                    : 'font-[300] text-gray-300'
+                            "
+                            @click="selectFilter(filter)"
+                        >
+                            {{ filter.name }}
                         </button>
                     </li>
-                    <li>
-                        <button class="filter-button" data-translate-value="100%">Popular</button>
-                    </li>
-                    <li>
-                        <button class="filter-button" data-translate-value="200%">Following</button>
-                    </li>
                 </ul>
-                <div class="filter-slider" aria-hidden="true">
-                    <div class="filter-slider-rect">&nbsp;</div>
+                <div class="absolute inset-0 z-0 p-1.5" aria-hidden="true">
+                    <div
+                        class="h-full rounded-lg bg-blue-300 shadow transition-transform duration-500"
+                        :style="filterTabPosition"
+                    >
+                        &nbsp;
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="main-tabs-container">
-            <div class="main-tabs-wrapper">
-                <ul class="main-tabs">
+        <div class="px-5 pb-3">
+            <div class="relative">
+                <ul ref="tabsRef" class="flex list-none items-center justify-between">
                     <RouterLink
                         v-for="(tab, index) in tabs"
                         v-slot="{ href, route, navigate, isActive, isExactActive }"
@@ -30,34 +48,41 @@
                         :key="tab.path"
                         custom
                     >
-                        <li>
+                        <li class="relative z-10 inline-flex p-2">
                             <button
-                                class="round-button"
-                                :class="{ active: isActive, 'show-filters': tab.showFilters }"
-                                :style="{ '--round-button-active-color': tab.color }"
-                                :data-translate-value="index * 100 + '%'"
-                                :data-color="tab.color"
-                                @click="navigate"
+                                class="inline-flex aspect-square w-8 items-center justify-center rounded-full transition-colors duration-300"
+                                :class="
+                                    isActive
+                                        ? 'text-blue-600 hover:text-blue-600'
+                                        : 'text-slate-400 hover:text-slate-500'
+                                "
+                                @click="navigateAndAnimate(navigate, index)"
                             >
-                                <component :is="tab.icon" />
+                                <component
+                                    :is="tab.icon"
+                                    class="aspect-square w-full translate-x-0 translate-y-0"
+                                />
                             </button>
                         </li>
                     </RouterLink>
                 </ul>
-                <div class="main-slider" aria-hidden="true">
+                <div
+                    class="absolute left-0 top-0 z-0 transition-transform duration-500"
+                    :style="circleSliderPosition"
+                    aria-hidden="true"
+                >
                     <div
-                        class="main-slider-circle cursor-pointer rounded-full bg-slate-200 p-1.5 shadow shadow-blue-600 drop-shadow-[0px_0px_6px_cyan] transition-colors hover:text-blue-500 active:text-blue-700"
-                    >
-                        &nbsp;
-                    </div>
+                        ref="circleSliderRef"
+                        class="aspect-square w-12 cursor-pointer rounded-full bg-slate-200 p-1.5 shadow shadow-blue-600 drop-shadow-[0px_0px_6px_cyan] transition-colors"
+                    />
                 </div>
             </div>
         </div>
     </nav>
 </template>
 
-<script setup>
-import { computed, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import {
     RectangleGroupIcon,
@@ -72,15 +97,15 @@ const tabs = [
         path: '/',
         icon: RectangleGroupIcon,
         color: 'red',
-        name: 'Home'
-        // showFilters: true
+        name: 'Home',
+        showFilters: true
     },
     {
         path: '/calendar',
         icon: CalendarDaysIcon,
         color: 'orange',
-        name: 'Calendar'
-        // showFilters: true
+        name: 'Calendar',
+        showFilters: true
     },
     {
         path: '/charts',
@@ -101,6 +126,23 @@ const tabs = [
         name: 'Profile'
     }
 ]
+const filters = [
+    {
+        id: 1,
+        name: 'New',
+        isActive: true
+    },
+    {
+        id: 2,
+        name: 'Popular',
+        isActive: false
+    },
+    {
+        id: 3,
+        name: 'Following',
+        isActive: false
+    }
+]
 const props = defineProps({
     isMobile: Boolean
 })
@@ -109,227 +151,58 @@ const route = useRoute()
 
 const isCreateRoute = computed(() => route.matched.find((match) => match.name === 'Create'))
 
-onMounted(() => {
-    // resources in description
-    const mainTabs = document.querySelector('.main-tabs')
-    const mainSliderCircle = document.querySelector('.main-slider-circle')
-    const roundButtons = document.querySelectorAll('.round-button')
+const showFilters = ref(false)
+const selectedTabIndex = ref(0)
+const selectedFilter = ref(0)
 
-    const colors = {
-        blue: {
-            50: {
-                value: '#e3f2fd'
-            },
-            100: {
-                value: '#bbdefb'
-            }
-        },
-        green: {
-            50: {
-                value: '#e8f5e9'
-            },
-            100: {
-                value: '#c8e6c9'
-            }
-        },
-        purple: {
-            50: {
-                value: '#f3e5f5'
-            },
-            100: {
-                value: '#e1bee7'
-            }
-        },
-        orange: {
-            50: {
-                value: '#ffe0b2'
-            },
-            100: {
-                value: '#ffe0b2'
-            }
-        },
-        red: {
-            50: {
-                value: '#ffebee'
-            },
-            100: {
-                value: '#ffcdd2'
-            }
-        }
+const filterTabPosition = computed(() => {
+    return {
+        transform: 'translateX(' + selectedFilter.value + '00%)',
+        width: 100 / filters.length + '%'
     }
-
-    const getColor = (color, variant) => {
-        return colors[color][variant].value
-    }
-
-    const handleActiveTab = (tabs, event, className) => {
-        tabs.forEach((tab) => {
-            tab.classList.remove(className)
-        })
-
-        if (!event.target.classList.contains(className)) {
-            event.target.classList.add(className)
-        }
-    }
-
-    mainTabs.addEventListener('click', (event) => {
-        const root = document.documentElement
-        const targetColor = event.target.dataset.color
-        const targetTranslateValue = event.target.dataset.translateValue
-
-        if (event.target.classList.contains('round-button')) {
-            mainSliderCircle.classList.remove('animate-jello')
-            void mainSliderCircle.offsetWidth
-            mainSliderCircle.classList.add('animate-jello')
-
-            root.style.setProperty('--translate-main-slider', targetTranslateValue)
-            root.style.setProperty('--main-slider-color', getColor(targetColor, 50))
-            root.style.setProperty('--background-color', getColor(targetColor, 100))
-
-            handleActiveTab(roundButtons, event, 'active')
-
-            if (!event.target.classList.contains('show-filters')) {
-                root.style.setProperty('--filters-container-height', '0')
-                root.style.setProperty('--filters-wrapper-opacity', '0')
-            } else {
-                root.style.setProperty('--filters-container-height', '3.8em')
-                root.style.setProperty('--filters-wrapper-opacity', '1')
-            }
-        }
-    })
-
-    const filterTabs = document.querySelector('.filter-tabs')
-    const filterButtons = document.querySelectorAll('.filter-button')
-
-    filterTabs.addEventListener('click', (event) => {
-        const root = document.documentElement
-        const targetTranslateValue = event.target.dataset.translateValue
-
-        if (event.target.classList.contains('filter-button')) {
-            root.style.setProperty('--translate-filters-slider', targetTranslateValue)
-            handleActiveTab(filterButtons, event, 'filter-active')
-        }
-    })
 })
+
+const selectFilter = (filter: any) => {
+    filters.forEach((f) => {
+        f.isActive = f.id === filter.id
+    })
+    selectedFilter.value = filter.id - 1
+}
+
+const circleSliderRef: any = ref(null)
+const tabsRef: any = ref(null)
+
+const tabsWidth = computed(() => {
+    if (tabsRef.value) {
+        return tabsRef.value.offsetWidth
+    }
+    return 0
+})
+
+const circleSliderPosition = computed(() => {
+    return `transform: translateX(calc(${
+        (tabsWidth.value / tabs.length) * selectedTabIndex.value
+    }px + ${selectedTabIndex.value * 3}px))`
+})
+
+const navigateAndAnimate = (navigate: Function, targetIndex: number) => {
+    navigate()
+    selectedTabIndex.value = targetIndex
+    if (circleSliderRef.value) {
+        circleSliderRef.value.classList.remove('animate-jello')
+        void circleSliderRef.value.offsetWidth
+        circleSliderRef.value.classList.add('animate-jello')
+    }
+    const selectedTab = tabs[targetIndex]
+    if (selectedTab.showFilters) {
+        showFilters.value = true
+    } else {
+        showFilters.value = false
+    }
+}
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
-
-:root {
-    --background-color: #bbdefb;
-    --blue-50: #e3f2fd;
-    --blue-100: #bbdefb;
-    --blue-A700: rgb(41, 98, 255);
-    --green-50: #e8f5e9;
-    --green-100: #c8e6c9;
-    --green-A700: #00c853;
-    --purple-50: #f3e5f5;
-    --purple-100: #e1bee7;
-    --purple-A700: #aa00ff;
-    --orange-50: #fff3e0;
-    --orange-100: #ffe0b2;
-    --orange-A700: #ff6d00;
-    --orange-700: #f57c00;
-    --grey-900: #212121;
-    --white: #ffffff;
-    --round-button-active-color: #212121;
-    --translate-main-slider: 100%;
-    --main-slider-color: #e3f2fd;
-    --translate-filters-slider: 0;
-    --filters-container-height: 3.8em;
-    --filters-wrapper-opacity: 1;
-}
-
-button {
-    border: none;
-    cursor: pointer;
-    background-color: transparent;
-    outline: none;
-}
-
-nav.amazing-tabs {
-    border-radius: 2.5em 2.5em 0 0;
-    user-select: none;
-    padding-top: 1em;
-    font-size: 56%;
-}
-
-.main-tabs-container {
-    padding: 0 1em 1em 1em;
-}
-
-.main-tabs-wrapper {
-    position: relative;
-}
-
-ul.main-tabs,
-ul.filter-tabs {
-    list-style-type: none;
-    display: flex;
-}
-
-ul.main-tabs li {
-    display: inline-flex;
-    position: relative;
-    padding: 1.5em;
-    z-index: 1;
-}
-
-.avatar,
-.avatar img {
-    height: 4em;
-    width: 4em;
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.avatar img {
-    object-fit: cover;
-}
-
-.round-button {
-    height: 4.8em;
-    width: 4.8em;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--grey-900);
-    transition: color 0.2s ease-in-out;
-}
-
-.round-button:hover,
-.round-button.active {
-    color: var(--round-button-active-color);
-}
-
-.round-button svg {
-    pointer-events: none;
-    height: 2.8em;
-    width: 2.8em;
-    transform: translate(0, 0);
-}
-
-.main-slider {
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 1.5em;
-    z-index: 0;
-    transition: transform 0.4s ease-in-out;
-    transform: translateX(var(--translate-main-slider));
-}
-
-.main-slider-circle {
-    height: 4.8em;
-    width: 4.8em;
-    border-radius: 50%;
-    transition: background-color 0.4s ease-in-out;
-    /* background-color: var(--main-slider-color); */
-}
-
 .animate-jello {
     animation: jello-horizontal 0.9s both;
 }
@@ -356,72 +229,5 @@ ul.main-tabs li {
     100% {
         transform: scale3d(1, 1, 1);
     }
-}
-
-.filters-container {
-    overflow: hidden;
-    padding: 0 3em;
-    transition: max-height 0.4s ease-in-out;
-    max-height: var(--filters-container-height);
-}
-
-.filters-wrapper {
-    position: relative;
-    transition: opacity 0.2s ease-in-out;
-    opacity: var(--filters-wrapper-opacity);
-}
-
-.filter-tabs {
-    border-radius: 1em;
-    padding: 0.3em;
-    overflow: hidden;
-    background-color: var(--orange-50);
-}
-
-.filter-tabs li {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex: 1 0 33.33%;
-}
-
-.filter-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.8em;
-    flex-grow: 1;
-    height: 3em;
-    padding: 0 1.5em;
-    color: var(--orange-700);
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 400;
-    font-size: 1.4em;
-}
-
-.filter-button.filter-active {
-    transition: color 0.4s ease-in-out;
-    color: var(--grey-900);
-}
-
-.filter-slider {
-    pointer-events: none;
-    position: absolute;
-    padding: 0.3em;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-}
-
-.filter-slider-rect {
-    height: 3em;
-    width: 33.33%;
-    border-radius: 0.8em;
-    background-color: var(--white);
-    box-shadow: 0 0.1em 1em -0.4em rgba(0, 0, 0, 0.12);
-    transition: transform 0.4s ease-in-out;
-    transform: translateX(var(--translate-filters-slider));
 }
 </style>
