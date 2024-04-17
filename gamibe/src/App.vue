@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { watch, computed } from 'vue'
+import { watch, computed, ref } from 'vue'
 import { useRouter, useRoute, RouterView } from 'vue-router'
 import { useUser } from '@/composables/useUser'
 
-import NavigationBar from '@/components/layout/NavigationBar.vue'
 import HeaderWelcomeButtons from '@/components/layout/HeaderWelcomeButtons.vue'
 import TabBar from '@/components/layout/TabBar.vue'
 
@@ -36,6 +35,9 @@ watch(user, async (currentUser, previousUser) => {
         return router.push(route.query.redirect)
     }
 })
+
+const isMobile = true
+const filterIsOpen = ref(false)
 </script>
 
 <template>
@@ -47,17 +49,19 @@ watch(user, async (currentUser, previousUser) => {
 
     <div class="flex w-full flex-col">
         <RouterView
-            class="flex h-full w-full select-none flex-col justify-center p-6 pb-12 text-sm md:text-base lg:text-lg xl:text-xl"
-            :class="isCreateRoute ? 'pt-16' : 'pt-[90px]'"
+            class="flex h-full w-full select-none flex-col justify-center p-6 text-sm transition-all delay-100 duration-700 md:text-base lg:text-lg xl:text-xl"
+            :class="`${isCreateRoute ? 'pt-16' : 'pt-[90px]'} ${
+                filterIsOpen ? 'pb-36' : isCreateRoute ? 'pb-10' : 'pb-20'
+            }`"
         />
     </div>
 
-    <!-- <NavigationBar
-        v-if="user"
-        :is-mobile="false"
-        class="fixed bottom-0 z-[9999] flex w-full select-none items-center justify-center bg-blue-900 px-6 text-sm md:text-base lg:text-lg xl:text-xl"
-    /> -->
-    <TabBar v-if="user" class="fixed bottom-0 z-[9999] select-none" />
+    <TabBar
+        v-if="user && isMobile"
+        @filterStatusChanged="filterIsOpen = $event"
+        class="fixed bottom-0 z-[9999] select-none"
+    />
+    <!-- INSERT ANOTHER COMPONENT MAYBE SIDE BAR when isMobile is false -->
 </template>
 
 <style>

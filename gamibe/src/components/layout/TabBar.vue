@@ -103,6 +103,9 @@ import {
 } from '@heroicons/vue/24/solid'
 import { onClickOutside } from '@vueuse/core'
 
+// Context
+const emit = defineEmits(['filterStatusChanged'])
+
 // Router
 const route = useRoute()
 const isCreateRoute = computed(() => route.matched.find((match) => match.name === 'Create'))
@@ -111,6 +114,7 @@ const isCreateRoute = computed(() => route.matched.find((match) => match.name ==
 const menuRef = ref(null)
 onClickOutside(menuRef, () => {
     showFilters.value = false
+    emit('filterStatusChanged', false)
 })
 
 // Tabs
@@ -170,8 +174,10 @@ const navigateAndAnimate = (navigate: Function, targetIndex: number) => {
     const selectedTab = tabs[targetIndex]
     if (selectedTab.showFilters) {
         showFilters.value = true
+        emit('filterStatusChanged', true)
     } else {
         showFilters.value = false
+        emit('filterStatusChanged', false)
     }
 }
 
@@ -203,7 +209,7 @@ const filters = [
     }
 ]
 
-const showFilters = ref(false)
+const showFilters = ref(tabs[0]?.showFilters)
 const selectedFilterIndex = ref(0)
 
 const filterTabPosition = computed(() => {
