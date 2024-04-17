@@ -67,7 +67,7 @@
                     </RouterLink>
                 </ul>
                 <div
-                    class="absolute left-0 top-0 z-0 transition-transform duration-500"
+                    class="absolute left-0 top-0 z-0 transition-all duration-500"
                     :style="circleSliderPosition"
                     aria-hidden="true"
                 >
@@ -82,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import {
     RectangleGroupIcon,
@@ -92,6 +92,11 @@ import {
     UserGroupIcon
 } from '@heroicons/vue/24/solid'
 
+// Router
+const route = useRoute()
+const isCreateRoute = computed(() => route.matched.find((match) => match.name === 'Create'))
+
+// Tabs
 const tabs = [
     {
         path: '/',
@@ -126,6 +131,44 @@ const tabs = [
         name: 'Profile'
     }
 ]
+
+const selectedTabIndex = ref(0)
+const tabsRef: any = ref(null)
+const circleSliderRef: any = ref(null)
+
+const circleSliderPosition = computed(() => {
+    let tabsWidth = 0
+    if (tabsRef.value) tabsWidth = tabsRef.value.offsetWidth
+
+    return `left: ${(tabsWidth / tabs.length) * selectedTabIndex.value}px;
+        transform: translateX(${selectedTabIndex.value * tabs.length}%)
+    `
+    // return `transform: translateX(
+    //     calc(
+    //         ${(tabsWidth.value / tabs.length) * selectedTabIndex.value}px
+    //         +
+    //         ${selectedTabIndex.value * 0.45}rem
+    //     )
+    // )`
+})
+
+const navigateAndAnimate = (navigate: Function, targetIndex: number) => {
+    navigate()
+    selectedTabIndex.value = targetIndex
+    if (circleSliderRef.value) {
+        circleSliderRef.value.classList.remove('animate-jello')
+        void circleSliderRef.value.offsetWidth
+        circleSliderRef.value.classList.add('animate-jello')
+    }
+    const selectedTab = tabs[targetIndex]
+    if (selectedTab.showFilters) {
+        showFilters.value = true
+    } else {
+        showFilters.value = false
+    }
+}
+
+// Filter
 const filters = [
     {
         id: 1,
@@ -143,16 +186,8 @@ const filters = [
         isActive: false
     }
 ]
-const props = defineProps({
-    isMobile: Boolean
-})
-
-const route = useRoute()
-
-const isCreateRoute = computed(() => route.matched.find((match) => match.name === 'Create'))
 
 const showFilters = ref(false)
-const selectedTabIndex = ref(0)
 const selectedFilter = ref(0)
 
 const filterTabPosition = computed(() => {
@@ -167,38 +202,6 @@ const selectFilter = (filter: any) => {
         f.isActive = f.id === filter.id
     })
     selectedFilter.value = filter.id - 1
-}
-
-const circleSliderRef: any = ref(null)
-const tabsRef: any = ref(null)
-
-const tabsWidth = computed(() => {
-    if (tabsRef.value) {
-        return tabsRef.value.offsetWidth
-    }
-    return 0
-})
-
-const circleSliderPosition = computed(() => {
-    return `transform: translateX(calc(${
-        (tabsWidth.value / tabs.length) * selectedTabIndex.value
-    }px + ${selectedTabIndex.value * 3}px))`
-})
-
-const navigateAndAnimate = (navigate: Function, targetIndex: number) => {
-    navigate()
-    selectedTabIndex.value = targetIndex
-    if (circleSliderRef.value) {
-        circleSliderRef.value.classList.remove('animate-jello')
-        void circleSliderRef.value.offsetWidth
-        circleSliderRef.value.classList.add('animate-jello')
-    }
-    const selectedTab = tabs[targetIndex]
-    if (selectedTab.showFilters) {
-        showFilters.value = true
-    } else {
-        showFilters.value = false
-    }
 }
 </script>
 
