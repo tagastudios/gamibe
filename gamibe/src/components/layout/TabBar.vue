@@ -56,7 +56,10 @@
                         :key="tab.path"
                         custom
                     >
-                        <li class="relative z-10 inline-flex p-2">
+                        <li
+                            @click="navigateAndAnimate(navigate, index)"
+                            class="relative z-10 inline-flex p-2"
+                        >
                             <button
                                 class="inline-flex aspect-square w-8 items-center justify-center rounded-full transition-colors duration-300"
                                 :class="
@@ -64,7 +67,6 @@
                                         ? 'text-blue-600 hover:text-blue-600'
                                         : 'text-slate-400 hover:text-slate-500'
                                 "
-                                @click="navigateAndAnimate(navigate, index)"
                             >
                                 <component
                                     :is="tab.icon"
