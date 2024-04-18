@@ -75,83 +75,166 @@
                     </ul>
                 </template>
                 <template #footer>
-                    <div class="w-full px-4 pb-3">
+                    <div class="flex w-full flex-col items-center px-4 pb-3">
                         <button
                             class="w-full rounded-md bg-blue-600 px-3 py-1 font-bold text-white hover:bg-blue-700"
                             @click="moveToday"
                         >
                             Today
                         </button>
+                        <div
+                            class="mt-2 flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-md border border-blue-600 p-2 shadow-inner shadow-blue-500"
+                        >
+                            <p
+                                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
+                            >
+                                Expense
+                                <span
+                                    class="block aspect-square w-2 rounded-full bg-red-500"
+                                ></span>
+                            </p>
+                            <p
+                                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
+                            >
+                                Income
+                                <span
+                                    class="block aspect-square w-2 rounded-full bg-green-500"
+                                ></span>
+                            </p>
+                            <p
+                                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
+                            >
+                                Saving
+                                <span
+                                    class="block aspect-square w-2 rounded-full bg-blue-500"
+                                ></span>
+                            </p>
+                            <p
+                                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
+                            >
+                                Transaction
+                                <span
+                                    class="block aspect-square w-2 rounded-full bg-yellow-500"
+                                ></span>
+                            </p>
+                            <p
+                                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
+                            >
+                                Today
+                                <span
+                                    class="block aspect-square w-4 rounded-full border border-blue-400"
+                                ></span>
+                            </p>
+                        </div>
                     </div>
                 </template>
             </VCalendar>
         </div>
-        <div class="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 px-0">
-            <p class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300">
-                Expense
-                <span class="block aspect-square w-2 rounded-full bg-red-500"></span>
-            </p>
-            <p class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300">
-                Income
-                <span class="block aspect-square w-2 rounded-full bg-green-500"></span>
-            </p>
-            <p class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300">
-                Saving
-                <span class="block aspect-square w-2 rounded-full bg-blue-500"></span>
-            </p>
-            <p class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300">
-                Transaction
-                <span class="block aspect-square w-2 rounded-full bg-yellow-500"></span>
-            </p>
-            <p class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300">
-                Today
-                <span class="block aspect-square w-4 rounded-full border border-blue-400"></span>
-            </p>
-        </div>
+        <!-- <GridSystem type="list" class="flex w-full justify-center px-0 pb-8">
+            <BillCard
+                v-for="item in listViewData.upcoming.data"
+                :key="item.id"
+                :name="item.name"
+                :category="item.category"
+                :amount="item.amount"
+                :date="item.nextPayment ? item.nextPayment.toDate() : item.startAt.toDate()"
+            />
+        </GridSystem> -->
+        <GridSystem
+            v-if="todayAndOverdue.data.length"
+            type="list"
+            class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8"
+        >
+            <BillCard
+                v-for="item in todayAndOverdue.data"
+                :key="item.id"
+                :name="item.name"
+                :category="item.category"
+                :amount="item.amount"
+                :date="item.nextPayment ? item.nextPayment.toDate() : item.startAt.toDate()"
+            />
+        </GridSystem>
+
+        <GridSystem
+            v-if="thisWeek.data.length"
+            type="list"
+            class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8"
+        >
+            <BillCard
+                v-for="item in thisWeek.data"
+                :key="item.id"
+                :name="item.name"
+                :category="item.category"
+                :amount="item.amount"
+                :date="item.nextPayment ? item.nextPayment.toDate() : item.startAt.toDate()"
+            />
+        </GridSystem>
+
+        <GridSystem
+            v-if="nextWeek.data.length"
+            type="list"
+            class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8"
+        >
+            <BillCard
+                v-for="item in nextWeek.data"
+                :key="item.id"
+                :name="item.name"
+                :category="item.category"
+                :amount="item.amount"
+                :date="item.nextPayment ? item.nextPayment.toDate() : item.startAt.toDate()"
+            />
+        </GridSystem>
+
+        <GridSystem
+            v-if="upcoming.data.length"
+            type="list"
+            class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8"
+        >
+            <BillCard
+                v-for="item in upcoming.data"
+                :key="item.id"
+                :name="item.name"
+                :category="item.category"
+                :amount="item.amount"
+                :date="item.nextPayment ? item.nextPayment.toDate() : item.startAt.toDate()"
+            />
+        </GridSystem>
     </main>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
+import { Timestamp } from 'firebase/firestore'
 import { useUser } from '@/composables/useUser'
 import { useCalendar } from '@/composables/useCalendar'
-import { Timestamp } from 'firebase/firestore'
 import { useWeek } from '@/composables/shared/useTime'
+import { useFilteredData } from '@/composables/useFilteredData'
+import { useCurrency } from '@/composables/shared/useHelpers'
 
-const calendar: any = ref(null)
+import GridSystem from '@/components/UI/GridSystem.vue'
+import BillCard from '@/components/cards/BillCard.vue'
 
-const { bills, payBill, earnings, payEarning, profile } = useUser()
+const { payBill, payEarning } = useUser()
 const { getCalendarAttrs } = useCalendar()
 const { getNextDateByFrequency } = useWeek()
+const { calendarViewData, listViewData } = useFilteredData()
+const { formatCurrency } = useCurrency()
 
 onMounted(() => {
     moveToday()
 })
 
-const moveToday = () => {
-    calendar.value.move(new Date())
-}
+// Calendar View Data
+const calendar: any = ref(null)
 
 const calendarData = computed(() => {
-    const data = new Map()
     const calendarData: any = []
 
-    if (profile.settings.showBillsOnly)
-        bills.allBills.data.forEach((bill: any) => data.set(bill.id, bill))
-    else if (profile.settings.showBillsAndEarnings) {
-        bills.allBills.data.forEach((bill: any) => data.set(bill.id, bill))
-        earnings.allEarnings.data.forEach((earning: any) => data.set(earning.id, earning))
-    } else if (profile.settings.showGeneralDashboard) {
-        bills.allBills.data.forEach((bill: any) => data.set(bill.id, bill))
-        earnings.allEarnings.data.forEach((earning: any) => data.set(earning.id, earning))
-        // Add more data here
-    }
-
-    ;[...data].map(([id, data]) =>
+    calendarViewData.value?.forEach((data: any) => {
         calendarData.push(
             getCalendarAttrs(data, { mode: 'page', customPopover: true, type: data.type })
         )
-    )
+    })
 
     calendarData.push({
         highlight: {
@@ -163,6 +246,10 @@ const calendarData = computed(() => {
 
     return calendarData
 })
+
+const moveToday = () => {
+    calendar.value.move(new Date())
+}
 
 const isEntryPaid = (date: Date, paidDates: Date[]) => {
     return paidDates?.some((paid: any) => paid.toDate().toDateString() === date.toDateString())
@@ -184,6 +271,38 @@ const markAsPaid = (id: string, date: Date, customData: any) => {
             getNextDateByFrequency(date, customData.frequency)
         )
 }
+
+// List View Data
+const allData = listViewData
+
+const sortedList = (a: any, b: any) => a.nextPayment.toDate() - b.nextPayment.toDate()
+
+const todayAndOverdue = computed(() => {
+    const data = [...allData.value.overdue.data, ...allData.value.today.data].sort(sortedList)
+    const total = {
+        add: allData.value.today.total.add + allData.value.overdue.total.add,
+        sub: allData.value.today.total.sub + allData.value.overdue.total.sub
+    }
+    return { data, total }
+})
+
+const thisWeek = computed(() => {
+    const data = allData.value.thisWeek.data
+    const total = allData.value.thisWeek.total
+    return { data, total }
+})
+
+const nextWeek = computed(() => {
+    const data = allData.value.nextWeek.data
+    const total = allData.value.nextWeek.total
+    return { data, total }
+})
+
+const upcoming = computed(() => {
+    const data = allData.value.upcoming.data
+    const total = allData.value.upcoming.total
+    return { data, total }
+})
 </script>
 
 <style>

@@ -255,6 +255,11 @@ export const useUser = () => {
     ///////////////////////////////////
     ///////////////////////////////////
 
+    const filterActive = computed({
+        get: () => _profile.settings?.settingsFilterActive ?? 'all',
+        set: (value) => updateProfile('settingsFilterActive', value)
+    })
+
     const dashboardViewMode = computed({
         get: () => _profile.settings?.settingsDashboardMode ?? 'bills-and-earnings-dashboard',
         set: (value) => updateProfile('settingsDashboardMode', value)
@@ -292,6 +297,7 @@ export const useUser = () => {
     })
 
     const settings = reactive({
+        filterActive,
         dashboardViewMode,
         showGeneralDashboard,
         showBillsAndEarnings,

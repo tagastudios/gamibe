@@ -19,7 +19,7 @@
                             class="flex h-4 w-full flex-grow items-center justify-center rounded bg-transparent px-2 text-center text-sm font-light transition-all duration-500"
                             :class="`
                                 ${
-                                    filter.isActive
+                                    filter.id === selectedFilterId
                                         ? 'font-[600] text-black'
                                         : 'font-[300] text-gray-300'
                                 } 
@@ -101,7 +101,8 @@ import {
     ChartPieIcon,
     UserGroupIcon
 } from '@heroicons/vue/24/solid'
-import { onClickOutside } from '@vueuse/core'
+import { onClickOutside, useStorage, useWindowSize } from '@vueuse/core'
+import { useUser } from '@/composables/useUser'
 
 // Context
 const emit = defineEmits(['filterStatusChanged'])
@@ -109,6 +110,9 @@ const emit = defineEmits(['filterStatusChanged'])
 // Router
 const route = useRoute()
 const isCreateRoute = computed(() => route.matched.find((match) => match.name === 'Create'))
+
+// Settings
+const { profile } = useUser()
 
 // Click Outside
 const menuRef = ref(null)
@@ -148,16 +152,20 @@ const tabs = [
     }
 ]
 
-const selectedTabIndex = ref(0)
+const selectedTabIndex = useStorage('gamibe-tab-bar-circle', 0)
 
 const tabsRef: any = ref(null)
 const activeTabEl: any = computed(() => {
     return tabsRef.value?.children[selectedTabIndex.value]
 })
 
+const { width } = useWindowSize()
+
 const circleSliderRef: any = ref(null)
 const circleSliderPosition = computed(() => {
-    const left = activeTabEl.value?.offsetLeft
+    // This is a hack to refresh the position of the circle slider
+    const nullRefreshOnScreenWidth = width.value / width.value - 1 // always 0
+    const left = activeTabEl.value?.offsetLeft + nullRefreshOnScreenWidth
     return `
         left: calc(${left}px);
     `
@@ -186,31 +194,31 @@ const filters = [
     {
         id: 'all',
         name: 'All',
-        isActive: true,
         disabled: false
     },
     {
         id: 'income',
         name: 'Income',
-        isActive: false,
         disabled: false
     },
     {
         id: 'expense',
         name: 'Expense',
-        isActive: false,
         disabled: false
     },
     {
         id: 'saving',
         name: 'Saving',
-        isActive: false,
         disabled: true
     }
 ]
 
-const showFilters = ref(tabs[0]?.showFilters)
-const selectedFilterIndex = ref(0)
+const showFilters = useStorage('gamibe-tab-bar-filter', true)
+
+const selectedFilterId = computed(() => profile.settings.filterActive)
+const selectedFilterIndex = computed(() =>
+    filters.findIndex((f: any) => f.id === selectedFilterId.value)
+)
 
 const filterTabPosition = computed(() => {
     return {
@@ -220,10 +228,7 @@ const filterTabPosition = computed(() => {
 })
 
 const selectFilter = (filter: any) => {
-    filters.forEach((f) => {
-        f.isActive = f.id === filter.id
-    })
-    selectedFilterIndex.value = filters.findIndex((f: any) => f.id === filter.id)
+    profile.settings.filterActive = filter.id
 }
 </script>
 

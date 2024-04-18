@@ -5,9 +5,12 @@
         "src/**/*",
         "src/**/**/*",
         "src/**/**/**/*",
-        "src/**/**/**/*.vue",
+        "src/**/*.ts",
+        "src/**/**/*.ts",
+        "src/**/**/**/*.ts",
+        "src/**/*.vue",
         "src/**/**/*.vue",
-        "src/**/*.vue"
+        "src/**/**/**/*.vue"
     ],
     "exclude": ["src/**/__tests__/*"],
     "compilerOptions": {
