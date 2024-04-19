@@ -260,6 +260,11 @@ export const useUser = () => {
         set: (value) => updateProfile('settingsFilterActive', value)
     })
 
+    const filterCalendar = computed({
+        get: () => _profile.settings?.settingsFilterCalendar ?? 'month',
+        set: (value) => updateProfile('settingsFilterCalendar', value)
+    })
+
     const dashboardViewMode = computed({
         get: () => _profile.settings?.settingsDashboardMode ?? 'bills-and-earnings-dashboard',
         set: (value) => updateProfile('settingsDashboardMode', value)
@@ -298,6 +303,7 @@ export const useUser = () => {
 
     const settings = reactive({
         filterActive,
+        filterCalendar,
         dashboardViewMode,
         showGeneralDashboard,
         showBillsAndEarnings,

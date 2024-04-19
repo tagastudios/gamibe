@@ -75,15 +75,21 @@
                     </ul>
                 </template>
                 <template #footer>
-                    <div class="flex w-full flex-col items-center px-4 pb-3">
+                    <div class="flex w-full flex-col items-center gap-2 px-4 pb-3">
+                        {{ profile.settings.filterCalendar }}
+                        <RadioBtnSlider
+                            v-model="profile.settings.filterCalendar"
+                            group="calendar-range-view"
+                            :options="calendarOptions"
+                        />
                         <button
-                            class="w-full rounded-md bg-blue-600 px-3 py-1 font-bold text-white hover:bg-blue-700"
+                            class="w-full rounded-md bg-blue-600 p-2 font-bold text-white hover:bg-blue-700"
                             @click="moveToday"
                         >
                             Today
                         </button>
                         <div
-                            class="mt-2 flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-md border border-blue-600 p-2 shadow-inner shadow-blue-500"
+                            class="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-md border border-blue-600 p-2 shadow-inner shadow-blue-500"
                         >
                             <p
                                 class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
@@ -130,16 +136,7 @@
                 </template>
             </VCalendar>
         </div>
-        <!-- <GridSystem type="list" class="flex w-full justify-center px-0 pb-8">
-            <BillCard
-                v-for="item in listViewData.upcoming.data"
-                :key="item.id"
-                :name="item.name"
-                :category="item.category"
-                :amount="item.amount"
-                :date="item.nextPayment ? item.nextPayment.toDate() : item.startAt.toDate()"
-            />
-        </GridSystem> -->
+
         <GridSystem
             v-if="todayAndOverdue.data.length"
             type="list"
@@ -209,20 +206,29 @@ import { useUser } from '@/composables/useUser'
 import { useCalendar } from '@/composables/useCalendar'
 import { useWeek } from '@/composables/shared/useTime'
 import { useFilteredData } from '@/composables/useFilteredData'
-import { useCurrency } from '@/composables/shared/useHelpers'
 
 import GridSystem from '@/components/UI/GridSystem.vue'
 import BillCard from '@/components/cards/BillCard.vue'
+import RadioBtnSlider from '@/components/UI/RadioBtnSlider.vue'
 
-const { payBill, payEarning } = useUser()
+const { payBill, payEarning, profile } = useUser()
 const { getCalendarAttrs } = useCalendar()
 const { getNextDateByFrequency } = useWeek()
 const { calendarViewData, listViewData } = useFilteredData()
-const { formatCurrency } = useCurrency()
 
 onMounted(() => {
     moveToday()
 })
+
+// Calendar Options
+const calendarOptions = [
+    {
+        id: 'week',
+        label: 'Week',
+        altLabel: ''
+    },
+    { id: 'month', label: 'Month', altLabel: '' }
+]
 
 // Calendar View Data
 const calendar: any = ref(null)
