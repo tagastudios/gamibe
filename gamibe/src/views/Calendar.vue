@@ -1,12 +1,53 @@
 <template>
     <main>
         <h1 class="sr-only m-auto text-5xl font-black">Calendar</h1>
+        <div v-if="true" class="flex w-full flex-col items-center gap-2">
+            <div
+                class="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-md border border-blue-600 p-2 shadow-inner shadow-blue-500"
+            >
+                <p class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300">
+                    Expense
+                    <span class="block aspect-square w-2 rounded-full bg-red-500"></span>
+                </p>
+                <p class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300">
+                    Income
+                    <span class="block aspect-square w-2 rounded-full bg-green-500"></span>
+                </p>
+                <p class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300">
+                    Saving
+                    <span class="block aspect-square w-2 rounded-full bg-blue-500"></span>
+                </p>
+                <p class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300">
+                    Transaction
+                    <span class="block aspect-square w-2 rounded-full bg-yellow-500"></span>
+                </p>
+                <p class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300">
+                    Today
+                    <span
+                        class="block aspect-square w-4 rounded-full border border-blue-400"
+                    ></span>
+                </p>
+            </div>
+            <RadioBtnSlider
+                v-model="profile.settings.filterCalendar"
+                group="calendar-range-view"
+                :options="calendarOptions"
+            />
+            <button
+                class="w-full rounded-md bg-blue-600 p-2 font-bold text-white hover:bg-blue-700"
+                @click="moveToday"
+            >
+                Today
+            </button>
+        </div>
         <div class="flex w-full justify-center px-0 py-4">
             <VCalendar
                 ref="calendar"
                 is-dark
+                trim-weeks
                 :first-day-of-week="2"
                 :attributes="calendarData"
+                :view="profile.settings.filterCalendar + 'ly'"
                 class="main-calendar"
             >
                 <template #day-popover="{ day, format, masks, attributes }">
@@ -74,66 +115,6 @@
                         </li>
                     </ul>
                 </template>
-                <template #footer>
-                    <div class="flex w-full flex-col items-center gap-2 px-4 pb-3">
-                        {{ profile.settings.filterCalendar }}
-                        <RadioBtnSlider
-                            v-model="profile.settings.filterCalendar"
-                            group="calendar-range-view"
-                            :options="calendarOptions"
-                        />
-                        <button
-                            class="w-full rounded-md bg-blue-600 p-2 font-bold text-white hover:bg-blue-700"
-                            @click="moveToday"
-                        >
-                            Today
-                        </button>
-                        <div
-                            class="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-md border border-blue-600 p-2 shadow-inner shadow-blue-500"
-                        >
-                            <p
-                                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
-                            >
-                                Expense
-                                <span
-                                    class="block aspect-square w-2 rounded-full bg-red-500"
-                                ></span>
-                            </p>
-                            <p
-                                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
-                            >
-                                Income
-                                <span
-                                    class="block aspect-square w-2 rounded-full bg-green-500"
-                                ></span>
-                            </p>
-                            <p
-                                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
-                            >
-                                Saving
-                                <span
-                                    class="block aspect-square w-2 rounded-full bg-blue-500"
-                                ></span>
-                            </p>
-                            <p
-                                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
-                            >
-                                Transaction
-                                <span
-                                    class="block aspect-square w-2 rounded-full bg-yellow-500"
-                                ></span>
-                            </p>
-                            <p
-                                class="flex items-center gap-1 text-center text-xs font-semibold text-gray-300"
-                            >
-                                Today
-                                <span
-                                    class="block aspect-square w-4 rounded-full border border-blue-400"
-                                ></span>
-                            </p>
-                        </div>
-                    </div>
-                </template>
             </VCalendar>
         </div>
 
@@ -200,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { Timestamp } from 'firebase/firestore'
 import { useUser } from '@/composables/useUser'
 import { useCalendar } from '@/composables/useCalendar'
@@ -220,14 +201,30 @@ onMounted(() => {
     moveToday()
 })
 
+const timer: any = ref(null)
+watch(
+    () => profile.settings.filterCalendar,
+    (val) => {
+        if (timer.value) {
+            clearTimeout(timer.value)
+            timer.value = null
+        }
+        if (val === 'week')
+            timer.value = setTimeout(() => {
+                moveToday()
+            }, 100)
+    }
+)
+
 // Calendar Options
 const calendarOptions = [
     {
         id: 'week',
         label: 'Week',
-        altLabel: ''
+        altLabel: '',
+        disabled: false
     },
-    { id: 'month', label: 'Month', altLabel: '' }
+    { id: 'month', label: 'Month', altLabel: '', disabled: false }
 ]
 
 // Calendar View Data

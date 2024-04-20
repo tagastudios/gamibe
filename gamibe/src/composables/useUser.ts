@@ -1,6 +1,4 @@
 import { ref, computed, reactive, onMounted } from 'vue'
-import { useDatabase } from '@/composables/db'
-import { useWeek } from '@/composables/shared/useTime'
 import { useCurrentUser, useFirebaseAuth } from 'vuefire'
 import {
     // auth
@@ -11,6 +9,8 @@ import {
     // providers
     GoogleAuthProvider
 } from 'firebase/auth'
+import { useDatabase } from '@/composables/db'
+import { useWeek } from '@/composables/shared/useTime'
 
 type User = {
     displayName?: string
