@@ -1,7 +1,10 @@
 <template>
     <main>
         <h1 class="sr-only m-auto text-5xl font-black">Calendar</h1>
-        <div v-if="true" class="flex w-full flex-col items-center gap-2">
+        <div
+            v-if="true"
+            class="mx-auto flex w-full max-w-[600px] flex-col items-center justify-center gap-2"
+        >
             <div
                 class="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-md border border-blue-600 p-2 shadow-inner shadow-blue-500"
             >
@@ -33,12 +36,12 @@
                 group="calendar-range-view"
                 :options="calendarOptions"
             />
-            <button
+            <!-- <button
                 class="w-full rounded-md bg-blue-600 p-2 font-bold text-white hover:bg-blue-700"
                 @click="moveToday"
             >
                 Today
-            </button>
+            </button> -->
         </div>
         <div class="flex w-full justify-center px-0 py-4">
             <VCalendar
@@ -119,64 +122,27 @@
         </div>
 
         <GridSystem
-            v-if="todayAndOverdue.data.length"
+            v-if="listViewFromCalendar.length"
             type="list"
             class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8"
         >
             <BillCard
-                v-for="item in todayAndOverdue.data"
+                v-for="item in listViewFromCalendar"
                 :key="item.id"
                 :name="item.name"
                 :category="item.category"
                 :amount="item.amount"
-                :date="item.nextPayment ? item.nextPayment.toDate() : item.startAt.toDate()"
+                :date="item.exactDate"
+                exact-date
             />
         </GridSystem>
-
-        <GridSystem
-            v-if="thisWeek.data.length"
-            type="list"
-            class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8"
+        <p
+            v-else
+            class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8 pt-2 text-center"
         >
-            <BillCard
-                v-for="item in thisWeek.data"
-                :key="item.id"
-                :name="item.name"
-                :category="item.category"
-                :amount="item.amount"
-                :date="item.nextPayment ? item.nextPayment.toDate() : item.startAt.toDate()"
-            />
-        </GridSystem>
-
-        <GridSystem
-            v-if="nextWeek.data.length"
-            type="list"
-            class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8"
-        >
-            <BillCard
-                v-for="item in nextWeek.data"
-                :key="item.id"
-                :name="item.name"
-                :category="item.category"
-                :amount="item.amount"
-                :date="item.nextPayment ? item.nextPayment.toDate() : item.startAt.toDate()"
-            />
-        </GridSystem>
-
-        <GridSystem
-            v-if="upcoming.data.length"
-            type="list"
-            class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8"
-        >
-            <BillCard
-                v-for="item in upcoming.data"
-                :key="item.id"
-                :name="item.name"
-                :category="item.category"
-                :amount="item.amount"
-                :date="item.nextPayment ? item.nextPayment.toDate() : item.startAt.toDate()"
-            />
-        </GridSystem>
+            Didn't found a record in the calendar. <br />
+            Try moving around the calendar...
+        </p>
     </main>
 </template>
 
@@ -188,17 +154,18 @@ import { useCalendar } from '@/composables/useCalendar'
 import { useWeek } from '@/composables/shared/useTime'
 import { useFilteredData } from '@/composables/useFilteredData'
 
+import RadioBtnSlider from '@/components/UI/RadioBtnSlider.vue'
 import GridSystem from '@/components/UI/GridSystem.vue'
 import BillCard from '@/components/cards/BillCard.vue'
-import RadioBtnSlider from '@/components/UI/RadioBtnSlider.vue'
 
 const { payBill, payEarning, profile } = useUser()
 const { getCalendarAttrs } = useCalendar()
 const { getNextDateByFrequency } = useWeek()
-const { calendarViewData, listViewData } = useFilteredData()
+const { calendarViewData, listViewFromCalendar, refreshListViewFromCalendar } = useFilteredData()
 
 onMounted(() => {
     moveToday()
+    refreshListViewFromCalendar(calendar.value)
 })
 
 const timer: any = ref(null)
@@ -274,38 +241,6 @@ const markAsPaid = (id: string, date: Date, customData: any) => {
             getNextDateByFrequency(date, customData.frequency)
         )
 }
-
-// List View Data
-const allData = listViewData
-
-const sortedList = (a: any, b: any) => a.nextPayment.toDate() - b.nextPayment.toDate()
-
-const todayAndOverdue = computed(() => {
-    const data = [...allData.value.overdue.data, ...allData.value.today.data].sort(sortedList)
-    const total = {
-        add: allData.value.today.total.add + allData.value.overdue.total.add,
-        sub: allData.value.today.total.sub + allData.value.overdue.total.sub
-    }
-    return { data, total }
-})
-
-const thisWeek = computed(() => {
-    const data = allData.value.thisWeek.data
-    const total = allData.value.thisWeek.total
-    return { data, total }
-})
-
-const nextWeek = computed(() => {
-    const data = allData.value.nextWeek.data
-    const total = allData.value.nextWeek.total
-    return { data, total }
-})
-
-const upcoming = computed(() => {
-    const data = allData.value.upcoming.data
-    const total = allData.value.upcoming.total
-    return { data, total }
-})
 </script>
 
 <style>

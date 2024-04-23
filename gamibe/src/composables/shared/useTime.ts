@@ -106,6 +106,7 @@ export const useWeek = () => {
         isDueNextWeek,
         isUpcoming,
         isOverdue,
+        isDateWithinRange,
         getNextDateByFrequency
     }
 }

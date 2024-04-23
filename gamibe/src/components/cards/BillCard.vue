@@ -15,7 +15,7 @@
                 {{ name }}
             </h3>
             <p class="truncate text-sm capitalize text-gray-500 md:text-base">
-                Due {{ formattedDate }}
+                Due {{ exactDate ? formattedExactDate : formattedTimeAgoDate }}
             </p>
         </div>
         <p class="min-w-max text-right text-base font-semibold md:text-lg lg:text-xl">
@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useTimeAgo } from '@vueuse/core'
+import { useTimeAgo, useDateFormat } from '@vueuse/core'
 import {
     QuestionMarkCircleIcon,
     ComputerDesktopIcon,
@@ -56,6 +56,10 @@ const props = defineProps({
     },
     description: {
         type: String
+    },
+    exactDate: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -98,5 +102,6 @@ const bgColor = computed(() => {
 
 const formattedBillAmount = computed(() => formatCurrency(props.amount))
 
-const formattedDate = useTimeAgo(props.date)
+const formattedTimeAgoDate = useTimeAgo(props.date)
+const formattedExactDate = useDateFormat(props.date, 'MM/DD/YY')
 </script>

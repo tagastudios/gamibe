@@ -1,5 +1,5 @@
 import { useUser } from '@/composables/useUser'
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 
 export const useFilteredData = () => {
     const { bills, earnings, profile } = useUser()
@@ -78,10 +78,50 @@ export const useFilteredData = () => {
         return dataObj
     })
 
+    const calendarRef: any = ref(null)
+    const listViewFromCalendar = computed(() => {
+        const rangeMode = profile.settings.filterCalendar
+        const data: any = []
+
+        const activeMonth = calendarRef.value?.pages[0].month
+
+        calendarRef.value?.dayCells &&
+            Object.values(calendarRef.value?.dayCells).forEach((row: any) => {
+                if (activeMonth !== row.day.month) return
+                if (row.cells.length) {
+                    row.cells.forEach((cell: any) => {
+                        const tempData = { ...cell.data.customData }
+                        if (!cell.data.customData) return
+                        tempData.exactDate = new Date(cell.startDate)
+                        tempData.id = Math.random().toString(36).substring(7) // random id
+                        tempData.rangeMode = rangeMode
+                        data.push(tempData)
+                    })
+                }
+            })
+
+        return sortBy(data, 'exactDate', 'date')
+    })
+
+    const refreshListViewFromCalendar = (cal: any) => {
+        calendarRef.value = cal
+    }
+
+    const sortBy = (arr: any, key: any, type: any) => {
+        if (type === 'timestamp')
+            return arr.sort((a: any, b: any) => a[key].toDate() - b[key].toDate())
+        if (type === 'date')
+            return arr.sort((a: any, b: any) => new Date(a[key]).getMilliseconds() - new Date(b[key]).getMilliseconds())
+        // default
+        return arr.sort((a: any, b: any) => a[key] - b[key])
+    }
+
     const sortedList = (a: any, b: any) => a.nextPayment.toDate() - b.nextPayment.toDate()
 
     return {
         calendarViewData,
-        listViewData
+        listViewData,
+        listViewFromCalendar,
+        refreshListViewFromCalendar
     }
 }

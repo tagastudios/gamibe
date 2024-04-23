@@ -68,8 +68,6 @@ const currentStep = computed(() => {
 })
 const maxSteps = 3
 
-console.log(route)
-
 const previousPath = computed(() => {
     const currentPath = route.path ?? ''
     const pathArr = currentPath.split('/')
