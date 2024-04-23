@@ -84,10 +84,12 @@ export const useFilteredData = () => {
         const data: any = []
 
         const activeMonth = calendarRef.value?.pages[0].month
+        const activeWeek = calendarRef.value?.pages[0].viewWeeks[0].weeknumber
 
         calendarRef.value?.dayCells &&
             Object.values(calendarRef.value?.dayCells).forEach((row: any) => {
-                if (activeMonth !== row.day.month) return
+                if (rangeMode === 'month' && activeMonth !== row.day.month) return
+                else if (rangeMode === 'week' && activeWeek !== row.day.weeknumber) return
                 if (row.cells.length) {
                     row.cells.forEach((cell: any) => {
                         const tempData = { ...cell.data.customData }
@@ -111,7 +113,10 @@ export const useFilteredData = () => {
         if (type === 'timestamp')
             return arr.sort((a: any, b: any) => a[key].toDate() - b[key].toDate())
         if (type === 'date')
-            return arr.sort((a: any, b: any) => new Date(a[key]).getMilliseconds() - new Date(b[key]).getMilliseconds())
+            return arr.sort(
+                (a: any, b: any) =>
+                    new Date(a[key]).getMilliseconds() - new Date(b[key]).getMilliseconds()
+            )
         // default
         return arr.sort((a: any, b: any) => a[key] - b[key])
     }
