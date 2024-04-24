@@ -120,7 +120,6 @@
                 </template>
             </VCalendar>
         </div>
-
         <GridSystem
             v-if="listViewFromCalendar.length"
             type="list"
@@ -128,13 +127,20 @@
         >
             <MultiPurposeCard
                 v-for="item in listViewFromCalendar"
-                :key="item.id"
+                exact-date
+                :key="item.renderId"
+                :id="item.id"
                 :name="item.name"
+                :nickname="item.nickname"
+                :website="item.website"
                 :category="item.category"
                 :amount="item.amount"
+                :since="item.startAt"
                 :date="item.exactDate"
+                :frequency="item.frequency"
                 :type="item.type"
-                exact-date
+                :expand="selectedCard === item.id"
+                @click="selectCard(item.id)"
             />
         </GridSystem>
         <p
@@ -197,6 +203,11 @@ const calendarOptions = [
 
 // Calendar View Data
 const calendar: any = ref(null)
+const selectedCard: any = ref(null)
+
+const selectCard = (id: string) => {
+    selectedCard.value = selectedCard.value === id ? null : id
+}
 
 const calendarData = computed(() => {
     const calendarData: any = []

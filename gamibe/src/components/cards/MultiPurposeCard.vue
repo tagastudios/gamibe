@@ -1,31 +1,82 @@
 <template>
     <div
-        class="flex w-full cursor-default select-none items-center justify-between gap-2 rounded-lg bg-zinc-100 p-2 text-slate-600 shadow-md"
+        class="flex w-full cursor-pointer select-none flex-col gap-2 rounded-lg bg-gradient-to-br to-transparent p-2 text-zinc-200 shadow-inner ring-1"
         :class="`${
             type === 'bill'
-                ? 'border-l-8 border-red-500 shadow shadow-red-500'
-                : 'border-l-8 border-green-500 shadow shadow-green-500 '
+                ? 'from-red-950 shadow-red-500  ring-red-500'
+                : 'from-green-950 shadow-green-500  ring-green-500 '
         }`"
     >
-        <component
-            :is="categoryMapper[category] ?? QuestionMarkCircleIcon"
-            :class="`aspect-square min-w-[14%] rounded-full p-0`"
-            :style="{
-                backgroundColor: bgColor,
-                color: textColor
-            }"
-        />
-        <div class="flex w-full flex-col justify-center truncate pb-1">
-            <h3 class="truncate text-lg font-semibold capitalize md:text-xl">
-                {{ name }}
-            </h3>
-            <p class="truncate text-sm capitalize text-gray-500 md:text-base">
-                {{ exactDate ? formattedExactDate : formattedTimeAgoDate }}
+        <div class="flex w-full items-center justify-between gap-2">
+            <component
+                :is="categoryMapper[category] ?? QuestionMarkCircleIcon"
+                :class="`aspect-square min-w-[14%] rounded-full p-0`"
+                :style="{
+                    backgroundColor: bgColor,
+                    color: textColor
+                }"
+            />
+            <div class="flex w-full flex-col justify-center truncate pb-1">
+                <h3 class="truncate text-lg font-semibold capitalize md:text-xl">
+                    {{ name }}
+                </h3>
+                <p class="truncate text-sm capitalize text-zinc-300 md:text-base">
+                    {{ exactDate ? formattedExactDate : formattedTimeAgoDate }}
+                </p>
+            </div>
+            <p class="min-w-max text-right text-base font-semibold md:text-lg lg:text-xl">
+                {{ formattedBillAmount }}
             </p>
         </div>
-        <p class="min-w-max text-right text-base font-semibold md:text-lg lg:text-xl">
-            {{ formattedBillAmount }}
-        </p>
+        <div
+            class="overflow-hidden transition-all duration-500"
+            :class="expand ? 'mb-0 max-h-28' : '-mb-2 max-h-0'"
+        >
+            <div
+                class="relative transition-opacity duration-500"
+                :class="expand ? 'opacity-100' : 'opacity-0'"
+            >
+                <hr
+                    class="shadow-sm ring-1"
+                    :class="`${
+                        type === 'bill'
+                            ? 'border-red-500 shadow-red-500  ring-red-600'
+                            : 'border-green-500 shadow-green-500  ring-green-600 '
+                    }`"
+                />
+                <div class="my-2 flex w-full justify-between">
+                    <div>
+                        <p v-if="nickname" class="capitalize">Nickname: {{ nickname }}</p>
+                        <p v-if="frequency" class="capitalize">Frequency: {{ frequency }}</p>
+                        <p v-if="website" class="capitalize">Website: {{ website }}</p>
+                    </div>
+                    <div class="text-right text-xs md:text-sm">
+                        <p>Since</p>
+                        <p>{{ formattedSinceDate }}</p>
+                    </div>
+                </div>
+                <div class="flex w-full">
+                    <button
+                        @click.stop="cardAction('delete', id)"
+                        class="h-8 w-full rounded-bl-md border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
+                    >
+                        Delete
+                    </button>
+                    <button
+                        @click.stop="cardAction('edit', id)"
+                        class="h-8 w-full border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        @click.stop="cardAction('paid', id)"
+                        class="h-8 w-full rounded-br-md border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
+                    >
+                        Paid
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -47,6 +98,10 @@ const props = defineProps({
         type: String,
         required: true
     },
+    nickname: {
+        type: String,
+        default: ''
+    },
     category: {
         type: String,
         default: ''
@@ -59,16 +114,31 @@ const props = defineProps({
         type: Date,
         required: true
     },
-    description: {
+    website: {
         type: String
+    },
+    since: {
+        type: null
     },
     exactDate: {
         type: Boolean,
         default: false
     },
+    frequency: {
+        type: String,
+        default: ''
+    },
     type: {
         type: String,
         default: 'bill'
+    },
+    expand: {
+        type: Boolean,
+        default: false
+    },
+    id: {
+        type: String,
+        required: true
     }
 })
 
@@ -113,4 +183,9 @@ const formattedBillAmount = computed(() => formatCurrency(props.amount))
 
 const formattedTimeAgoDate = useTimeAgo(props.date)
 const formattedExactDate = useDateFormat(props.date, 'MM/DD/YY')
+const formattedSinceDate = useDateFormat(props.since.toDate(), 'MM/DD/YY')
+
+const cardAction = (action: string, id: string) => {
+    console.log(action, id)
+}
 </script>
