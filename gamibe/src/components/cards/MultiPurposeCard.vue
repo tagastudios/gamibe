@@ -1,11 +1,13 @@
 <template>
     <div
+        ref="cardRef"
         class="flex w-full cursor-pointer select-none flex-col gap-2 rounded-lg bg-gradient-to-br to-transparent p-2 text-zinc-200 shadow-inner ring-1"
         :class="`${
             type === 'bill'
                 ? 'from-red-950 shadow-red-500  ring-red-500'
                 : 'from-green-950 shadow-green-500  ring-green-500 '
         }`"
+        @click.stop="emit('select-card', id)"
     >
         <div class="flex w-full items-center justify-between gap-2">
             <component
@@ -29,8 +31,8 @@
             </p>
         </div>
         <div
-            class="overflow-hidden transition-all duration-500"
-            :class="expand ? 'mb-0 max-h-28' : '-mb-2 max-h-0'"
+            class="max-h- overflow-hidden transition-all duration-500"
+            :class="expand ? 'mb-0 max-h-40' : '-mb-2 max-h-0'"
         >
             <div
                 class="relative transition-opacity duration-500"
@@ -55,34 +57,59 @@
                         <p>{{ formattedSinceDate }}</p>
                     </div>
                 </div>
-                <div class="flex w-full">
+                <div class="flex w-full items-center">
                     <button
-                        @click.stop="cardAction('delete', id)"
+                        @click.self="showDeleteOptions = !showDeleteOptions"
                         class="h-8 w-full rounded-bl-md border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
                     >
                         Delete
                     </button>
                     <button
-                        @click.stop="cardAction('edit', id)"
+                        @click.self="cardAction('edit', id)"
                         class="h-8 w-full border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
                     >
                         Edit
                     </button>
                     <button
-                        @click.stop="cardAction('paid', id)"
-                        class="h-8 w-full rounded-br-md border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
+                        @click.self="cardAction('paid', id)"
+                        :disabled="paid"
+                        class="h-8 w-full rounded-br-md border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600"
+                        :class="
+                            paid ? ' bg-zinc-500 bg-opacity-25 text-zinc-500' : 'active:bg-zinc-500'
+                        "
                     >
                         Paid
                     </button>
                 </div>
+                <Transition name="fadeShrink">
+                    <div
+                        ref="deleteMenuRef"
+                        v-if="showDeleteOptions"
+                        class="flex w-full items-center"
+                    >
+                        <button
+                            @click.self="cardAction('deleteAll', id)"
+                            class="h-8 w-full rounded-bl-md border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
+                        >
+                            All Series
+                        </button>
+                        <button
+                            @click.self="cardAction('deleteThis', id)"
+                            class="h-8 w-full rounded-br-md border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
+                        >
+                            Only This Date
+                        </button>
+                    </div>
+                </Transition>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useTimeAgo, useDateFormat } from '@vueuse/core'
+import { onClickOutside } from '@vueuse/core'
 import {
     QuestionMarkCircleIcon,
     ComputerDesktopIcon,
@@ -92,6 +119,8 @@ import {
 import { useCurrency } from '@/composables/shared/useHelpers'
 
 const { formatCurrency } = useCurrency()
+
+const emit = defineEmits(['select-card', 'click'])
 
 const props = defineProps({
     name: {
@@ -132,6 +161,10 @@ const props = defineProps({
         type: String,
         default: 'bill'
     },
+    paid: {
+        type: Boolean,
+        default: false
+    },
     expand: {
         type: Boolean,
         default: false
@@ -140,6 +173,18 @@ const props = defineProps({
         type: String,
         required: true
     }
+})
+
+// Click Outside
+const cardRef = ref(null)
+onClickOutside(cardRef, () => {
+    showDeleteOptions.value = false
+    emit('select-card', null)
+})
+
+const deleteMenuRef = ref(null)
+onClickOutside(deleteMenuRef, () => {
+    showDeleteOptions.value = false
 })
 
 const categoryMapper: { [key: string]: any } = {
@@ -185,7 +230,52 @@ const formattedTimeAgoDate = useTimeAgo(props.date)
 const formattedExactDate = useDateFormat(props.date, 'MM/DD/YY')
 const formattedSinceDate = useDateFormat(props.since.toDate(), 'MM/DD/YY')
 
+const showDeleteOptions = ref(false)
 const cardAction = (action: string, id: string) => {
     console.log(action, id)
 }
 </script>
+
+<style scoped>
+@keyframes fadeShrinkIn {
+    from {
+        opacity: 0;
+        transform: scaleY(0);
+        max-height: 0;
+    }
+    50% {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+        transform: scaleY(1);
+        max-height: 50px;
+    }
+}
+
+@keyframes fadeShrinkOut {
+    from {
+        opacity: 1;
+        transform: scaleY(1);
+        max-height: 50px;
+    }
+    25% {
+        opacity: 0;
+    }
+    to {
+        opacity: 0;
+        transform: scaleY(0);
+        max-height: 0;
+    }
+}
+
+.fadeShrink-enter-active {
+    animation: fadeShrinkIn 0.75s;
+    transform-origin: top;
+}
+
+.fadeShrink-leave-active {
+    animation: fadeShrinkOut 0.75s;
+    transform-origin: top;
+}
+</style>

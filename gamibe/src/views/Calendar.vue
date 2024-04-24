@@ -139,8 +139,14 @@
                 :date="item.exactDate"
                 :frequency="item.frequency"
                 :type="item.type"
+                :paid="
+                    item.paidDates?.some(
+                        (paid: any) =>
+                            paid.toDate().toDateString() === item.exactDate.toDateString()
+                    )
+                "
                 :expand="selectedCard === item.id"
-                @click="selectCard(item.id)"
+                @select-card="selectCard($event)"
             />
         </GridSystem>
         <p
