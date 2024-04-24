@@ -126,13 +126,14 @@
             type="list"
             class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8"
         >
-            <BillCard
+            <MultiPurposeCard
                 v-for="item in listViewFromCalendar"
                 :key="item.id"
                 :name="item.name"
                 :category="item.category"
                 :amount="item.amount"
                 :date="item.exactDate"
+                :type="item.type"
                 exact-date
             />
         </GridSystem>
@@ -156,7 +157,7 @@ import { useFilteredData } from '@/composables/useFilteredData'
 
 import RadioBtnSlider from '@/components/UI/RadioBtnSlider.vue'
 import GridSystem from '@/components/UI/GridSystem.vue'
-import BillCard from '@/components/cards/BillCard.vue'
+import MultiPurposeCard from '@/components/cards/MultiPurposeCard.vue'
 
 const { payBill, payEarning, profile } = useUser()
 const { getCalendarAttrs } = useCalendar()
