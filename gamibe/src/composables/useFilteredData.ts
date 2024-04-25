@@ -96,7 +96,6 @@ export const useFilteredData = () => {
                         if (!cell.data.customData) return
                         tempData.exactDate = new Date(cell.startDate)
                         tempData.id = cell.data.customData.id
-                        tempData.renderId = Math.random().toString(36).substring(7) // random id
                         tempData.rangeMode = rangeMode
                         data.push(tempData)
                     })

@@ -52,73 +52,7 @@
                 :attributes="calendarData"
                 :view="profile.settings.filterCalendar + 'ly'"
                 class="main-calendar"
-            >
-                <template #day-popover="{ day, format, masks, attributes }">
-                    <div class="pt-2">
-                        <div class="text-center font-bold text-gray-300">
-                            {{ format(day.date, masks.dayPopover) }}
-                        </div>
-                    </div>
-                    <ul class="px-4 py-2">
-                        <li
-                            v-for="{ key, customData } in attributes"
-                            :key="key + customData.modifiedAt"
-                            class="block px-3 text-gray-700 dark:text-gray-300"
-                        >
-                            <div v-if="customData.type === 'bill'">
-                                <div class="">
-                                    Bill: {{ customData.name }} | Amount: ${{ customData.amount }}
-                                </div>
-                                <div
-                                    v-if="isEntryPaid(day.date, customData.paidDates)"
-                                    class="mt-2 w-full py-1 text-center font-bold text-green-600"
-                                >
-                                    You already paid this bill!
-                                </div>
-                                <div v-else class="py-2">
-                                    <div
-                                        class="text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
-                                    >
-                                        Do you want to mark this bill as Paid?
-                                    </div>
-                                    <button
-                                        class="w-full rounded-md bg-green-600 py-1 font-bold text-white hover:bg-green-700"
-                                        @click="markAsPaid(key, day.date, customData)"
-                                    >
-                                        Mark as Paid!
-                                    </button>
-                                </div>
-                            </div>
-                            <div v-else-if="customData.type === 'earning'">
-                                <div class="">
-                                    Earning: {{ customData.name }} | Amount: ${{
-                                        customData.amount
-                                    }}
-                                </div>
-                                <div
-                                    v-if="isEntryPaid(day.date, customData.paidDates)"
-                                    class="mt-2 w-full py-1 text-center font-bold text-green-600"
-                                >
-                                    You received this earning already!
-                                </div>
-                                <div v-else class="py-2">
-                                    <div
-                                        class="text-center text-xs font-semibold text-gray-700 dark:text-gray-300"
-                                    >
-                                        Did you already got this earning??
-                                    </div>
-                                    <button
-                                        class="w-full rounded-md bg-green-600 py-1 font-bold text-white hover:bg-green-700"
-                                        @click="markAsPaid(key, day.date, customData)"
-                                    >
-                                        Earning Cashed!
-                                    </button>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </template>
-            </VCalendar>
+            />
         </div>
         <GridSystem
             v-if="listViewFromCalendar.length"
@@ -128,7 +62,7 @@
             <MultiPurposeCard
                 v-for="item in listViewFromCalendar"
                 exact-date
-                :key="item.renderId"
+                :key="item.id + item.exactDate"
                 :id="item.id"
                 :name="item.name"
                 :nickname="item.nickname"
@@ -147,6 +81,10 @@
                 "
                 :expand="selectedCard === item.id"
                 @select-card="selectCard($event)"
+                @paid="cardAction('paid', item)"
+                @edit="cardAction('edit', item)"
+                @delete-all="cardAction('delete-all', item)"
+                @delete-this="cardAction('delete-this', item)"
             />
         </GridSystem>
         <p
@@ -171,17 +109,28 @@ import RadioBtnSlider from '@/components/UI/RadioBtnSlider.vue'
 import GridSystem from '@/components/UI/GridSystem.vue'
 import MultiPurposeCard from '@/components/cards/MultiPurposeCard.vue'
 
-const { payBill, payEarning, profile } = useUser()
+const {
+    payBill,
+    deleteBill,
+    deleteBillDate,
+    payEarning,
+    deleteEarning,
+    deleteEarningDate,
+    profile
+} = useUser()
 const { getCalendarAttrs } = useCalendar()
 const { getNextDateByFrequency } = useWeek()
 const { calendarViewData, listViewFromCalendar, refreshListViewFromCalendar } = useFilteredData()
+
+// Refresh Calendar
+const calendar: any = ref(null)
+const timer: any = ref(null)
 
 onMounted(() => {
     moveToday()
     refreshListViewFromCalendar(calendar.value)
 })
 
-const timer: any = ref(null)
 watch(
     () => profile.settings.filterCalendar,
     (val) => {
@@ -196,6 +145,10 @@ watch(
     }
 )
 
+const moveToday = () => {
+    calendar.value.move(new Date())
+}
+
 // Calendar Options
 const calendarOptions = [
     {
@@ -208,20 +161,11 @@ const calendarOptions = [
 ]
 
 // Calendar View Data
-const calendar: any = ref(null)
-const selectedCard: any = ref(null)
-
-const selectCard = (id: string) => {
-    selectedCard.value = selectedCard.value === id ? null : id
-}
-
 const calendarData = computed(() => {
     const calendarData: any = []
 
     calendarViewData.value?.forEach((data: any) => {
-        calendarData.push(
-            getCalendarAttrs(data, { mode: 'page', customPopover: true, type: data.type })
-        )
+        calendarData.push(getCalendarAttrs(data, { mode: 'page', type: data.type }))
     })
 
     calendarData.push({
@@ -235,29 +179,57 @@ const calendarData = computed(() => {
     return calendarData
 })
 
-const moveToday = () => {
-    calendar.value.move(new Date())
+// Calendar Card Actions
+const selectedCard: any = ref(null)
+const selectCard = (id: string) => {
+    selectedCard.value = selectedCard.value === id ? null : id
 }
 
-const isEntryPaid = (date: Date, paidDates: Date[]) => {
-    return paidDates?.some((paid: any) => paid.toDate().toDateString() === date.toDateString())
+const cardAction = (action: string, item: any) => {
+    if (action === 'paid') {
+        markAsPaid(item)
+    } else if (action === 'delete-all') {
+        deleteAll(item)
+    } else if (action === 'delete-this') {
+        deleteThis(item)
+    } else if (action === 'edit') {
+        // console.log('edit')
+    }
 }
 
-const markAsPaid = (id: string, date: Date, customData: any) => {
-    if (customData.type === 'bill')
-        payBill(
-            id,
-            Timestamp.fromDate(date),
-            customData,
-            getNextDateByFrequency(date, customData.frequency)
+const markAsPaid = (customData: any) => {
+    const { id, exactDate: date, frequency, type } = customData
+    if (!id || !date || !frequency || !type) return
+
+    const findNextAvailablePaymentDate: any = (_date: any) => {
+        const nextDate: any = getNextDateByFrequency(_date, frequency)
+        const isADeletedDate = customData.deletedDates?.some(
+            (deleted: any) => deleted.toDate().getTime() === nextDate.getTime()
         )
-    else if (customData.type === 'earning')
-        payEarning(
-            id,
-            Timestamp.fromDate(date),
-            customData,
-            getNextDateByFrequency(date, customData.frequency)
-        )
+        if (isADeletedDate) return findNextAvailablePaymentDate(nextDate)
+        else return nextDate
+    }
+
+    if (type === 'bill')
+        payBill(id, Timestamp.fromDate(date), customData, findNextAvailablePaymentDate(date))
+    else if (type === 'earning')
+        payEarning(id, Timestamp.fromDate(date), customData, findNextAvailablePaymentDate(date))
+}
+
+const deleteAll = (customData: any) => {
+    const { id, exactDate: date, frequency, type } = customData
+    if (!id || !date || !frequency || !type) return
+
+    if (type === 'bill') deleteBill(id)
+    else if (type === 'earning') deleteEarning(id)
+}
+
+const deleteThis = (customData: any) => {
+    const { id, exactDate: date, frequency, type } = customData
+    if (!id || !date || !frequency || !type) return
+
+    if (type === 'bill') deleteBillDate(id, Timestamp.fromDate(date))
+    else if (type === 'earning') deleteEarningDate(id, Timestamp.fromDate(date))
 }
 </script>
 

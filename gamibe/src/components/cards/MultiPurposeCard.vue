@@ -7,18 +7,18 @@
                 ? 'from-red-950 shadow-red-500  ring-red-500'
                 : 'from-green-950 shadow-green-500  ring-green-500 '
         }`"
-        @click.stop="emit('select-card', id)"
+        @click.stop="toggleCard"
     >
         <div class="flex w-full items-center justify-between gap-2">
             <component
                 :is="categoryMapper[category] ?? QuestionMarkCircleIcon"
-                :class="`aspect-square min-w-[14%] rounded-full p-0`"
+                :class="`aspect-square w-[14%] max-w-16 rounded-full p-0`"
                 :style="{
                     backgroundColor: bgColor,
                     color: textColor
                 }"
             />
-            <div class="flex w-full flex-col justify-center truncate pb-1">
+            <div class="flex-1 flex-col justify-center truncate pb-1">
                 <h3 class="truncate text-lg font-semibold capitalize md:text-xl">
                     {{ name }}
                 </h3>
@@ -32,11 +32,11 @@
         </div>
         <div
             class="max-h- overflow-hidden transition-all duration-500"
-            :class="expand ? 'mb-0 max-h-40' : '-mb-2 max-h-0'"
+            :class="shouldExpand ? 'mb-0 max-h-40' : '-mb-2 max-h-0'"
         >
             <div
                 class="relative transition-opacity duration-500"
-                :class="expand ? 'opacity-100' : 'opacity-0'"
+                :class="shouldExpand ? 'opacity-100' : 'opacity-0'"
             >
                 <hr
                     class="shadow-sm ring-1"
@@ -88,13 +88,13 @@
                         class="flex w-full items-center"
                     >
                         <button
-                            @click.self="cardAction('deleteAll', id)"
+                            @click.self="cardAction('delete-all', id)"
                             class="h-8 w-full rounded-bl-md border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
                         >
                             All Series
                         </button>
                         <button
-                            @click.self="cardAction('deleteThis', id)"
+                            @click.self="cardAction('delete-this', id)"
                             class="h-8 w-full rounded-br-md border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
                         >
                             Only This Date
@@ -120,7 +120,7 @@ import { useCurrency } from '@/composables/shared/useHelpers'
 
 const { formatCurrency } = useCurrency()
 
-const emit = defineEmits(['select-card', 'click'])
+const emit = defineEmits(['select-card', 'delete-all', 'delete-this', 'paid', 'edit'])
 
 const props = defineProps({
     name: {
@@ -175,18 +175,39 @@ const props = defineProps({
     }
 })
 
+// Expand Card
+const _expand = ref(false)
+const shouldExpand = computed(() => _expand.value && props.expand)
+
+const toggleCard = () => {
+    if (!showDeleteOptions.value) {
+        _expand.value = !_expand.value
+    }
+    // _expand.value = showDeleteOptions.value ? true : !_expand.value
+    emit('select-card', _expand.value ? props.id : null)
+}
+
 // Click Outside
 const cardRef = ref(null)
 onClickOutside(cardRef, () => {
     showDeleteOptions.value = false
+    _expand.value = false
     emit('select-card', null)
 })
 
+// Delete Options
 const deleteMenuRef = ref(null)
+const showDeleteOptions = ref(false)
 onClickOutside(deleteMenuRef, () => {
-    showDeleteOptions.value = false
+    if (!shouldExpand.value) showDeleteOptions.value = false
 })
 
+// Actions & Emits
+const cardAction = (action: string, id: string) => {
+    emit(action as 'delete-all' | 'delete-this' | 'paid', 'edit', id)
+}
+
+// Icons & Categories
 const categoryMapper: { [key: string]: any } = {
     subscription: ComputerDesktopIcon,
     shopping: ShoppingBagIcon,
@@ -224,16 +245,12 @@ const bgColor = computed(() => {
     }
 })
 
+// Formatters
 const formattedBillAmount = computed(() => formatCurrency(props.amount))
 
 const formattedTimeAgoDate = useTimeAgo(props.date)
 const formattedExactDate = useDateFormat(props.date, 'MM/DD/YY')
 const formattedSinceDate = useDateFormat(props.since.toDate(), 'MM/DD/YY')
-
-const showDeleteOptions = ref(false)
-const cardAction = (action: string, id: string) => {
-    console.log(action, id)
-}
 </script>
 
 <style scoped>

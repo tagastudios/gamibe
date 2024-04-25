@@ -24,8 +24,8 @@ export const useUser = () => {
     const { useProfile, useBills, useEarnings } = useDatabase()
 
     const { profileData, updateProfile, updateProfileArray, removeProfileArray } = useProfile()
-    const { billData, addBill, updateBill, payBill } = useBills()
-    const { earningData, addEarning, payEarning } = useEarnings()
+    const { billData, addBill, updateBill, payBill, deleteBill, deleteBillDate } = useBills()
+    const { earningData, addEarning, payEarning, deleteEarning, deleteEarningDate } = useEarnings()
 
     const { isDueToday, isDueThisWeek, isDueNextWeek, isUpcoming, isOverdue } = useWeek()
 
@@ -331,9 +331,13 @@ export const useUser = () => {
         addBill,
         updateBill,
         payBill,
+        deleteBill,
+        deleteBillDate,
         earnings,
         addEarning,
         payEarning,
+        deleteEarning,
+        deleteEarningDate,
         profile
     }
 }

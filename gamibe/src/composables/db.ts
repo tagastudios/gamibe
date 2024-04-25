@@ -10,7 +10,8 @@ import {
     Timestamp,
     serverTimestamp,
     arrayUnion,
-    arrayRemove
+    arrayRemove,
+    deleteDoc
 } from 'firebase/firestore'
 
 import {
@@ -62,7 +63,7 @@ const useEarnings = () => {
     const updateEarning = (key: string, value: any, earningId: string) => {
         const earningRef = doc(earningsCollection, earningId)
         updateDoc(earningRef, {
-            [key]: key === 'paidDates' ? arrayUnion(value) : value // if key is paidDates, then use add value to current db array
+            [key]: key === 'paidDates' || key === 'deletedDates' ? arrayUnion(value) : value // if key is paidDates, then use add value to current db array
         })
     }
     const payEarning = (
@@ -84,10 +85,21 @@ const useEarnings = () => {
         })
     }
 
+    const deleteEarning = (earningId: string) => {
+        const earningRef = doc(earningsCollection, earningId)
+        deleteDoc(earningRef)
+    }
+
+    const deleteEarningDate = (billId: string, paymentDate: Date | TimestampObj) => {
+        updateEarning('deletedDates', paymentDate, billId)
+    }
+
     return {
         earningData,
         addEarning,
-        payEarning
+        payEarning,
+        deleteEarning,
+        deleteEarningDate
     }
 }
 
@@ -182,7 +194,7 @@ const useBills = () => {
     const updateBill = (key: string, value: any, billId: string) => {
         const billRef = doc(billsCollection, billId)
         updateDoc(billRef, {
-            [key]: key === 'paidDates' ? arrayUnion(value) : value // if key is paidDates, then use add value to current db array
+            [key]: key === 'paidDates' || key === 'deletedDates' ? arrayUnion(value) : value // if key is paidDates, then use add value to current db array
         })
     }
     const payBill = (
@@ -203,12 +215,21 @@ const useBills = () => {
             typeId: billId
         })
     }
+    const deleteBill = (billId: string) => {
+        const billRef = doc(billsCollection, billId)
+        deleteDoc(billRef)
+    }
+    const deleteBillDate = (billId: string, paymentDate: Date | TimestampObj) => {
+        updateBill('deletedDates', paymentDate, billId)
+    }
 
     return {
         billData,
         addBill,
         updateBill,
-        payBill
+        payBill,
+        deleteBill,
+        deleteBillDate
     }
 }
 

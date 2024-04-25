@@ -35,10 +35,11 @@ export const useCalendar = () => {
             _category,
             amount = 0,
             _paidDates = [],
-            _nextPayment
+            _nextPayment,
+            deletedDates = []
         } = data
 
-        const processedFrequency = getCalendarFrequency(startAt, frequency)
+        const processedFrequency = getCalendarFrequency(startAt, frequency, deletedDates)
         const calendarExtraObj: any = {}
 
         if (mode === 'create') {
@@ -62,9 +63,6 @@ export const useCalendar = () => {
             key: id ?? Math.random(),
             dot: getDotColorByType(type),
             dates: processedFrequency,
-            popover: customPopover || {
-                label: 'Bill: ' + name + ' | Amount: $' + amount
-            },
             customData: data
         }
 
