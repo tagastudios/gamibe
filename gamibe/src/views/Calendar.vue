@@ -216,7 +216,9 @@ const togglePaid = (customData: any) => {
         else return nextDate
     }
 
-    const nextPaymentDate = findNextAvailablePaymentDate(JSON.parse(JSON.stringify(date)))
+    const nextPaymentDate = alreadyPaid
+        ? date
+        : findNextAvailablePaymentDate(JSON.parse(JSON.stringify(date)))
 
     if (type === 'bill')
         payBill(id, Timestamp.fromDate(date), customData, nextPaymentDate, alreadyPaid)
