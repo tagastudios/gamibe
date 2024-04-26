@@ -60,19 +60,25 @@ const useEarnings = () => {
         })
     }
 
-    const updateEarning = (key: string, value: any, earningId: string) => {
+    const updateEarning = (key: string, value: any, earningId: string, removeArr?: boolean) => {
         const earningRef = doc(earningsCollection, earningId)
         updateDoc(earningRef, {
-            [key]: key === 'paidDates' || key === 'deletedDates' ? arrayUnion(value) : value // if key is paidDates, then use add value to current db array
+            [key]:
+                key === 'paidDates' || key === 'deletedDates'
+                    ? removeArr
+                        ? arrayRemove(value)
+                        : arrayUnion(value)
+                    : value // if key is paidDates, then use add value to current db array
         })
     }
     const payEarning = (
         earningId: string,
         paymentDate: Date | TimestampObj,
         data: any,
-        nextPaymentDate: Date | TimestampObj
+        nextPaymentDate: Date | TimestampObj,
+        alreadyPaid: boolean
     ) => {
-        updateEarning('paidDates', paymentDate, earningId)
+        updateEarning('paidDates', paymentDate, earningId, alreadyPaid)
         updateEarning('modifiedAt', Timestamp.fromDate(new Date()), earningId)
         updateEarning('nextPayment', nextPaymentDate, earningId)
 
@@ -81,10 +87,10 @@ const useEarnings = () => {
             typePaymentDate: paymentDate,
             typeCreatedAt: data.createdAt,
             typeSource: 'earning',
-            typeId: earningId
+            typeId: earningId,
+            typeMode: alreadyPaid ? 'unpaid' : 'paid'
         })
     }
-
     const deleteEarning = (earningId: string) => {
         const earningRef = doc(earningsCollection, earningId)
         deleteDoc(earningRef)
@@ -191,19 +197,25 @@ const useBills = () => {
             type: 'bill'
         })
     }
-    const updateBill = (key: string, value: any, billId: string) => {
+    const updateBill = (key: string, value: any, billId: string, removeArr?: boolean) => {
         const billRef = doc(billsCollection, billId)
         updateDoc(billRef, {
-            [key]: key === 'paidDates' || key === 'deletedDates' ? arrayUnion(value) : value // if key is paidDates, then use add value to current db array
+            [key]:
+                key === 'paidDates' || key === 'deletedDates'
+                    ? removeArr
+                        ? arrayRemove(value)
+                        : arrayUnion(value)
+                    : value // if key is paidDates, then use add value to current db array
         })
     }
     const payBill = (
         billId: string,
         paymentDate: Date | TimestampObj,
         data: any,
-        nextPaymentDate: Date | TimestampObj
+        nextPaymentDate: Date | TimestampObj,
+        alreadyPaid: boolean
     ) => {
-        updateBill('paidDates', paymentDate, billId)
+        updateBill('paidDates', paymentDate, billId, alreadyPaid)
         updateBill('modifiedAt', Timestamp.fromDate(new Date()), billId)
         updateBill('nextPayment', nextPaymentDate, billId)
 
@@ -212,7 +224,8 @@ const useBills = () => {
             typePaymentDate: paymentDate,
             typeCreatedAt: data.createdAt,
             typeSource: 'bill',
-            typeId: billId
+            typeId: billId,
+            typeMode: alreadyPaid ? 'unpaid' : 'paid'
         })
     }
     const deleteBill = (billId: string) => {

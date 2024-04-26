@@ -76,7 +76,8 @@ export const useWeek = () => {
         date: Date | TimestampObj,
         frequency: string
     ): Date | TimestampObj => {
-        if ('seconds' in date) date = new Date(date.toDate())
+        if (typeof date === 'string') date = new Date(date)
+        else if ('seconds' in date) date = new Date(date.toDate())
 
         switch (frequency) {
             case 'weekly':

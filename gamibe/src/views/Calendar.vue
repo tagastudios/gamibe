@@ -187,7 +187,7 @@ const selectCard = (id: string) => {
 
 const cardAction = (action: string, item: any) => {
     if (action === 'paid') {
-        markAsPaid(item)
+        togglePaid(item)
     } else if (action === 'delete-all') {
         deleteAll(item)
     } else if (action === 'delete-this') {
@@ -197,23 +197,31 @@ const cardAction = (action: string, item: any) => {
     }
 }
 
-const markAsPaid = (customData: any) => {
-    const { id, exactDate: date, frequency, type } = customData
+const togglePaid = (customData: any) => {
+    const { id, exactDate: date, frequency, type, paidDates } = customData
     if (!id || !date || !frequency || !type) return
+
+    const alreadyPaid = paidDates?.some((paid: any) => paid.toDate().getTime() === date.getTime())
 
     const findNextAvailablePaymentDate: any = (_date: any) => {
         const nextDate: any = getNextDateByFrequency(_date, frequency)
         const isADeletedDate = customData.deletedDates?.some(
             (deleted: any) => deleted.toDate().getTime() === nextDate.getTime()
         )
+        const isAPaidDate = paidDates?.some(
+            (paid: any) => paid.toDate().getTime() === nextDate.getTime()
+        )
         if (isADeletedDate) return findNextAvailablePaymentDate(nextDate)
+        else if (isAPaidDate) return findNextAvailablePaymentDate(nextDate)
         else return nextDate
     }
 
+    const nextPaymentDate = findNextAvailablePaymentDate(JSON.parse(JSON.stringify(date)))
+
     if (type === 'bill')
-        payBill(id, Timestamp.fromDate(date), customData, findNextAvailablePaymentDate(date))
+        payBill(id, Timestamp.fromDate(date), customData, nextPaymentDate, alreadyPaid)
     else if (type === 'earning')
-        payEarning(id, Timestamp.fromDate(date), customData, findNextAvailablePaymentDate(date))
+        payEarning(id, Timestamp.fromDate(date), customData, nextPaymentDate, alreadyPaid)
 }
 
 const deleteAll = (customData: any) => {

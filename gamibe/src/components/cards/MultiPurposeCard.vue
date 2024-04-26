@@ -64,21 +64,20 @@
                     >
                         Delete
                     </button>
-                    <button
+                    <!-- <button
                         @click.self="cardAction('edit', id)"
                         class="h-8 w-full border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600 active:bg-zinc-500"
                     >
                         Edit
-                    </button>
+                    </button> -->
                     <button
                         @click.self="cardAction('paid', id)"
-                        :disabled="paid"
                         class="h-8 w-full rounded-br-md border-[0.5px] border-zinc-600 shadow-inner shadow-zinc-600"
                         :class="
                             paid ? ' bg-zinc-500 bg-opacity-25 text-zinc-500' : 'active:bg-zinc-500'
                         "
                     >
-                        Paid
+                        {{ paid ? 'Unpaid' : 'Paid' }}
                     </button>
                 </div>
                 <Transition name="fadeShrink">
