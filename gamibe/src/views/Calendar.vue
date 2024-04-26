@@ -94,20 +94,34 @@
             Didn't found a record in the calendar. <br />
             Try moving around the calendar...
         </p>
+        <ConfettiExplosion
+            v-if="showConfetti"
+            :particleCount="200"
+            :particleSize="10"
+            :duration="3000"
+            :stageHeight="height - 100"
+            :stageWidth="width"
+            style="position: absolute; left: 0; top: 0; width: 100%"
+        />
     </main>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed, watch } from 'vue'
+import { onMounted, ref, computed, watch, nextTick } from 'vue'
 import { Timestamp } from 'firebase/firestore'
 import { useUser } from '@/composables/useUser'
 import { useCalendar } from '@/composables/useCalendar'
 import { useWeek } from '@/composables/shared/useTime'
 import { useFilteredData } from '@/composables/useFilteredData'
+import { useWindowSize } from '@vueuse/core'
+
+import ConfettiExplosion from 'vue-confetti-explosion'
 
 import RadioBtnSlider from '@/components/UI/RadioBtnSlider.vue'
 import GridSystem from '@/components/UI/GridSystem.vue'
 import MultiPurposeCard from '@/components/cards/MultiPurposeCard.vue'
+
+const { width, height } = useWindowSize()
 
 const {
     payBill,
@@ -194,6 +208,7 @@ const cardAction = (action: string, item: any) => {
         deleteThis(item)
     } else if (action === 'edit') {
         // console.log('edit')
+        explodeConfetti()
     }
 }
 
@@ -240,6 +255,14 @@ const deleteThis = (customData: any) => {
 
     if (type === 'bill') deleteBillDate(id, Timestamp.fromDate(date))
     else if (type === 'earning') deleteEarningDate(id, Timestamp.fromDate(date))
+}
+
+// Confetti
+const showConfetti = ref(false)
+const explodeConfetti = async () => {
+    showConfetti.value = false
+    await nextTick()
+    showConfetti.value = true
 }
 </script>
 
