@@ -76,7 +76,8 @@ export const useWeek = () => {
         date: Date | TimestampObj,
         frequency: string
     ): Date | TimestampObj => {
-        if ('seconds' in date) date = new Date(date.toDate())
+        if (typeof date === 'string') date = new Date(date)
+        else if ('seconds' in date) date = new Date(date.toDate())
 
         switch (frequency) {
             case 'weekly':
@@ -106,6 +107,7 @@ export const useWeek = () => {
         isDueNextWeek,
         isUpcoming,
         isOverdue,
+        isDateWithinRange,
         getNextDateByFrequency
     }
 }
@@ -159,7 +161,12 @@ export const useFrequency = () => {
         }
     ]
 
-    const getCalendarFrequency = (date: Date | any, frequency: string, adjustDay: number = 1) => {
+    const getCalendarFrequency = (
+        date: Date | any,
+        frequency: string,
+        deletedDates: any[],
+        adjustDay: number = 1
+    ) => {
         if (!date || !frequency) return null
         if (date.seconds) date = date.toDate()
         const preDate = new Date(date)
@@ -174,45 +181,196 @@ export const useFrequency = () => {
             repeat: {}
         }
 
+        // switch (frequency) {
+        //     case 'weekly':
+        //         freqObj.repeat.every = 'week'
+        //         freqObj.repeat.weekdays = processedDate.getUTCDay() + adjustDay
+        //         break
+        //     case 'bi-weekly':
+        //         freqObj.repeat.every = [2, 'weeks']
+        //         freqObj.repeat.weekdays = processedDate.getUTCDay() + adjustDay
+        //         break
+        //     case 'monthly':
+        //         freqObj.repeat.every = 'month'
+        //         freqObj.repeat.days = processedDate.getUTCDate()
+        //         break
+        //     case 'bi-monthly':
+        //         freqObj.repeat.every = [2, 'months']
+        //         freqObj.repeat.days = processedDate.getUTCDate()
+        //         break
+        //     case 'quarterly':
+        //         freqObj.repeat.every = [3, 'months']
+        //         freqObj.repeat.days = processedDate.getUTCDate()
+        //         break
+        //     case 'bi-quarterly':
+        //         freqObj.repeat.every = [6, 'months']
+        //         freqObj.repeat.days = processedDate.getUTCDate()
+        //         break
+        //     case 'yearly':
+        //         freqObj.repeat.every = 'year'
+        //         freqObj.repeat.on = {
+        //             days: processedDate.getUTCDate(),
+        //             months: processedDate.getUTCMonth() + 1,
+        //             year: processedDate.getUTCFullYear()
+        //         }
+        //         break
+        //     case 'bi-yearly':
+        //         freqObj.repeat.every = [2, 'years']
+        //         freqObj.repeat.on = {
+        //             days: processedDate.getUTCDate(),
+        //             months: processedDate.getUTCMonth() + 1,
+        //             year: processedDate.getUTCFullYear()
+        //         }
+        //         break
+        //     default:
+        //         return [processedDate]
+        // }
+
         switch (frequency) {
             case 'weekly':
                 freqObj.repeat.every = 'week'
-                freqObj.repeat.weekdays = processedDate.getUTCDay() + adjustDay
+                freqObj.repeat.on = ({ weekday, date }: { weekday: number; date: Date }) => {
+                    const dateCal = date.getTime()
+                    const isValid = weekday === processedDate.getUTCDate() + adjustDay
+                    if (!deletedDates?.length) return isValid
+                    return (
+                        isValid &&
+                        !deletedDates?.some((arrDate) => {
+                            const deletedDate = arrDate.toDate().getTime()
+                            return deletedDate === dateCal
+                        })
+                    )
+                }
                 break
             case 'bi-weekly':
                 freqObj.repeat.every = [2, 'weeks']
-                freqObj.repeat.weekdays = processedDate.getUTCDay() + adjustDay
+                freqObj.repeat.on = ({ weekday, date }: { weekday: number; date: Date }) => {
+                    const dateCal = date.getTime()
+                    const isValid = weekday === processedDate.getUTCDate() + adjustDay
+                    if (!deletedDates?.length) return isValid
+                    return (
+                        isValid &&
+                        !deletedDates?.some((arrDate) => {
+                            const deletedDate = arrDate.toDate().getTime()
+                            return deletedDate === dateCal
+                        })
+                    )
+                }
                 break
             case 'monthly':
                 freqObj.repeat.every = 'month'
-                freqObj.repeat.days = processedDate.getUTCDate()
+                freqObj.repeat.on = ({ day, date }: { day: number; date: Date }) => {
+                    const dateCal = date.getTime()
+                    const isValid = day === processedDate.getUTCDate()
+                    if (!deletedDates?.length) return isValid
+                    return (
+                        isValid &&
+                        !deletedDates?.some((arrDate) => {
+                            const deletedDate = arrDate.toDate().getTime()
+                            return deletedDate === dateCal
+                        })
+                    )
+                }
                 break
             case 'bi-monthly':
                 freqObj.repeat.every = [2, 'months']
-                freqObj.repeat.days = processedDate.getUTCDate()
+                freqObj.repeat.on = ({ day, date }: { day: number; date: Date }) => {
+                    const dateCal = date.getTime()
+                    const isValid = day === processedDate.getUTCDate()
+                    if (!deletedDates?.length) return isValid
+                    return (
+                        isValid &&
+                        !deletedDates?.some((arrDate) => {
+                            const deletedDate = arrDate.toDate().getTime()
+                            return deletedDate === dateCal
+                        })
+                    )
+                }
                 break
             case 'quarterly':
                 freqObj.repeat.every = [3, 'months']
-                freqObj.repeat.days = processedDate.getUTCDate()
+                freqObj.repeat.on = ({ day, date }: { day: number; date: Date }) => {
+                    const dateCal = date.getTime()
+                    const isValid = day === processedDate.getUTCDate()
+                    if (!deletedDates?.length) return isValid
+                    return (
+                        isValid &&
+                        !deletedDates?.some((arrDate) => {
+                            const deletedDate = arrDate.toDate().getTime()
+                            return deletedDate === dateCal
+                        })
+                    )
+                }
                 break
             case 'bi-quarterly':
                 freqObj.repeat.every = [6, 'months']
-                freqObj.repeat.days = processedDate.getUTCDate()
+                freqObj.repeat.on = ({ day, date }: { day: number; date: Date }) => {
+                    const dateCal = date.getTime()
+                    const isValid = day === processedDate.getUTCDate()
+                    if (!deletedDates?.length) return isValid
+                    return (
+                        isValid &&
+                        !deletedDates?.some((arrDate) => {
+                            const deletedDate = arrDate.toDate().getTime()
+                            return deletedDate === dateCal
+                        })
+                    )
+                }
                 break
             case 'yearly':
                 freqObj.repeat.every = 'year'
-                freqObj.repeat.on = {
-                    days: processedDate.getUTCDate(),
-                    months: processedDate.getUTCMonth() + 1,
-                    year: processedDate.getUTCFullYear()
+                freqObj.repeat.on = ({
+                    day,
+                    month,
+                    year,
+                    date
+                }: {
+                    day: number
+                    month: number
+                    year: number
+                    date: Date
+                }) => {
+                    const dateCal = date.getTime()
+                    const isValid =
+                        day === processedDate.getUTCDate() &&
+                        month === processedDate.getUTCMonth() + 1 &&
+                        year === processedDate.getUTCFullYear()
+                    if (!deletedDates?.length) return isValid
+                    return (
+                        isValid &&
+                        !deletedDates?.some((arrDate) => {
+                            const deletedDate = arrDate.toDate().getTime()
+                            return deletedDate === dateCal
+                        })
+                    )
                 }
                 break
             case 'bi-yearly':
                 freqObj.repeat.every = [2, 'years']
-                freqObj.repeat.on = {
-                    days: processedDate.getUTCDate(),
-                    months: processedDate.getUTCMonth() + 1,
-                    year: processedDate.getUTCFullYear()
+                freqObj.repeat.on = ({
+                    day,
+                    month,
+                    year,
+                    date
+                }: {
+                    day: number
+                    month: number
+                    year: number
+                    date: Date
+                }) => {
+                    const dateCal = date.getTime()
+                    const isValid =
+                        day === processedDate.getUTCDate() &&
+                        month === processedDate.getUTCMonth() + 1 &&
+                        year === processedDate.getUTCFullYear()
+                    if (!deletedDates?.length) return isValid
+                    return (
+                        isValid &&
+                        !deletedDates?.some((arrDate) => {
+                            const deletedDate = arrDate.toDate().getTime()
+                            return deletedDate === dateCal
+                        })
+                    )
                 }
                 break
             default:
