@@ -99,9 +99,7 @@
             :particleCount="200"
             :particleSize="10"
             :duration="3000"
-            :stageHeight="height - 100"
-            :stageWidth="width"
-            style="position: absolute; left: 0; top: 0; width: 100%"
+            style="position: absolute; left: 0; top: 0"
         />
     </main>
 </template>
@@ -113,15 +111,12 @@ import { useUser } from '@/composables/useUser'
 import { useCalendar } from '@/composables/useCalendar'
 import { useWeek } from '@/composables/shared/useTime'
 import { useFilteredData } from '@/composables/useFilteredData'
-import { useWindowSize } from '@vueuse/core'
 
 import ConfettiExplosion from 'vue-confetti-explosion'
 
 import RadioBtnSlider from '@/components/UI/RadioBtnSlider.vue'
 import GridSystem from '@/components/UI/GridSystem.vue'
 import MultiPurposeCard from '@/components/cards/MultiPurposeCard.vue'
-
-const { width, height } = useWindowSize()
 
 const {
     payBill,
@@ -208,7 +203,6 @@ const cardAction = (action: string, item: any) => {
         deleteThis(item)
     } else if (action === 'edit') {
         // console.log('edit')
-        explodeConfetti()
     }
 }
 
@@ -217,6 +211,7 @@ const togglePaid = (customData: any) => {
     if (!id || !date || !frequency || !type) return
 
     const alreadyPaid = paidDates?.some((paid: any) => paid.toDate().getTime() === date.getTime())
+    if (!alreadyPaid) explodeConfetti()
 
     const findNextAvailablePaymentDate: any = (_date: any) => {
         const nextDate: any = getNextDateByFrequency(_date, frequency)
