@@ -51,7 +51,7 @@ const filterIsOpen = ref(false)
         <RouterView
             class="flex h-full w-full select-none flex-col justify-center p-6 text-sm transition-all delay-100 duration-700 md:text-base lg:text-lg xl:text-xl"
             :class="`${isCreateRoute ? 'pt-16' : 'pt-[90px]'} ${
-                filterIsOpen ? 'pb-36' : isCreateRoute ? 'pb-10' : 'pb-20'
+                filterIsOpen ? 'pb-44' : isCreateRoute ? 'pb-10' : 'pb-28'
             }`"
         />
     </div>
