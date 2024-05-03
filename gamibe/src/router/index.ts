@@ -64,6 +64,11 @@ const router = createRouter({
             component: Login
         },
         {
+            path: '/privacy-policy',
+            name: 'PrivacyPolicy',
+            component: () => import('@/views/Privacy.vue')
+        },
+        {
             path: '/:pathMatch(.*)*', // 404
             name: 'NotFound',
             component: () => import('@/views/NotFound.vue')
