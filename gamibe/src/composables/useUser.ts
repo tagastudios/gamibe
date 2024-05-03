@@ -5,6 +5,7 @@ import {
     getRedirectResult,
     signInWithPopup,
     signOut,
+    createUserWithEmailAndPassword,
     // providers
     GoogleAuthProvider,
     FacebookAuthProvider,
@@ -46,7 +47,7 @@ export const useUser = () => {
     const user: User | null = useCurrentUser()
     const loginError = ref(null)
 
-    const login = (type: string) => {
+    const login = (type: string, email: string, password: string) => {
         switch (type) {
             case 'google':
                 signinWithGoogle()
@@ -56,6 +57,9 @@ export const useUser = () => {
                 break
             case 'apple':
                 signinWithApple()
+                break
+            case 'create':
+                createUser(email, password)
                 break
             default:
                 console.error('Invalid login type')
@@ -84,6 +88,20 @@ export const useUser = () => {
             console.error('Failed sign', reason)
             loginError.value = reason
         })
+    }
+
+    const createUser = async (email: string, password: string) => {
+        loginError.value = null
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user
+                console.log('User created', user)
+            })
+            .catch((reason) => {
+                console.error('Failed create user', reason)
+                loginError.value = reason
+            })
     }
 
     // only on client side
