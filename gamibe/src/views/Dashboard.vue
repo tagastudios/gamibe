@@ -92,7 +92,7 @@
                 </p>
             </div>
 
-            <GridSystem type="list" class="px-6 pb-10">
+            <GridSystem type="list" class="px-6">
                 <BillCard
                     v-for="item in upcoming.data"
                     :key="item.id"

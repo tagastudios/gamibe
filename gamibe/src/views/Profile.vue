@@ -5,7 +5,7 @@ import type { UseWebNotificationOptions } from '@vueuse/core'
 import RadioBtnGroup from '@/components/UI/RadioBtnGroup.vue'
 import { useUser } from '@/composables/useUser'
 
-const { profile } = useUser()
+const { profile, logout } = useUser()
 
 const options = [
     {
@@ -78,8 +78,7 @@ const handleNotification = (hasWorker: boolean) => {
     }
 }
 
-const isUAT = true
-// const isUAT = import.meta.env.VITE_APP_ENV === 'uat'
+const isUAT = import.meta.env.VITE_APP_ENV === 'uat'
 </script>
 
 <template>
@@ -129,6 +128,17 @@ const isUAT = true
                 class="mt-2 w-full rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700 active:bg-blue-800"
             >
                 Worker > 1min > Hello World!
+            </button>
+        </fieldset>
+        <fieldset v-if="isUAT" class="mt-4 rounded-lg border-2 p-4">
+            <legend>
+                <h2 class="px-4 text-lg">User Settings</h2>
+            </legend>
+            <button
+                @click="logout()"
+                class="mt-2 w-full rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700 active:bg-blue-800"
+            >
+                Sign Out
             </button>
         </fieldset>
     </main>

@@ -12,6 +12,7 @@ import App from './App.vue'
 import router from './router'
 import { firebaseApp } from './configs/firebase'
 import Notifications from '@/plugins/notifications'
+import Icons from '@/plugins/icons'
 
 // App Setup
 const app = createApp(App)
@@ -23,5 +24,6 @@ app.use(VueFire, {
 })
 app.use(VCalendar, {})
 app.use(Notifications)
+app.use(Icons)
 
 app.mount('#app')

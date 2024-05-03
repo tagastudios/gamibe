@@ -57,7 +57,7 @@
         <GridSystem
             v-if="listViewFromCalendar.length"
             type="list"
-            class="mx-auto flex w-full max-w-[600px] justify-center px-0 pb-8"
+            class="mx-auto flex w-full max-w-[600px] justify-center px-0"
         >
             <MultiPurposeCard
                 v-for="item in listViewFromCalendar"
