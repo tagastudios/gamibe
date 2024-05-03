@@ -20,8 +20,8 @@
                 :class="`${isSignIn ? 'h-1/2' : isSignUp ? 'h-4/6' : 'h-2/5'}`"
             >
                 <div
-                    class="flex w-full items-center justify-between pb-4 text-2xl font-bold text-white"
-                    :class="`${openBgLayer ? 'animate-title-open' : 'animate-title-close'}`"
+                    class="w-full items-center justify-between pb-4 text-2xl font-bold text-white transition-opacity delay-300 duration-500"
+                    :class="`${openBgLayer ? 'flex opacity-100' : 'hidden opacity-0'}`"
                 >
                     <v-icon @click="resetLogin" name="hi-chevron-left" class="w-5 cursor-pointer" />
                     <p class="w-full text-center">
@@ -159,67 +159,5 @@ const openBgLayer = computed(() => {
 .fade-enter,
 .fade-leave-to {
     opacity: 0;
-}
-
-.animate-title-open {
-    animation: title-open 1s ease-in-out forwards;
-}
-
-@keyframes title-open {
-    0% {
-        max-height: 0px !important;
-        height: 0px !important;
-        opacity: 0;
-        display: none;
-    }
-    49% {
-        max-height: 0px !important;
-        height: 0px !important;
-        opacity: 0;
-        display: none;
-    }
-    50% {
-        max-height: 0px !important;
-        height: 0px !important;
-        opacity: 0;
-        display: flex;
-    }
-    100% {
-        height: 48px !important;
-        max-height: 48px !important;
-        opacity: 1;
-        display: flex;
-    }
-}
-
-.animate-title-close {
-    animation: title-close 0.5s ease-in-out forwards;
-}
-
-@keyframes title-close {
-    0% {
-        height: 48px !important;
-        max-height: 48px !important;
-        opacity: 1;
-        display: flex;
-    }
-    49% {
-        height: 48px !important;
-        max-height: 48px !important;
-        opacity: 1;
-        display: flex;
-    }
-    50% {
-        height: 48px !important;
-        max-height: 48px !important;
-        opacity: 1;
-        display: none;
-    }
-    100% {
-        max-height: 0px !important;
-        height: 0px !important;
-        opacity: 0;
-        display: none;
-    }
 }
 </style>
