@@ -6,13 +6,33 @@
                 class="grid w-full items-center justify-center transition-all delay-300 duration-500"
                 :class="`${isSignIn ? 'h-1/2' : isSignUp ? 'h-2/6' : 'h-3/5'}`"
             >
-                <div v-if="isSignIn" class="flex flex-col gap-4">
-                    <p class="text-[60px] font-black">Hi</p>
-                    <p class="text-xl font-light text-white">Welcome back!</p>
-                </div>
-                <div v-else-if="isSignUp" class="flex flex-col gap-4">
-                    <p class="text-[60px] font-black">Hello</p>
-                    <p class="text-xl font-light text-white">Let's get started!</p>
+                <div v-if="isNextLoginStep" class="flex flex-col gap-4">
+                    <p
+                        class="text-[60px] font-black transition-all duration-300"
+                        :class="loginError ? 'translate-y-0' : 'translate-y-24'"
+                    >
+                        {{ isSignIn ? 'Hi' : 'Hello' }}
+                    </p>
+                    <p
+                        class="text-xl font-light text-white transition-all delay-100 duration-300"
+                        :class="loginError ? 'translate-y-0' : 'translate-y-24'"
+                    >
+                        {{ isSignIn ? 'Welcome back!' : `Let's get started!` }}
+                    </p>
+                    <br />
+                    <div
+                        class="flex flex-col gap-4 transition-all delay-200 duration-300"
+                        :class="
+                            loginError ? 'translate-y-0 opacity-100' : 'translate-y-24 opacity-0'
+                        "
+                    >
+                        <p class="text-[60px] font-black">Sorry</p>
+                        <p class="h-2 text-xl font-light text-white">You got an error:</p>
+                        <p class="line-clamp-1 text-base font-light text-white">
+                            Reason:
+                            <span class="font-semibold text-red-500">{{ loginError }}</span>
+                        </p>
+                    </div>
                 </div>
             </div>
             <div
@@ -23,7 +43,7 @@
                     <div
                         class="flex w-full items-center justify-between pb-4 text-2xl font-bold text-white transition-all delay-300 duration-500"
                         :class="`${
-                            openBgLayer ? 'h-8 max-h-8 opacity-100' : ' h-0 max-h-0 opacity-0'
+                            isNextLoginStep ? 'h-8 max-h-8 opacity-100' : ' h-0 max-h-0 opacity-0'
                         }`"
                     >
                         <v-icon
@@ -41,12 +61,16 @@
                 <Transition name="fade" mode="out-in">
                     <div
                         v-if="isSignIn"
-                        class="flex w-full flex-col items-center gap-4 overflow-auto"
+                        class="flex w-full flex-col items-center gap-4 overflow-auto pb-4"
                         :class="`${isSignIn ? 'opacity-100' : 'opacity-0'}`"
                     >
-                        <BaseInput placeholder="Email" />
-                        <BaseInput placeholder="Password" />
-                        <BaseButton big @click="login('popup')" color="blue-gradient-1">
+                        <BaseInput v-model="email" placeholder="Email" />
+                        <BaseInput v-model="password" placeholder="Password" />
+                        <BaseButton
+                            big
+                            @click="login('email', email, password)"
+                            color="blue-gradient-1"
+                        >
                             <div
                                 class="flex h-full w-full items-center justify-center text-base font-bold"
                             >
@@ -59,11 +83,11 @@
                         class="flex w-full flex-col items-center gap-4 overflow-auto"
                         :class="`${isSignUp ? 'opacity-100' : 'opacity-0'}`"
                     >
-                        <BaseInput placeholder="Email" />
-                        <BaseInput placeholder="Username" />
-                        <BaseInput placeholder="Password" />
-                        <BaseInput placeholder="Confirm Password" />
-                        <BaseButton big @click="login('popup')" color="blue-gradient-1">
+                        <BaseInput v-model="email" placeholder="Email" />
+                        <BaseInput v-model="username" placeholder="Username" />
+                        <BaseInput v-model="password" placeholder="Password" />
+                        <BaseInput v-model="confirmPassword" placeholder="Confirm Password" />
+                        <BaseButton big @click="registerUser" color="blue-gradient-1">
                             <div
                                 class="flex h-full w-full items-center justify-center text-base font-bold"
                             >
@@ -81,8 +105,8 @@
                     </div>
                     <div
                         v-else
-                        class="flex w-full flex-col items-center gap-4 overflow-auto px-1"
-                        :class="`${openBgLayer ? 'opacity-0' : 'opacity-100'}`"
+                        class="flex h-36 w-full flex-col items-center gap-4 overflow-auto px-1"
+                        :class="`${isNextLoginStep ? 'opacity-0' : 'opacity-100'}`"
                     >
                         <BaseButton big @click="isSignUp = true">
                             <div class="flex h-full w-full items-center justify-center text-base">
@@ -120,7 +144,7 @@
                                 <v-icon name="fa-facebook-f" scale="1.5" color="#181818" />
                             </div>
                         </BaseButton>
-                        <BaseButton circle @click="login('apple')" color="white">
+                        <BaseButton circle @click="login('apple')" color="white" disabled>
                             <div class="flex h-full w-full items-center justify-center">
                                 <v-icon name="bi-apple" scale="1.5" color="#181818" />
                             </div>
@@ -143,18 +167,37 @@ import BaseButton from '@/components/UI/BaseButton.vue'
 import BaseInput from '@/components/UI/BaseInput.vue'
 import { useUser } from '@/composables/useUser'
 
-const { login, loginError } = useUser()
+const { login, loginError, register } = useUser()
 
 const isSignIn = ref(false)
 const isSignUp = ref(false)
 const resetLogin = () => {
     isSignIn.value = false
     isSignUp.value = false
+    email.value = ''
+    password.value = ''
+    username.value = ''
+    confirmPassword.value = ''
+    loginError.value = null
 }
 
-const openBgLayer = computed(() => {
+const isNextLoginStep = computed(() => {
     return isSignIn.value || isSignUp.value
 })
+
+// User Forms
+const email = ref('')
+const password = ref('')
+const username = ref('')
+const confirmPassword = ref('')
+
+const registerUser = () => {
+    if (password.value !== confirmPassword.value) {
+        loginError.value = `(Auth) Passwords don't match`
+        return
+    }
+    register(email.value, password.value)
+}
 </script>
 
 <style scoped>

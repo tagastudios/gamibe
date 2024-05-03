@@ -1,4 +1,5 @@
 import { ref, computed, reactive, onMounted } from 'vue'
+import type { Ref } from 'vue'
 import { useCurrentUser, useFirebaseAuth } from 'vuefire'
 import {
     // auth
@@ -6,6 +7,7 @@ import {
     signInWithPopup,
     signOut,
     createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
     // providers
     GoogleAuthProvider,
     FacebookAuthProvider,
@@ -45,10 +47,13 @@ export const useUser = () => {
     const appleAuthProvider = new OAuthProvider('apple.com')
 
     const user: User | null = useCurrentUser()
-    const loginError = ref(null)
+    const loginError: Ref<string | null> = ref(null)
 
-    const login = (type: string, email: string, password: string) => {
+    const login = (type: string, email?: string, password?: string) => {
         switch (type) {
+            case 'email':
+                if (email && password) signinWithEmail(email, password)
+                break
             case 'google':
                 signinWithGoogle()
                 break
@@ -58,9 +63,6 @@ export const useUser = () => {
             case 'apple':
                 signinWithApple()
                 break
-            case 'create':
-                createUser(email, password)
-                break
             default:
                 console.error('Invalid login type')
         }
@@ -69,28 +71,38 @@ export const useUser = () => {
     const signinWithGoogle = () => {
         loginError.value = null
         signInWithPopup(auth, googleAuthProvider).catch((reason) => {
-            console.error('Failed sign', reason)
-            loginError.value = reason
+            loginError.value = processErrorString(reason)
         })
     }
 
     const signinWithFacebook = () => {
         loginError.value = null
         signInWithPopup(auth, facebookAuthProvider).catch((reason) => {
-            console.error('Failed sign', reason)
-            loginError.value = reason
+            loginError.value = processErrorString(reason)
         })
     }
 
     const signinWithApple = () => {
         loginError.value = null
         signInWithPopup(auth, appleAuthProvider).catch((reason) => {
-            console.error('Failed sign', reason)
-            loginError.value = reason
+            loginError.value = processErrorString(reason)
         })
     }
 
-    const createUser = async (email: string, password: string) => {
+    const signinWithEmail = async (email: string, password: string) => {
+        loginError.value = null
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user
+                console.log('User logged', user)
+            })
+            .catch((reason) => {
+                loginError.value = processErrorString(reason)
+            })
+    }
+
+    const register = async (email: string, password: string) => {
         loginError.value = null
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
@@ -99,16 +111,24 @@ export const useUser = () => {
                 console.log('User created', user)
             })
             .catch((reason) => {
-                console.error('Failed create user', reason)
-                loginError.value = reason
+                loginError.value = processErrorString(reason)
             })
+    }
+
+    const processErrorString = (reason: any) => {
+        const paranthesis = reason.message.match(/\(([^)]+)\)/)?.[1] // get the first paranthesis content
+        const source = paranthesis?.split('/')[0] // get the first part of the string
+        const formattedSource = source?.charAt(0).toUpperCase() + source?.slice(1) // capitalize the first letter
+        const error = paranthesis?.split('/')[1]?.replace(/-/g, ' ').replace(/_/g, ' ') // get the second part of the string and replace - and _ with space
+        const formattedError = error?.charAt(0).toUpperCase() + error?.slice(1) // capitalize the first letter
+        return `(${formattedSource}) ${formattedError}`
     }
 
     // only on client side
     onMounted(() => {
         getRedirectResult(auth).catch((reason) => {
             console.error('Failed redirect result', reason)
-            loginError.value = reason
+            loginError.value = processErrorString(reason)
         })
     })
 
@@ -359,6 +379,7 @@ export const useUser = () => {
         user,
         loginError,
         login,
+        register,
         logout,
         bills,
         addBill,
