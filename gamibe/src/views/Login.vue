@@ -19,16 +19,24 @@
                 class="relative flex w-full flex-col items-center justify-between rounded-t-[40px] bg-slate-950 p-8 transition-all delay-300 duration-500"
                 :class="`${isSignIn ? 'h-1/2' : isSignUp ? 'h-4/6' : 'h-2/5'}`"
             >
-                <div
-                    class="w-full items-center justify-between pb-4 text-2xl font-bold text-white transition-opacity delay-300 duration-500"
-                    :class="`${openBgLayer ? 'flex opacity-100' : 'hidden opacity-0'}`"
-                >
-                    <v-icon @click="resetLogin" name="hi-chevron-left" class="w-5 cursor-pointer" />
-                    <p class="w-full text-center">
-                        {{ isSignIn ? 'Sign In' : 'Sign Up' }}
-                    </p>
-                    <div class="w-5" />
-                </div>
+                <Transition name="fade" mode="out-in">
+                    <div
+                        class="flex w-full items-center justify-between pb-4 text-2xl font-bold text-white transition-all delay-300 duration-500"
+                        :class="`${
+                            openBgLayer ? 'h-8 max-h-8 opacity-100' : ' h-0 max-h-0 opacity-0'
+                        }`"
+                    >
+                        <v-icon
+                            @click="resetLogin"
+                            name="hi-chevron-left"
+                            class="w-5 cursor-pointer"
+                        />
+                        <p class="w-full text-center">
+                            {{ isSignIn ? 'Sign In' : 'Sign Up' }}
+                        </p>
+                        <div class="w-5" />
+                    </div>
+                </Transition>
 
                 <Transition name="fade" mode="out-in">
                     <div
