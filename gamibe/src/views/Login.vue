@@ -107,12 +107,12 @@
                                 <v-icon name="bi-google" scale="1.5" color="#181818" />
                             </div>
                         </BaseButton>
-                        <BaseButton circle @click="login('facebook')" color="white" disabled>
+                        <BaseButton circle @click="login('facebook')" color="white">
                             <div class="flex h-full w-full items-center justify-center">
                                 <v-icon name="fa-facebook-f" scale="1.5" color="#181818" />
                             </div>
                         </BaseButton>
-                        <BaseButton circle @click="login('apple')" color="white" disabled>
+                        <BaseButton circle @click="login('apple')" color="white">
                             <div class="flex h-full w-full items-center justify-center">
                                 <v-icon name="bi-apple" scale="1.5" color="#181818" />
                             </div>
