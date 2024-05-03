@@ -36,8 +36,35 @@ watch(user, async (currentUser, previousUser) => {
     }
 })
 
+console.log(user)
+
 const isMobile = true
 const filterIsOpen = ref(false)
+
+const dynamicClass = computed(() => {
+    const classes = []
+
+    if (user.value) {
+        classes.push('p-6')
+    } else {
+        classes.push('p-0')
+        return classes.join(' ')
+    }
+
+    if (isCreateRoute.value) {
+        classes.push('pt-16 pb-10')
+    } else {
+        classes.push('pt-[90px]')
+    }
+
+    if (filterIsOpen.value) {
+        classes.push('pb-44')
+    } else {
+        classes.push('pb-28')
+    }
+
+    return classes.join(' ')
+})
 </script>
 
 <template>
@@ -49,10 +76,8 @@ const filterIsOpen = ref(false)
 
     <div class="flex w-full flex-col">
         <RouterView
-            class="flex h-full w-full select-none flex-col justify-center p-6 text-sm transition-all delay-100 duration-700 md:text-base lg:text-lg xl:text-xl"
-            :class="`${isCreateRoute ? 'pt-16' : 'pt-[90px]'} ${
-                filterIsOpen ? 'pb-44' : isCreateRoute ? 'pb-10' : 'pb-28'
-            }`"
+            class="flex h-full w-full select-none flex-col justify-center text-sm transition-all delay-100 duration-700 md:text-base lg:text-lg xl:text-xl"
+            :class="dynamicClass"
         />
     </div>
 

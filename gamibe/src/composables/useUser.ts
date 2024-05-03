@@ -3,11 +3,12 @@ import { useCurrentUser, useFirebaseAuth } from 'vuefire'
 import {
     // auth
     getRedirectResult,
-    signInWithRedirect,
     signInWithPopup,
     signOut,
     // providers
-    GoogleAuthProvider
+    GoogleAuthProvider,
+    FacebookAuthProvider,
+    OAuthProvider
 } from 'firebase/auth'
 import { useDatabase } from '@/composables/db'
 import { useWeek } from '@/composables/shared/useTime'
@@ -39,33 +40,47 @@ export const useUser = () => {
 
     // Providers
     const googleAuthProvider = new GoogleAuthProvider()
+    const facebookAuthProvider = new FacebookAuthProvider()
+    const appleAuthProvider = new OAuthProvider('apple.com')
 
     const user: User | null = useCurrentUser()
     const loginError = ref(null)
 
     const login = (type: string) => {
         switch (type) {
-            case 'redirect':
-                signinRedirect()
+            case 'google':
+                signinWithGoogle()
                 break
-            case 'popup':
-                signinPopup()
+            case 'facebook':
+                signinWithFacebook()
+                break
+            case 'apple':
+                signinWithApple()
                 break
             default:
                 console.error('Invalid login type')
         }
     }
 
-    const signinRedirect = () => {
-        signInWithRedirect(auth, googleAuthProvider).catch((reason) => {
-            console.error('Failed signinRedirect', reason)
+    const signinWithGoogle = () => {
+        loginError.value = null
+        signInWithPopup(auth, googleAuthProvider).catch((reason) => {
+            console.error('Failed sign', reason)
             loginError.value = reason
         })
     }
 
-    const signinPopup = () => {
+    const signinWithFacebook = () => {
         loginError.value = null
-        signInWithPopup(auth, googleAuthProvider).catch((reason) => {
+        signInWithPopup(auth, facebookAuthProvider).catch((reason) => {
+            console.error('Failed sign', reason)
+            loginError.value = reason
+        })
+    }
+
+    const signinWithApple = () => {
+        loginError.value = null
+        signInWithPopup(auth, appleAuthProvider).catch((reason) => {
             console.error('Failed sign', reason)
             loginError.value = reason
         })

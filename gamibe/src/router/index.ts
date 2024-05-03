@@ -64,11 +64,6 @@ const router = createRouter({
             component: Login
         },
         {
-            path: '/register',
-            name: 'Register',
-            component: () => import('@/views/Register.vue')
-        },
-        {
             path: '/:pathMatch(.*)*', // 404
             name: 'NotFound',
             component: () => import('@/views/NotFound.vue')
