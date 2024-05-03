@@ -20,7 +20,7 @@
                 :class="`${isSignIn ? 'h-1/2' : isSignUp ? 'h-4/6' : 'h-2/5'}`"
             >
                 <div
-                    class="w-full items-center justify-between pb-4 text-2xl font-bold text-white"
+                    class="flex w-full items-center justify-between pb-4 text-2xl font-bold text-white"
                     :class="`${openBgLayer ? 'animate-title-open' : 'animate-title-close'}`"
                 >
                     <v-icon @click="resetLogin" name="hi-chevron-left" class="w-5 cursor-pointer" />
