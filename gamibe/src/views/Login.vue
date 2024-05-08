@@ -4,7 +4,7 @@
         <div class="flex h-screen w-full flex-col items-center justify-between">
             <div
                 class="grid w-full items-center justify-center transition-all delay-300 duration-500"
-                :class="`${isSignIn ? 'h-1/2' : isSignUp ? 'h-2/6' : 'h-3/5'}`"
+                :class="`${isSignIn ? 'h-2/5' : isSignUp ? 'h-2/6' : 'h-[55%]'}`"
             >
                 <div v-if="isNextLoginStep" class="flex flex-col gap-4">
                     <p
@@ -36,8 +36,8 @@
                 </div>
             </div>
             <div
-                class="relative flex w-full flex-col items-center justify-between rounded-t-[40px] bg-slate-950 p-8 transition-all delay-300 duration-500"
-                :class="`${isSignIn ? 'h-1/2' : isSignUp ? 'h-4/6' : 'h-2/5'}`"
+                class="relative flex w-full flex-col items-center justify-between rounded-t-[40px] bg-slate-950 p-8 pb-16 transition-all delay-300 duration-500"
+                :class="`${isSignIn ? 'h-3/5' : isSignUp ? 'h-4/6' : 'h-[45%]'}`"
             >
                 <Transition name="fade" mode="out-in">
                     <div
