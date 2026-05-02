@@ -11,5 +11,17 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest'
-  }
+  },
+  rules: {
+    'vue/multi-word-component-names': 'off',
+    'vue/require-toggle-inside-transition': 'off'
+  },
+  overrides: [
+    {
+      files: ['*.js', '*.cjs', '*.mjs'],
+      env: {
+        node: true
+      }
+    }
+  ]
 }

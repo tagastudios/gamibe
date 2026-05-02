@@ -51,7 +51,7 @@
                 <ul ref="tabsRef" class="flex list-none items-center justify-between">
                     <RouterLink
                         v-for="(tab, index) in tabs"
-                        v-slot="{ href, route, navigate, isActive, isExactActive }"
+                        v-slot="{ navigate, isActive }"
                         :to="tab.path"
                         :key="tab.path"
                         custom

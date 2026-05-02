@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "prisma-generate": "prisma generate",
-    "prisma-push-db": "npx prisma db push",
-    "prisma-studio": "npx prisma studio"
+    "prisma-push-db": "pnpm exec prisma db push",
+    "prisma-studio": "pnpm exec prisma studio"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.0",

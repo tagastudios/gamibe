@@ -1,69 +1,79 @@
-# Taga Studios MonoRepo
+# Gamibe
 
-### Dependencies:
+Gamify-style **personal finance** dashboard shipped as a **Vue 3 + Vite + TypeScript** PWA, backed by **Firebase Auth** and **Firestore** (collections for bills, earnings, savings, transactions, and profiles).
 
-1. npm install -g concurrently
+This repo is a **small monorepo**: the deployed product lives in `./gamibe`. The `./gamibe-legacy` package is an older **Next.js 12 / T3 / Prisma / tRPC** scaffold kept for reference; it expects PostgreSQL plus NextAuth and is not required to run or build the current app.
 
----
+## Tech stack · current app (`gamibe/`)
 
-## Gamibe v2.0
+- Vue 3, Vue Router, Pinia
+- VueFire / Firebase SDK (Auth + Firestore)
+- Tailwind CSS, VCalendar, Chart.js (`vue-chartjs`)
+- vite-plugin-PWA with Workbox
+- Icons: `@heroicons/vue`, `oh-vue-icons`
 
-### **Tech Stack**
+## Quick start · current app
 
-#### Frontend:
+```bash
+pnpm install
+cp gamibe/.env.example gamibe/.env.local
+# Fill in Firebase values from the Firebase console (Web app config).
 
-> Framework: [Vue.js](https://vuejs.org) \
-> Core Libraies: [VueFire](https://vuefire.vuejs.org) | [TypeScript](https://www.typescriptlang.org) | [Tailwind](https://tailwindcss.com) 
+pnpm dev
+# or explicitly:
+pnpm dev:gamibe
+```
 
-#### Backend:
+Open Vite dev server URL (typically [http://localhost:5173](http://localhost:5173)).
 
-> Database: [FireStore](https://firebase.google.com/products/firestore) \
-> Auth: [Firebase Auth](https://firebase.google.com/products/auth) \
-> Infra: [Firebase](https://firebase.google.com)
+## Scripts (repo root · pnpm workspace)
 
-### **Commands**
+| Command | Description |
+| --- | --- |
+| `pnpm dev` / `pnpm dev:gamibe` | Run Vite dev server for `./gamibe` |
+| `pnpm build` / `pnpm build:gamibe` | Type-check + production build (+ PWA artifacts in `gamibe/dist`) |
+| `pnpm lint` / `pnpm lint:gamibe` | ESLint (`gamibe/` only — no autofix by default) |
+| `pnpm typecheck:gamibe` | Vue + TS `--noEmit` |
+| `pnpm preview:gamibe` | Preview built static output |
+| `pnpm dev:legacy` | Legacy Next.js dev (requires `./gamibe-legacy/.env`; see `.env.example` there) |
+| `pnpm build:legacy` | Legacy production build (**requires env + DB**) |
 
-1.  npm run gamibe-dev:
+Package manager **must be pnpm** (see workspace `packageManager` field).
 
-    Open Next Development Server and Prisma Studio
+## Environment · `gamibe/`
 
-2.  npm run gamibe-prisma:
+Use **`.env.local`** (already gitignored via `*.local` / `.env.*`). Variables are prefixed with `VITE_*` because they configure the Firebase **Web SDK** embedded in the client bundle:
 
-    Generate the Database and Push the DB to the Postgress Railway.app instance
+- `VITE_FIREBASE_*` — Firebase web app constants from the Firebase console.
 
----
+Copy from `gamibe/.env.example` and fill placeholders. Rotate keys if past versions leaked them elsewhere.
 
-## Gamibe 
+### Legacy workspace · `gamibe-legacy/`
 
-### **Tech Stack**
+Copy `gamibe-legacy/.env.example` → `.env` (or `.env.local` per Next 12 norms). Builds validate `DATABASE_URL`, `NEXTAUTH_*`, and Google OAuth credentials via the T3 env schema — the app will not compile without valid values pointing at PostgreSQL.
 
-#### Frontend:
+## Deploying · Vercel
 
-> Framework: [T3-Stack](https://create.t3.gg/) -
-> _Next | TypeScript | Tailwind | Prisma | tRPC | Next-Auth_ https://vuefire.vuejs.org
-> Visualization: [D3.js](https://d3js.org/)
+The SPA uses `gamibe/vercel.json` to rewrite routes to `/` for Vue Router history mode. Typical settings:
 
-#### Backend:
+1. Root directory **`gamibe`**
+2. Install `pnpm install` at repo root, or configure install command appropriately for a monorepo
+3. Build command **`pnpm run build`** from repo root **or** `cd .. && pnpm run build --filter gamibe` depending on dashboard configuration
+4. Output directory **`gamibe/dist`**
+5. Set Firestore-backed `VITE_FIREBASE_*` env vars per environment
 
-> Database: [Postgress](https://www.postgresql.org/) \
-> Infra: [Railway.app](https://railway.app/)
+Adapt to your preferred Vercel monorepo pattern (often “root” stays repo root + custom build).
 
-### **Commands**
+## Repo layout
 
-1.  npm run gamibe-dev:
+```
+gamibe/
+  gamibe/           # ★ Vue 3 PWA (production app)
+  gamibe-legacy/    # Next.js 12 T3 scaffold (PostgreSQL / NextAuth)
+pnpm-workspace.yaml
+package.json       # Workspace scripts only
+```
 
-    Open Next Development Server and Prisma Studio
+## Portfolio note
 
-2.  npm run gamibe-prisma:
-
-    Generate the Database and Push the DB to the Postgress Railway.app instance
-
----
-
-## Votey
-
-
-## Code Checker
-
-
-## NuCamp Helper
+Demonstrates SPA architecture, reactive finance flows (bills/savings/charts), Firebase integration, Tailwind-heavy UI composition, Vite+PWA toolchain, and a clean separation between a modern client-heavy app and a legacy full-stack scaffold.

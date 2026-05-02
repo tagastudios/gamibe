@@ -112,12 +112,14 @@ const createType: any = computed(() => route.params.type)
 
 const confirmationData = computed(() => {
     if (createType.value === 'earning') return earningForDb
-    else if (createType.value === 'bill') return billForDb // default
+    if (createType.value === 'bill') return billForDb
+    return undefined
 })
 
 const isValidEntry: ComputedRef<boolean | ''> = computed(() => {
     if (createType.value === 'earning') return isValidEarning
-    else if (createType.value === 'bill') return isValidBill // default
+    if (createType.value === 'bill') return isValidBill
+    return ''
 })
 
 const formattedDate = computed(

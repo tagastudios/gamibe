@@ -1,26 +1,29 @@
 {
-  "name": "taga",
+  "name": "gamibe-monorepo",
   "version": "1.0.0",
-  "description": "taga multipurpose repo",
+  "private": true,
+  "description": "Gamibe · Vue 3 PWA finance dashboard (Firebase) plus archived Next.js/T3 workspace.",
+  "packageManager": "pnpm@10.29.3",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "gamibe-dev": "concurrently --kill-others \"npm --prefix ./gamibe run dev\"",
-    "gamibe-format": "npm --prefix ./gamibe run format && npm --prefix ./gamibe run lint",
-    "gamibe-build": "npm --prefix ./gamibe run build && git add . && git commit -m \"build push\" && git push -u origin master",
-    "gamibe-legacy-dev": "concurrently --kill-others \"npm --prefix ./gamibe-legacy run dev\" \"npm --prefix ./gamibe-legacy run prisma-studio\"",
-    "gamibe-legacy-prisma": "npm --prefix ./gamibe-legacy run prisma-generate && npm --prefix ./gamibe-legacy run prisma-push-db",
-    "gamibe-legacy-build": "npm --prefix ./gamibe-legacy run build && git add . && git commit -m \"build push\" && git push -u origin master"
+    "dev": "pnpm --filter gamibe dev",
+    "build": "pnpm --filter gamibe build",
+    "lint": "pnpm --filter gamibe lint",
+    "dev:gamibe": "pnpm --filter gamibe dev",
+    "build:gamibe": "pnpm --filter gamibe build",
+    "lint:gamibe": "pnpm --filter gamibe lint",
+    "typecheck:gamibe": "pnpm --filter gamibe type-check",
+    "preview:gamibe": "pnpm --filter gamibe preview",
+    "dev:legacy": "pnpm --filter gamibe-legacy dev",
+    "build:legacy": "pnpm --filter gamibe-legacy build",
+    "lint:legacy": "pnpm --filter gamibe-legacy lint"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tagastudios/taga.git"
+    "url": "https://github.com/tagastudios/gamibe.git"
   },
-  "keywords": [
-    "Taga"
-  ],
   "author": "Jose Tannous",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/tagastudios/taga/issues"
-  },
-  "homepage": "https://github.com/tagastudios/taga#readme"
+  "license": "ISC"
 }

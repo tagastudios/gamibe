@@ -1,7 +1,7 @@
 <template>
     <fieldset :id="id" class="space-y-4">
         <legend class="sr-only">{{ group }}</legend>
-        <div v-for="item in options">
+        <div v-for="item in options" :key="item.id">
             <label
                 :for="item.id"
                 class="flex cursor-pointer justify-between gap-4 rounded-lg border border-gray-100 bg-white p-4 text-sm font-medium shadow-sm hover:border-gray-200 has-[:checked]:border-blue-500 has-[:checked]:ring-1 has-[:checked]:ring-blue-500 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700"
